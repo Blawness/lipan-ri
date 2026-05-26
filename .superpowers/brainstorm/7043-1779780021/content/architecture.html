@@ -1,0 +1,137 @@
+<h2>Arsitektur &amp; Halaman — Ringkasan Desain</h2>
+<p class="subtitle">Next.js 16 + Drizzle + shadcn/ui — klik tombol untuk lanjut ke detail</p>
+
+<div class="section">
+  <h3>Tech Stack</h3>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">Next.js 16</div>
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">PostgreSQL</div>
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">Drizzle ORM</div>
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">shadcn/ui</div>
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">Tailwind CSS</div>
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;">NextAuth.js v5</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Struktur Halaman</h3>
+  <div style="border:1px solid #dbeafe;border-radius:12px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:white;padding:14px 20px;font-size:14px;font-weight:600;">
+      lipan-ri.org
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">Homepage</span>
+        <span style="color:#64748b;font-size:12px;">— featured posts, latest news, categories, search</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">[slug]</span>
+        <span style="color:#64748b;font-size:12px;">— article detail page</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">category/[slug]</span>
+        <span style="color:#64748b;font-size:12px;">— category listing (berita, press-rilis, opini, dll)</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">tentang-kami</span>
+        <span style="color:#64748b;font-size:12px;">— profil lembaga, ketua, visi-misi, struktur, legalitas</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">galeri</span>
+        <span style="color:#64748b;font-size:12px;">— galeri foto kegiatan</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:11px;color:#1e40af;font-weight:600;width:24px;">/</span>
+        <span style="font-weight:600;font-size:14px;">kontak</span>
+        <span style="color:#64748b;font-size:12px;">— halaman hubungi kami</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Data Model (Drizzle Schema)</h3>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:140px;border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;">posts</div>
+      <div style="font-size:11px;color:#5b7db5;line-height:1.8;">
+        id, slug, title<br>
+        content (MDX/HTML)<br>
+        excerpt, featured_image<br>
+        category_id, author_id<br>
+        status, published_at
+      </div>
+    </div>
+    <div style="flex:1;min-width:140px;border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;">categories</div>
+      <div style="font-size:11px;color:#5b7db5;line-height:1.8;">
+        id, slug, name<br>
+        description, parent_id
+      </div>
+    </div>
+    <div style="flex:1;min-width:140px;border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;">pages</div>
+      <div style="font-size:11px;color:#5b7db5;line-height:1.8;">
+        id, slug, title<br>
+        content, meta_description<br>
+        updated_at
+      </div>
+    </div>
+    <div style="flex:1;min-width:140px;border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;">media</div>
+      <div style="font-size:11px;color:#5b7db5;line-height:1.8;">
+        id, url, alt_text<br>
+        album, uploaded_at
+      </div>
+    </div>
+    <div style="flex:1;min-width:140px;border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-bottom:6px;">users</div>
+      <div style="font-size:11px;color:#5b7db5;line-height:1.8;">
+        id, email, name<br>
+        role, password_hash<br>
+        (untuk admin nanti)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Fitur Utama</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> SSR/ISR untuk artikel</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">Incremental Static Regeneration — cepat &amp; selalu fresh</div>
+    </div>
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> Search full-text</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">PostgreSQL tsquery untuk pencarian artikel</div>
+    </div>
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> Galeri foto lightbox</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">Grid galeri dengan lightbox preview</div>
+    </div>
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> Responsive mobile-first</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">Full responsive, mobile &amp; desktop optimal</div>
+    </div>
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> Embed YouTube video</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">Responsive video embed di artikel &amp; halaman</div>
+    </div>
+    <div style="border:1px solid #dbeafe;border-radius:8px;padding:14px;">
+      <span style="color:#2563eb;font-size:16px;">&#9679;</span>
+      <span style="font-weight:600;font-size:13px;color:#1e3a5f;"> SEO ready</span>
+      <div style="font-size:11px;color:#5b7db5;margin-top:4px;">Metadata, OG tags, sitemap.xml</div>
+    </div>
+  </div>
+</div>

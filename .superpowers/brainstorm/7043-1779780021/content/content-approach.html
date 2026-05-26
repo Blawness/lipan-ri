@@ -1,0 +1,38 @@
+<h2>Bagaimana konten akan dikelola?</h2>
+<p class="subtitle">Ini menentukan arsitektur keseluruhan project</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Static Site — Hardcode konten di file MDX</h3>
+      <p>Semua artikel, halaman, dan foto ditulis manual sebagai file .mdx di dalam repo. Tidak perlu database atau admin panel. Cocok jika konten jarang berubah dan kamu ingin performa maksimal serta deployment super simpel.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Performa tertinggi (static generation)</li><li>Tidak perlu database</li><li>Deployment simpel (Vercel/static)</li><li>Full version control konten</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Tidak ada dashboard admin</li><li>Edit konten harus lewat kode</li><li>Non-teknisi tidak bisa update</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Headless CMS — Admin panel terpisah (Strapi / Payload)</h3>
+      <p>Konten dikelola lewat dashboard admin yang user-friendly. Next.js mengambil data via API (REST/GraphQL). Cocok jika butuh admin panel tapi tidak mau bikin dari nol.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Dashboard admin siap pakai</li><li>Non-teknisi bisa posting artikel</li><li>API auto-generated</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Perlu hosting terpisah / lebih kompleks</li><li>Overkill jika konten jarang update</li><li>Kustomisasi terbatas</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Database + Admin built-in — Full custom</h3>
+      <p>Next.js dengan database (PostgreSQL + Prisma/Drizzle) dan admin panel built-in. Kontrol penuh atas semua fitur. Cocok jika kamu ingin sistem lengkap dengan auth, roles, dsb.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Kontrol penuh</li><li>Bisa dikembangkan tanpa batas</li><li>One repo untuk semuanya</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Development paling lama</li><li>Perlu bikin admin panel dari nol</li><li>Maintenance lebih berat</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
