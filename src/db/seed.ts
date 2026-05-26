@@ -98,9 +98,60 @@ async function seed() {
     },
     {
       slug: "profil-ketua",
-      title: "Profil Ketua LIPAN RI",
-      content: `<p>Ketua Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia (LIPAN RI) Harun Prayitno, SE., SH., MH merupakan seorang tokoh yang memiliki dedikasi tinggi dalam pengawasan aset negara.</p><p>Dengan latar belakang pendidikan Sarjana Ekonomi, Sarjana Hukum, dan Magister Hukum, beliau memimpin LIPAN RI dengan prinsip integritas dan profesionalisme.</p>`,
-      metaDescription: "Profil Ketua LIPAN RI Harun Prayitno, SE, SH, MH",
+      title: "Latar Belakang Harun Prayitno, SE, SH, MH.",
+      content: `<p><strong>Semboyan Jati Diri</strong></p>
+<ol>
+  <li>Ojo dumeh</li>
+  <li>Mikul dhuwur mendhem jero</li>
+  <li>Nglurug tanpa bala, menang tanpa ngasorak</li>
+  <li>3 sa (sabar atine, saleh priyayine, sarah tumindake)</li>
+</ol>
+<p>Ketua Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia (LIPAN RI) Harun Prayitno, SE., SH., MH merupakan seorang tokoh yang memiliki latar belakang kuat dibidang keagamaan dan organisasi kemasyarakatan. Pria kelahiran Banyumas 16 April 1967 sangat taat beribadah ini memiliki mimpi besarnya untuk membangun Indonesia khususnya dalam penyelesaian konflik dan sengketa pertanahan. Ia juga sangat aktif dalam bidang keagaaman khususnya untuk membantu panti asuhan dan pesantren agar selalu tetap eksis yang menjadikannya ia sebagai donatur utama yang tanpa pamrih demi membantu keberlangsungan kegiatan ibadah kepada Alloh SWT.</p>
+<p>Untuk mewujudkan mimpi besarnya di bidang Pertanahan, Harun Prayitno tidak segan untuk turun ke pelosok daerah demi mendengarkan keluhan Masyarakat terkait permasalahan sengketa Tanah serta mencari Solusi demi terselesaikan permasalahannya. Eksistensi kegiatan di bidang pertanahan saat ini menjadi focus utama Harun Prayitno dalam kegiatan sehari hari. Berbagai terobosan yang dilakukannya saat ini telah melakukan berbagai Upaya mengurai permasalahan sengketa tanah dari pulau Sumatera, Sulawesi, Jawa, Bali, NTB, Kalimantan dan daerah lainnya yang tak luput dari perhatian dan dedikasi nya demi membantu Masyarakat.</p>
+<p>Sebagai Ketua LIPAN RI, Harun Prayitno mendapat dukungan secara nasional atas sifat komitmennya untuk selalu mengabdi kepada masyarakat, bangsa dan negara. Dalam berbagai kesempatan ia sering hadir dalam acara – acara yang diselenggarakan pihak pemerintah pusat maupun Pemerintah Daerah Kota dan Kabupaten berkolaborasi membangun Indonesia menuju Indonesia emas 2045.</p>
+<p>Eksistensi seorang Harun Prayitno saat ini ia sedang konsen mengurai permasalahan sengketa pertanahan yang telah berpuluh tahun sampai saat ini belum terselesaikan dan bahkan telah memakan korban nyawa demi Upayanya untuk mendapatkan hak dan kepastian hukum atas kepemilikan tanahnya. Salah satu kasus yang ia soroti adalah permasalahan lahan di Lombok Tengah NTB yaitu bukit Seger yang berbatasan langsung dengan Sirkuit Mandalika.</p>
+<p>Di pulau Bali, Harun Prayitno juga menjadi orang yang terdepan membantu mengurai sengketa tanah yang tidak pernah selesai. Salah satu terobosan yang dilakukannya yaitu dengan Upaya restorative Justice.</p>
+<p>Menurut Harun Prayitno Upaya perdamaian dengan Restoratif Justice menjadi salah satu Langkah yang terbaik yang bisa dilakukan saat ini. Penyelesaian sengketa melalui jalur litigasi (pengadilan) bukanlah merupakan satu-satuya cara penyelesaian sengketa yang dapat ditempuh oleh para pihak yang bersengketa. Penyelesaian sengketa tanah melalui Pengadilan terkadang menghabiskan banyak waktu tenaga biaya. Bahkan, terkadang biaya yang dikeluarkan bisa lebih tinggi dari materi pokok dari properti yang disengketakan.</p>
+<p>Harun Prayitno berpendapat bahwa Upaya penyelesaian sengketa di luar pengadilan (non litigasi), yaitu penyelesaian sengketa melalui negosiasi (musyawarah), mediasi, arbitrase, dan konsiliasi serta Upaya penyelesaian sengketa secara damai dengan restorative justice yang pada dasarnya dapat diterima oleh para pihak yang bersengketa karena prosesnya didasarkan pada pengaturan sendiri dan masih kental diwarnai dengan adat kebiasaan setempat.</p>
+<p><strong>Pendidikan Formal:</strong></p>
+<ul>
+  <li>Tahun 1991 — Universitas Jenderal Soedirman Jurusan Ilmu Hukum</li>
+  <li>Tahun 2005 — INSTITUT LPPMI JAKARTA Jurusan Ekonomi Manajemen</li>
+  <li>Tahun 2021 — UNIVERSITAS ISLAM BALITAR – BLITAR Ilmu Hukum</li>
+  <li>Tahun 2024 — INSTITUT KH. AHMAD SANUSI SUKABUMI S2</li>
+</ul>
+<p><strong>Pengalaman Organisasi</strong></p>
+<ul>
+  <li>2004–2009 — Wakil Ketua Dewan Pimpinan Cabang (DPC) Partai Hanura</li>
+  <li>2004–2009 — Ketua Pemuda Partai Hanura Provinsi Jawa Barat</li>
+  <li>2017–sekarang — Dewan Pembina Yayasan Paku Banten Indonesia</li>
+  <li>2019–sekarang — Ketua Bidang Dana & Usaha PBSI Jakarta Pusat</li>
+  <li>2024–sekarang — Ketua Dewan Pembina TIM REAKSI CEPAT (TRC) INDONESIA</li>
+  <li>2025–sekarang — Anggota Peradin</li>
+</ul>
+<p><strong>Pengalaman Pekerjaan</strong></p>
+<ul>
+  <li>1999–2009 — Direktur Utama PT. EKA PRIMA SCIENTIFIC</li>
+  <li>2004–2009 — Direktur PT Mitra Teknik Utama</li>
+  <li>2017–sekarang — Ketua Umum LIPAN-RI</li>
+  <li>2022–sekarang — Pemimpin Umum dan Komisaris Utama PT. Media Pelopor Wiratama</li>
+  <li>2024–sekarang — Share holder PT. Presisi Konsulindo Prima</li>
+  <li>2024–sekarang — Komisaris PT. TIGA ANAK PROPERTINDO</li>
+  <li>2026–sekarang — Direktur Utama PT. ASET NUSANTARA INTERNASIONAL</li>
+</ul>
+<p><strong>MOTIVASI PENGABDIAN</strong></p>
+<p>Berbekal pengalaman serta kemitraan dengan Badan Pertanahan Nasional (BPN) dalam penanganan konflik dan sengketa pertanahan di seluruh wilayah NKRI, serta didukung hubungan profesional dan sinergi yang terjalin dengan aparatur negara selama kurang lebih 20 tahun di lingkungan BPN.</p>
+<p><strong>VISI</strong></p>
+<p>"Terwujudnya sistem pertanahan nasional yang profesional, modern, transparan, dan berintegritas guna mendukung kepastian hukum serta pelayanan publik yang optimal di lingkungan Kementerian ATR/BPN Republik Indonesia".</p>
+<p><strong>MISI</strong></p>
+<ol>
+  <li>Mensertifikatkan aset tanah milik Negara di 17.400 Pulau di wilayah NKRI</li>
+  <li>Mensertifikatkan tanah terlantar milik Negara Ex. Perkebunan/kehutanan, Ex. BLBI, dan pertambangan</li>
+  <li>Memberantas praktik mafia pertanahan di lingkungan Kementerian ATR/BPN RI</li>
+  <li>Melakukan revitalisasi sumber daya manusia mulai dari Eselon V hingga Eselon I di lingkungan Kementerian ATR/BPN RI</li>
+  <li>Membangun fasilitas dan Pusat Data dan Informasi (Pusdatin) yang canggih dan modern serta terintegrasi guna mendukung pelaksanaan program Sertifikat Elektronik</li>
+</ol>`,
+      metaDescription: "Profil Ketua LIPAN RI Harun Prayitno, SE, SH, MH — Latar belakang, pendidikan, pengalaman organisasi, dan motivasi pengabdian",
     },
     {
       slug: "visi-misi",
