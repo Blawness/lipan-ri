@@ -1,13 +1,31 @@
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MobileNav } from "./mobile-nav";
 import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
 
-const mainNav = [
+const navLinks = [
   { label: "Berita", href: "/" },
   { label: "Press Rilis", href: "/category/press-rilis" },
-  { label: "Tentang Kami", href: "/tentang-kami" },
+  {
+    label: "Tentang Kami",
+    href: "/tentang-kami",
+    children: [
+      { label: "Profil Lembaga", href: "/tentang-kami/sekilas-lipan-ri" },
+      { label: "Profil Ketua", href: "/tentang-kami/profil-ketua" },
+      { label: "Visi Misi", href: "/tentang-kami/visi-misi" },
+      { label: "Struktur", href: "/tentang-kami/struktur" },
+      { label: "Legalitas", href: "/tentang-kami/legalitas" },
+      { label: "Arti Lambang", href: "/tentang-kami/arti-lambang" },
+    ],
+  },
   { label: "Galeri", href: "/galeri" },
   { label: "Kontak", href: "/kontak" },
 ];
@@ -30,15 +48,41 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
-            {mainNav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navLinks.map((item) => {
+              if ("children" in item && item.children) {
+                return (
+                  <DropdownMenu key={item.label}>
+                    <DropdownMenuTrigger
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "sm" }),
+                        "gap-0.5"
+                      )}
+                    >
+                      {item.label}
+                      <ChevronDown className="h-3 w-3 opacity-50" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-48">
+                      {item.children.map((child) => (
+                        <DropdownMenuItem key={child.href}>
+                          <Link href={child.href} className="w-full">
+                            {child.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href!}
+                  className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
