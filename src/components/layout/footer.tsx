@@ -16,7 +16,7 @@ export function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-3">Tautan</h3>
             <ul className="space-y-1 text-sm text-blue-200">
-              <li><Link href="/tentang-kami/sekilas-lipan-ri" className="hover:text-white transition-colors">Profil Lembaga</Link></li>
+              <li><Link href="/tentang-kami/profil-ketua" className="hover:text-white transition-colors">Profil Ketua</Link></li>
               <li><Link href="/tentang-kami/struktur" className="hover:text-white transition-colors">Struktur Organisasi</Link></li>
               <li><Link href="/galeri" className="hover:text-white transition-colors">Galeri</Link></li>
               <li><Link href="/kontak" className="hover:text-white transition-colors">Hubungi Kami</Link></li>

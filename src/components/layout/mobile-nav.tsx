@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const mainNav = [
   { label: "Berita", href: "/" },
   { label: "Press Rilis", href: "/category/press-rilis" },
-  { label: "Tentang Kami", href: "/tentang-kami/sekilas-lipan-ri" },
+  { label: "Tentang Kami", href: "/tentang-kami" },
   { label: "Galeri", href: "/galeri" },
   { label: "Kontak", href: "/kontak" },
 ];
