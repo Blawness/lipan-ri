@@ -86,101 +86,164 @@ async function seed() {
   const pageData = [
     {
       slug: "sekilas-lipan-ri",
-      title: "Sekilas LIPAN RI",
-      content: `<p>LIPAN-RI adalah Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia, suatu Lembaga independen milik masyarakat yang berkomitmen untuk mengawal dan mengawasi aset-aset negara agar tidak diselewengkan.</p><p>Lembaga ini didirikan dengan semangat untuk menjaga kedaulatan aset negara dan memastikan bahwa kekayaan negara dikelola secara transparan dan akuntabel.</p>`,
-      metaDescription: "Sekilas tentang LIPAN RI - Lembaga Investigasi dan Pengawasan Aset Negara",
-    },
-    {
-      slug: "struktur",
-      title: "Struktur Organisasi",
-      content: `<p>STRUKTUR ORGANISASI LIPAN-RI terdiri dari:</p><ul><li>Pelindung Utama</li><li>Pelindung</li><li>Dewan Pembina</li><li>Dewan Penasehat / Kehormatan</li><li>Dewan Pengawas</li><li>Ketua</li><li>Wakil Ketua</li><li>Sekretaris Jenderal</li><li>Bendahara</li><li>Divisi-divisi</li></ul>`,
-      metaDescription: "Struktur Organisasi LIPAN RI",
+      title: "Profil Lembaga",
+      content: JSON.stringify({
+        type: "profil",
+        tentang: "LIPAN-RI adalah Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia, suatu Lembaga independen milik masyarakat yang berperan aktif dan bersinergi bersama Pemerintah. Melaksanakan pengawasan secara terpadu dan terarah serta terintegrasi terhadap berbagai permasalahan masyarakat dan pemerintah pusat maupun daerah mengenai aset-aset negara dan kekayaan milik Negara yang diselesaikan berdasarkan Peraturan perundang undangan yang berlaku dan secara transparan.",
+        berdiri: "LIPAN-RI berdiri bulan Juli 2017 yang disahkan oleh Kementerian Hukum dan Hak Asasi Manusia dan diumumkan di Berita Negara dan Tambahan Berita Negara.",
+        kasus: [
+          "Membantu penyelesaian kasus mafia tanah",
+          "Membantu dan mendampingi masyarakat dalam penyelesaian proses pembuatan sertipikat (SHM, SHGB)",
+          "Melaksanakan sosialisasi dan memberi contoh untuk cara melakukan pengurusan sertipikat, baik perorangan maupun korporasi",
+          "Membantu fasilitas umum Pemerintah Daerah (Pemda) yang fisiknya dikuasai pihak yang tidak bertanggung jawab",
+        ],
+        programKerja: {
+          pendek: ["Pendataan aset-aset milik Negara", "Melakukan penyimpanan, pencatatan dokumentasi hasil investigasi", "Melakukan kerja sama dan koordinasi ke seluruh K/L negara"],
+          menengah: ["Inventarisasi perihal aset-aset milik Negara", "Program pemetaan aset-aset milik Negara yang dianggap masih terlantar", "Program pengelolaan aset Negara berupa Sertifikat kepemilikan tanah"],
+          panjang: ["Melakukan penyelamatan, pengamanan, dan pengawasan aset milik Negara secara menyeluruh dan profesional", "Melakukan koordinasi perihal pemanfaatan & pengelolaan aset milik Negara yang dianggap masih terlantar untuk menjadikan aset yang produktif dan bernilai ekonomis"],
+        },
+        maksud: "Memperhatikan pola pandang kerja yang ditujukan kepada Pengamanan, Pengawasan dan Penyelesaian aset-aset milik Negara yang berada diseluruh Wilayah Republik Indonesia guna mengantisipasi dan mengatasi kerusakan, kehilangan, dan penghapusan asset milik Negara yang dikuasai oleh pihak-pihak yang tidak bertanggung jawab.",
+        tujuan: [
+          "Mendukung dan mengawasi program Nawacita Presiden dan program di Kementrian ATR/BPN RI",
+          "Bekerja sama dengan jajaran Badan Pertanahan Nasional (BPN) seluruh Indonesia untuk mensukseskan program Pendaftaran Tanah Sistimatis Lengkap (PTSL)",
+          "Melaporkan berbagai bentuk penyimpangan dan kendala-kendala yang ditemukan di lapangan",
+          "Investigasi Pengawasan, Pengamanan, Pengelolaan dipantau secara dini sebelum terjadi penyimpangan",
+          "Menjadi wadah atau jembatan menerima aspirasi permasalahan baik dari masyarakat dan melibatkan pemerintah untuk diselesaikan dengan berdasarkan kebenaran dan Undang-undang yang berlaku",
+        ],
+      }),
+      metaDescription: "Profil LIPAN RI — Lembaga Investigasi dan Pengawasan Aset Negara, program kerja, maksud dan tujuan",
     },
     {
       slug: "profil-ketua",
-      title: "Latar Belakang Harun Prayitno, SE, SH, MH.",
-      content: `<p><strong>Semboyan Jati Diri</strong></p>
-<ol>
-  <li>Ojo dumeh</li>
-  <li>Mikul dhuwur mendhem jero</li>
-  <li>Nglurug tanpa bala, menang tanpa ngasorak</li>
-  <li>3 sa (sabar atine, saleh priyayine, sarah tumindake)</li>
-</ol>
-<p>Ketua Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia (LIPAN RI) Harun Prayitno, SE., SH., MH merupakan seorang tokoh yang memiliki latar belakang kuat dibidang keagamaan dan organisasi kemasyarakatan. Pria kelahiran Banyumas 16 April 1967 sangat taat beribadah ini memiliki mimpi besarnya untuk membangun Indonesia khususnya dalam penyelesaian konflik dan sengketa pertanahan. Ia juga sangat aktif dalam bidang keagaaman khususnya untuk membantu panti asuhan dan pesantren agar selalu tetap eksis yang menjadikannya ia sebagai donatur utama yang tanpa pamrih demi membantu keberlangsungan kegiatan ibadah kepada Alloh SWT.</p>
-<p>Untuk mewujudkan mimpi besarnya di bidang Pertanahan, Harun Prayitno tidak segan untuk turun ke pelosok daerah demi mendengarkan keluhan Masyarakat terkait permasalahan sengketa Tanah serta mencari Solusi demi terselesaikan permasalahannya. Eksistensi kegiatan di bidang pertanahan saat ini menjadi focus utama Harun Prayitno dalam kegiatan sehari hari. Berbagai terobosan yang dilakukannya saat ini telah melakukan berbagai Upaya mengurai permasalahan sengketa tanah dari pulau Sumatera, Sulawesi, Jawa, Bali, NTB, Kalimantan dan daerah lainnya yang tak luput dari perhatian dan dedikasi nya demi membantu Masyarakat.</p>
-<p>Sebagai Ketua LIPAN RI, Harun Prayitno mendapat dukungan secara nasional atas sifat komitmennya untuk selalu mengabdi kepada masyarakat, bangsa dan negara. Dalam berbagai kesempatan ia sering hadir dalam acara – acara yang diselenggarakan pihak pemerintah pusat maupun Pemerintah Daerah Kota dan Kabupaten berkolaborasi membangun Indonesia menuju Indonesia emas 2045.</p>
-<p>Eksistensi seorang Harun Prayitno saat ini ia sedang konsen mengurai permasalahan sengketa pertanahan yang telah berpuluh tahun sampai saat ini belum terselesaikan dan bahkan telah memakan korban nyawa demi Upayanya untuk mendapatkan hak dan kepastian hukum atas kepemilikan tanahnya. Salah satu kasus yang ia soroti adalah permasalahan lahan di Lombok Tengah NTB yaitu bukit Seger yang berbatasan langsung dengan Sirkuit Mandalika.</p>
-<p>Di pulau Bali, Harun Prayitno juga menjadi orang yang terdepan membantu mengurai sengketa tanah yang tidak pernah selesai. Salah satu terobosan yang dilakukannya yaitu dengan Upaya restorative Justice.</p>
-<p>Menurut Harun Prayitno Upaya perdamaian dengan Restoratif Justice menjadi salah satu Langkah yang terbaik yang bisa dilakukan saat ini. Penyelesaian sengketa melalui jalur litigasi (pengadilan) bukanlah merupakan satu-satuya cara penyelesaian sengketa yang dapat ditempuh oleh para pihak yang bersengketa. Penyelesaian sengketa tanah melalui Pengadilan terkadang menghabiskan banyak waktu tenaga biaya. Bahkan, terkadang biaya yang dikeluarkan bisa lebih tinggi dari materi pokok dari properti yang disengketakan.</p>
-<p>Harun Prayitno berpendapat bahwa Upaya penyelesaian sengketa di luar pengadilan (non litigasi), yaitu penyelesaian sengketa melalui negosiasi (musyawarah), mediasi, arbitrase, dan konsiliasi serta Upaya penyelesaian sengketa secara damai dengan restorative justice yang pada dasarnya dapat diterima oleh para pihak yang bersengketa karena prosesnya didasarkan pada pengaturan sendiri dan masih kental diwarnai dengan adat kebiasaan setempat.</p>
-<p><strong>Pendidikan Formal:</strong></p>
-<ul>
-  <li>Tahun 1991 — Universitas Jenderal Soedirman Jurusan Ilmu Hukum</li>
-  <li>Tahun 2005 — INSTITUT LPPMI JAKARTA Jurusan Ekonomi Manajemen</li>
-  <li>Tahun 2021 — UNIVERSITAS ISLAM BALITAR – BLITAR Ilmu Hukum</li>
-  <li>Tahun 2024 — INSTITUT KH. AHMAD SANUSI SUKABUMI S2</li>
-</ul>
-<p><strong>Pengalaman Organisasi</strong></p>
-<ul>
-  <li>2004–2009 — Wakil Ketua Dewan Pimpinan Cabang (DPC) Partai Hanura</li>
-  <li>2004–2009 — Ketua Pemuda Partai Hanura Provinsi Jawa Barat</li>
-  <li>2017–sekarang — Dewan Pembina Yayasan Paku Banten Indonesia</li>
-  <li>2019–sekarang — Ketua Bidang Dana & Usaha PBSI Jakarta Pusat</li>
-  <li>2024–sekarang — Ketua Dewan Pembina TIM REAKSI CEPAT (TRC) INDONESIA</li>
-  <li>2025–sekarang — Anggota Peradin</li>
-</ul>
-<p><strong>Pengalaman Pekerjaan</strong></p>
-<ul>
-  <li>1999–2009 — Direktur Utama PT. EKA PRIMA SCIENTIFIC</li>
-  <li>2004–2009 — Direktur PT Mitra Teknik Utama</li>
-  <li>2017–sekarang — Ketua Umum LIPAN-RI</li>
-  <li>2022–sekarang — Pemimpin Umum dan Komisaris Utama PT. Media Pelopor Wiratama</li>
-  <li>2024–sekarang — Share holder PT. Presisi Konsulindo Prima</li>
-  <li>2024–sekarang — Komisaris PT. TIGA ANAK PROPERTINDO</li>
-  <li>2026–sekarang — Direktur Utama PT. ASET NUSANTARA INTERNASIONAL</li>
-</ul>
-<p><strong>MOTIVASI PENGABDIAN</strong></p>
-<p>Berbekal pengalaman serta kemitraan dengan Badan Pertanahan Nasional (BPN) dalam penanganan konflik dan sengketa pertanahan di seluruh wilayah NKRI, serta didukung hubungan profesional dan sinergi yang terjalin dengan aparatur negara selama kurang lebih 20 tahun di lingkungan BPN.</p>
-<p><strong>VISI</strong></p>
-<p>"Terwujudnya sistem pertanahan nasional yang profesional, modern, transparan, dan berintegritas guna mendukung kepastian hukum serta pelayanan publik yang optimal di lingkungan Kementerian ATR/BPN Republik Indonesia".</p>
-<p><strong>MISI</strong></p>
-<ol>
-  <li>Mensertifikatkan aset tanah milik Negara di 17.400 Pulau di wilayah NKRI</li>
-  <li>Mensertifikatkan tanah terlantar milik Negara Ex. Perkebunan/kehutanan, Ex. BLBI, dan pertambangan</li>
-  <li>Memberantas praktik mafia pertanahan di lingkungan Kementerian ATR/BPN RI</li>
-  <li>Melakukan revitalisasi sumber daya manusia mulai dari Eselon V hingga Eselon I di lingkungan Kementerian ATR/BPN RI</li>
-  <li>Membangun fasilitas dan Pusat Data dan Informasi (Pusdatin) yang canggih dan modern serta terintegrasi guna mendukung pelaksanaan program Sertifikat Elektronik</li>
-</ol>`,
-      metaDescription: "Profil Ketua LIPAN RI Harun Prayitno, SE, SH, MH — Latar belakang, pendidikan, pengalaman organisasi, dan motivasi pengabdian",
+      title: "Profil Ketua",
+      content: JSON.stringify({
+        type: "profil-ketua",
+        nama: "Harun Prayitno, SE, SH, MH",
+        lahir: "Banyumas, 16 April 1967",
+        semboyan: ["Ojo dumeh", "Mikul dhuwur mendhem jero", "Nglurug tanpa bala, menang tanpa ngasorak", "3 sa (sabar atine, saleh priyayine, sarah tumindake)"],
+        latarBelakang: [
+          "Ketua LIPAN RI, memiliki latar belakang kuat di bidang keagamaan dan organisasi kemasyarakatan",
+          "Sangat aktif membantu panti asuhan dan pesantren sebagai donatur utama",
+          "Turun langsung ke pelosok daerah untuk mendengarkan keluhan masyarakat terkait sengketa tanah",
+          "Fokus utama: menyelesaikan sengketa pertanahan di Sumatera, Sulawesi, Jawa, Bali, NTB, Kalimantan",
+          "Mengadvokasi restorative justice sebagai solusi sengketa di luar pengadilan",
+        ],
+        pendidikan: [
+          { tahun: "1991", jurusan: "Ilmu Hukum", institusi: "Universitas Jenderal Soedirman" },
+          { tahun: "2005", jurusan: "Ekonomi Manajemen", institusi: "INSTITUT LPPMI JAKARTA" },
+          { tahun: "2021", jurusan: "Ilmu Hukum", institusi: "UNIVERSITAS ISLAM BALITAR – BLITAR" },
+          { tahun: "2024", jurusan: "S2", institusi: "INSTITUT KH. AHMAD SANUSI SUKABUMI" },
+        ],
+        organisasi: [
+          { tahun: "2004–2009", jabatan: "Wakil Ketua Dewan Pimpinan Cabang (DPC)", organisasi: "Partai Hanura" },
+          { tahun: "2004–2009", jabatan: "Ketua Pemuda", organisasi: "Partai Hanura Provinsi Jawa Barat" },
+          { tahun: "2017–sekarang", jabatan: "Dewan Pembina", organisasi: "Yayasan Paku Banten Indonesia" },
+          { tahun: "2019–sekarang", jabatan: "Ketua Bidang Dana & Usaha", organisasi: "PBSI Jakarta Pusat" },
+          { tahun: "2024–sekarang", jabatan: "Ketua Dewan Pembina", organisasi: "TIM REAKSI CEPAT (TRC) INDONESIA" },
+          { tahun: "2025–sekarang", jabatan: "Anggota", organisasi: "Peradin" },
+        ],
+        pekerjaan: [
+          { tahun: "1999–2009", jabatan: "Direktur Utama", perusahaan: "PT. EKA PRIMA SCIENTIFIC" },
+          { tahun: "2004–2009", jabatan: "Direktur", perusahaan: "PT Mitra Teknik Utama" },
+          { tahun: "2017–sekarang", jabatan: "Ketua Umum", perusahaan: "LIPAN-RI" },
+          { tahun: "2022–sekarang", jabatan: "Pemimpin Umum & Komisaris Utama", perusahaan: "PT. Media Pelopor Wiratama" },
+          { tahun: "2024–sekarang", jabatan: "Share holder", perusahaan: "PT. Presisi Konsulindo Prima" },
+          { tahun: "2024–sekarang", jabatan: "Komisaris", perusahaan: "PT. TIGA ANAK PROPERTINDO" },
+          { tahun: "2026–sekarang", jabatan: "Direktur Utama", perusahaan: "PT. ASET NUSANTARA INTERNASIONAL" },
+        ],
+        motivasi: "Berbekal pengalaman serta kemitraan dengan Badan Pertanahan Nasional (BPN) dalam penanganan konflik dan sengketa pertanahan di seluruh wilayah NKRI, serta didukung hubungan profesional dan sinergi yang terjalin dengan aparatur negara selama kurang lebih 20 tahun di lingkungan BPN.",
+        visi: "Terwujudnya sistem pertanahan nasional yang profesional, modern, transparan, dan berintegritas guna mendukung kepastian hukum serta pelayanan publik yang optimal di lingkungan Kementerian ATR/BPN Republik Indonesia.",
+        misi: [
+          "Mensertifikatkan aset tanah milik Negara di 17.400 Pulau di wilayah NKRI",
+          "Mensertifikatkan tanah terlantar milik Negara Ex. Perkebunan/kehutanan, Ex. BLBI, dan pertambangan",
+          "Memberantas praktik mafia pertanahan di lingkungan Kementerian ATR/BPN RI",
+          "Melakukan revitalisasi sumber daya manusia mulai dari Eselon V hingga Eselon I di lingkungan Kementerian ATR/BPN RI",
+          "Membangun fasilitas dan Pusat Data dan Informasi (Pusdatin) yang canggih dan modern",
+        ],
+      }),
+      metaDescription: "Profil Ketua LIPAN RI Harun Prayitno, SE, SH, MH",
     },
     {
       slug: "visi-misi",
       title: "Visi Misi & Motto",
-      content: `<p><strong>Visi:</strong> Menjadi lembaga independen terdepan dalam investigasi dan pengawasan aset negara di Indonesia.</p><p><strong>Misi:</strong></p><ul><li>Melakukan investigasi terhadap dugaan penyelewengan aset negara</li><li>Mengawasi pengelolaan aset negara secara transparan</li><li>Memberikan advokasi kepada masyarakat terkait sengketa aset</li></ul>`,
+      content: JSON.stringify({
+        type: "visi-misi",
+        visi: "Mengawasi, menyelamatkan, investigasi, pemantauan, pemeliharaan serta pencatatan barang aset milik Negara dan Masyarakat di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        misi: [
+          "Melakukan investigasi, pengamanan dan pengawasan aset milik negara dan masyarakat secara menyeluruh dan profesional serta berkelanjutan dan berkeadilan",
+          "Melakukan koordinasi perihal pemanfaatan dan pengelolaan aset milik Negara dan Masyarakat",
+          "Membantu Masyarakat Dalam Pelayanan Pertanahan",
+        ],
+        moto: "Melayani, Membantu, Dipercaya",
+      }),
       metaDescription: "Visi, Misi, dan Motto LIPAN RI",
+    },
+    {
+      slug: "struktur",
+      title: "Struktur Organisasi",
+      content: JSON.stringify({
+        type: "struktur",
+        struktur: [
+          { level: 0, nama: "Pelindung Utama" },
+          { level: 0, nama: "Pelindung" },
+          { level: 1, nama: "Dewan Pembina" },
+          { level: 1, nama: "Dewan Penasehat / Kehormatan" },
+          { level: 1, nama: "Dewan Pengawas" },
+          { level: 2, nama: "Ketua" },
+          { level: 2, nama: "Wakil Ketua" },
+          { level: 3, nama: "Sekretaris" },
+          { level: 3, nama: "Bendahara" },
+          { level: 4, nama: "Divisi SDM & Umum" },
+          { level: 4, nama: "Divisi Bantuan Hukum dan HAM" },
+          { level: 4, nama: "Divisi Infokom" },
+          { level: 4, nama: "Divisi Investigasi/Pengawasan" },
+          { level: 4, nama: "Divisi Tata Usaha Umum" },
+        ],
+      }),
+      metaDescription: "Struktur Organisasi LIPAN RI",
     },
     {
       slug: "legalitas",
       title: "Legalitas Lembaga",
-      content: `<p>LIPAN RI memiliki legalitas yang sah sesuai dengan peraturan perundang-undangan yang berlaku di Indonesia, termasuk:</p><ul><li>Akta Pendirian</li><li>SK Kemenkumham</li><li>Sertifikat Merek LIPAN RI</li></ul>`,
-      metaDescription: "Legalitas LIPAN RI",
+      content: JSON.stringify({
+        type: "legalitas",
+        akte: [
+          { label: "Pendirian", detail: "Akte Notaris & PPAT Yunita Aristina, SH., M.Kn No: 18 tanggal 19 Juli 2017" },
+          { label: "Perubahan", detail: "Akte Notaris & PPAT Eka Sugiarti, SH. No: 9 tanggal 9 Juli 2024" },
+        ],
+        sk: [
+          { label: "Pengesahan 2017", detail: "Keputusan Menteri Hukum & HAM RI No: AHU-0010835.AH.01.07 Tahun 2017, tanggal 20 Juli 2017" },
+          { label: "Persetujuan Perubahan 2024", detail: "Keputusan Menteri Hukum dan HAM RI No: AHU-0001069.AH.01.06 Tahun 2024, tanggal 26 Juli 2024" },
+        ],
+        beritaNegara: "Berita Negara No. 063 / Tambahan Berita Negara RI No. 000301, tanggal 7 Agustus 2000",
+        npwp: "43.137.889.2-071.000",
+        kpp: "KPP Pratama Jakarta Menteng Dua",
+        bank: { nama: "Bank Mandiri Cabang Jakarta Matraman", norek: "006-00-1113256-4", atasNama: "Lembaga Investigasi dan Pengawasan Aset Negara (LIPAN-RI)" },
+      }),
+      metaDescription: "Legalitas LIPAN RI — Akte, SK Kemenkumham, NPWP, Rekening Bank",
     },
     {
       slug: "arti-lambang",
       title: "Arti Lambang",
-      content: `<p>LIPAN-RI berlambangkan bangun segi lima yang mengandung arti bahwa LIPAN-RI berazaskan Pancasila dan UUD 1945.</p><p>Warna biru melambangkan keteguhan dan profesionalisme, sedangkan warna merah melambangkan keberanian dalam menegakkan kebenaran.</p>`,
-      metaDescription: "Arti Lambang LIPAN RI",
-    },
-    {
-      slug: "maksud-dan-tujuan",
-      title: "Maksud dan Tujuan",
-      content: `<p>Maksud dan tujuan didirikannya LIPAN RI adalah untuk membantu pemerintah dalam mengawasi dan menjaga aset-aset negara agar tetap berada dalam penguasaan negara dan tidak diselewengkan oleh pihak yang tidak bertanggung jawab.</p>`,
-      metaDescription: "Maksud dan Tujuan LIPAN RI",
+      content: JSON.stringify({
+        type: "lambang",
+        elemen: [
+          { nama: "Segi Lima", arti: "Berazaskan Pancasila dan UUD 1945" },
+          { nama: "Warna Biru Tua", arti: "Mengedepankan kepercayaan dan profesionalisme" },
+          { nama: "Sayap (7 bulu)", arti: "Awal berdirinya LIPAN-RI pada bulan ke-7 (Juli) tahun 2017" },
+          { nama: "Bintang", arti: "Ketaatan pada Hukum dan keyakinan terhadap Tuhan Yang Maha Esa" },
+          { nama: "Bumi", arti: "Wadah pekerjaan LIPAN-RI yang berhubungan langsung dengan tanah dan unsur bumi" },
+          { nama: "Padi dan Kapas", arti: "Pangan dan sandang — kebutuhan pokok rakyat Indonesia, melambangkan kesejahteraan" },
+          { nama: "Pita \"Setya Bhakti Pertiwi\"", arti: "Identitas LIPAN-RI yang bersih dan independen serta siap melindungi ibu pertiwi" },
+        ],
+      }),
+      metaDescription: "Arti Lambang LIPAN RI — makna dari setiap elemen logo",
     },
   ];
 
+  await db.delete(pages);
   for (const page of pageData) {
-    await db.insert(pages).values(page).onConflictDoNothing();
+    await db.insert(pages).values(page as any);
   }
 
   console.log("✅ Database seeded successfully!");

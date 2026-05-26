@@ -1,14 +1,21 @@
-import { getAllPages } from "@/lib/pages";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Shield, User, Eye, Building2, FileText, Pentagon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
 };
 
-export default async function TentangKamiPage() {
-  const pages = await getAllPages();
+const menuItems = [
+  { slug: "sekilas-lipan-ri", title: "Profil Lembaga", desc: "Tentang LIPAN RI, program kerja, maksud & tujuan", icon: Shield },
+  { slug: "profil-ketua", title: "Profil Ketua", desc: "Latar belakang, pendidikan, dan pengalaman Harun Prayitno", icon: User },
+  { slug: "visi-misi", title: "Visi Misi & Motto", desc: "Arah dan prinsip LIPAN RI", icon: Eye },
+  { slug: "struktur", title: "Struktur Organisasi", desc: "Susunan organisasi dan divisi", icon: Building2 },
+  { slug: "legalitas", title: "Legalitas Lembaga", desc: "Akte, SK Kemenkumham, NPWP, rekening", icon: FileText },
+  { slug: "arti-lambang", title: "Arti Lambang", desc: "Makna dari setiap elemen logo LIPAN RI", icon: Pentagon },
+];
 
+export default function TentangKamiPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="gradient-hero text-white rounded-xl p-8 mb-8">
@@ -19,13 +26,19 @@ export default async function TentangKamiPage() {
       </div>
 
       <div className="grid gap-3">
-        {pages.map((page) => (
+        {menuItems.map((item) => (
           <Link
-            key={page.slug}
-            href={`/tentang-kami/${page.slug}`}
-            className="block p-4 rounded-lg border border-blue-100 hover:border-blue-400 hover:shadow-md hover:bg-blue-50/50 transition-all"
+            key={item.slug}
+            href={`/tentang-kami/${item.slug}`}
+            className="flex items-start gap-4 p-4 rounded-lg border border-blue-100 hover:border-blue-400 hover:shadow-md hover:bg-blue-50/50 transition-all"
           >
-            <h2 className="font-semibold text-blue-900">{page.title}</h2>
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <item.icon className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-blue-900">{item.title}</h2>
+              <p className="text-sm text-muted-foreground">{item.desc}</p>
+            </div>
           </Link>
         ))}
       </div>
