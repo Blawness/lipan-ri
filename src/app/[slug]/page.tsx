@@ -1,10 +1,10 @@
 import { getPostBySlug, getRecentPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Breadcrumb } from "@/components/breadcrumb";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -30,16 +30,14 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Button
-        variant="ghost"
-        size="sm"
-        render={
-          <Link href="/">
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Kembali
-          </Link>
-        }
-        className="mb-6"
+      <Breadcrumb
+        items={[
+          { label: "Beranda", href: "/" },
+          post.categoryName && post.categorySlug
+            ? { label: post.categoryName, href: `/category/${post.categorySlug}` }
+            : null,
+          { label: post.title },
+        ].filter(Boolean) as { label: string; href?: string }[]}
       />
 
       <article>

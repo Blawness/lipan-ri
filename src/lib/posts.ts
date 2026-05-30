@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts, categories } from "@/db/schema";
-import { eq, desc, and, ilike, or } from "drizzle-orm";
+import { eq, desc, and, ilike, or, sql } from "drizzle-orm";
 
 export async function getFeaturedPosts(limit = 5) {
   return db
@@ -67,28 +67,40 @@ export async function getPostsByCategory(
   limit = 10,
   offset = 0
 ) {
-  return db
-    .select({
-      id: posts.id,
-      slug: posts.slug,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      featuredImage: posts.featuredImage,
-      publishedAt: posts.publishedAt,
-      categoryName: categories.name,
-      categorySlug: categories.slug,
-    })
-    .from(posts)
-    .leftJoin(categories, eq(posts.categoryId, categories.id))
-    .where(
-      and(
-        eq(categories.slug, categorySlug),
-        eq(posts.status, "published")
-      )
-    )
-    .orderBy(desc(posts.publishedAt))
-    .limit(limit)
-    .offset(offset);
+  const conditions = and(
+    eq(categories.slug, categorySlug),
+    eq(posts.status, "published")
+  );
+
+  const [result, countResult] = await Promise.all([
+    db
+      .select({
+        id: posts.id,
+        slug: posts.slug,
+        title: posts.title,
+        excerpt: posts.excerpt,
+        featuredImage: posts.featuredImage,
+        publishedAt: posts.publishedAt,
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
+      .from(posts)
+      .leftJoin(categories, eq(posts.categoryId, categories.id))
+      .where(conditions)
+      .orderBy(desc(posts.publishedAt))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(posts)
+      .leftJoin(categories, eq(posts.categoryId, categories.id))
+      .where(conditions),
+  ]);
+
+  return {
+    posts: result,
+    total: Number(countResult[0]?.count ?? 0),
+  };
 }
 
 export async function searchPosts(query: string, limit = 20) {
