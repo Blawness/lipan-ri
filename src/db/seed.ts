@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "./index";
-import { categories, posts, pages, users } from "./schema";
+import { categories, posts, pages, users, media } from "./schema";
 import { eq } from "drizzle-orm";
 
 async function seed() {
@@ -80,6 +80,23 @@ async function seed() {
 
   for (const post of postData) {
     await db.insert(posts).values(post).onConflictDoNothing();
+  }
+
+  // Media / Gallery
+  const mediaData = [
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/4.jpg", altText: "Harun Prayitno - Dokumen Ketua", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/5.jpg", altText: "Harun Prayitno - Dokumen Ketua", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/1.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/6.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/7.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/2.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/11.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/12.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
+  ];
+
+  await db.delete(media);
+  for (const m of mediaData) {
+    await db.insert(media).values(m);
   }
 
   // Pages
