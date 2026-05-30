@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts, categories } from "@/db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
 import type { Metadata } from "next";
