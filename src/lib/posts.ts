@@ -133,3 +133,11 @@ export async function searchPosts(query: string, limit = 20) {
     .orderBy(desc(posts.publishedAt))
     .limit(limit);
 }
+
+export async function getPostCount() {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(posts)
+    .where(eq(posts.status, "published"));
+  return Number(result[0]?.count ?? 0);
+}
