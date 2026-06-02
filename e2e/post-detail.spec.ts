@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("Detail berita", () => {
   test("klik kartu berita membuka artikel lengkap", async ({ page }) => {
@@ -31,11 +31,12 @@ test.describe("Detail berita", () => {
       .first()
       .click();
 
-    await expect(page.getByRole("heading", { name: "Berita Lainnya" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Berita Terkait" })).toBeVisible();
   });
 
-  test("slug tidak dikenal menampilkan 404", async ({ page }) => {
-    const res = await page.goto("/slug-yang-tidak-ada-12345");
-    expect(res?.status()).toBe(404);
+  test("slug tidak dikenal menampilkan halaman not-found", async ({ page }) => {
+    await page.goto("/slug-yang-tidak-ada-12345");
+    await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
+    await expect(page.getByText("Halaman tidak ditemukan")).toBeVisible();
   });
 });

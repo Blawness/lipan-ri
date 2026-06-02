@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("Halaman statis", () => {
   test("Arsip menampilkan daftar berita", async ({ page }) => {
@@ -19,16 +19,17 @@ test.describe("Halaman statis", () => {
 
   test("Kontak menampilkan info resmi", async ({ page }) => {
     await page.goto("/kontak");
-    await expect(page.getByRole("heading", { level: 1, name: "Hubungi Kami" })).toBeVisible();
-    await expect(page.getByText("dpn.lipanri@gmail.com")).toBeVisible();
-    await expect(page.getByText(/Jakarta Pusat/)).toBeVisible();
+    const main = page.getByRole("main");
+    await expect(main.getByRole("heading", { level: 1, name: "Hubungi Kami" })).toBeVisible();
+    await expect(main.getByText("dpn.lipanri@gmail.com")).toBeVisible();
+    await expect(main.getByText(/Jakarta Pusat/)).toBeVisible();
   });
 });
 
 test.describe("Metadata & SEO", () => {
   test("favicon & apple-icon ter-link", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator('link[rel="icon"]').first()).toHaveCount(1);
+    expect(await page.locator('link[rel="icon"]').count()).toBeGreaterThan(0);
     await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
   });
 

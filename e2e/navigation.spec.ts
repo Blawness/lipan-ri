@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("Navigasi header (desktop)", () => {
   test("tautan utama berfungsi", async ({ page }) => {
@@ -33,7 +33,7 @@ test.describe("Navigasi header (desktop)", () => {
   test("klik logo kembali ke beranda", async ({ page }) => {
     await page.goto("/kontak");
     await page.getByRole("banner").getByAltText("Logo LIPAN RI").click();
-    await expect(page).toHaveURL(new RegExp(`${"http://localhost:3000"}/?$`));
+    await expect(page).toHaveURL("/");
     await expect(page.getByRole("heading", { level: 1, name: /LIPAN\s*RI/ })).toBeVisible();
   });
 });

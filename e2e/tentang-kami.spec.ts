@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("Tentang Kami", () => {
   test("halaman indeks menampilkan 6 menu", async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe("Tentang Kami", () => {
   // setiap renderer berbasis JSON harus tampil dengan benar
   const pages: [string, RegExp][] = [
     ["/tentang-kami/sekilas-lipan-ri", /Profil Lembaga/],
-    ["/tentang-kami/profil-ketua", /Ketua/],
+    ["/tentang-kami/profil-ketua", /Harun Prayitno/],
     ["/tentang-kami/visi-misi", /Visi Misi/],
     ["/tentang-kami/struktur", /Struktur Organisasi/],
     ["/tentang-kami/legalitas", /Legalitas/],
@@ -35,7 +35,7 @@ test.describe("Tentang Kami", () => {
 
   test("dari indeks bisa klik ke salah satu halaman", async ({ page }) => {
     await page.goto("/tentang-kami");
-    await page.getByRole("link", { name: /Struktur Organisasi/ }).click();
+    await page.getByRole("main").getByRole("link", { name: /Struktur Organisasi/ }).click();
     await expect(page).toHaveURL(/\/tentang-kami\/struktur/);
   });
 });

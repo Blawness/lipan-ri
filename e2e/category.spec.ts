@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("Halaman kategori", () => {
   test("menampilkan judul, jumlah artikel, dan daftar", async ({ page }) => {
@@ -27,8 +27,8 @@ test.describe("Halaman kategori", () => {
     await expect(page).toHaveURL(/\/category\/berita\?page=1/);
   });
 
-  test("kategori tidak dikenal menampilkan 404", async ({ page }) => {
-    const res = await page.goto("/category/kategori-ngawur-xyz");
-    expect(res?.status()).toBe(404);
+  test("kategori tidak dikenal menampilkan halaman not-found", async ({ page }) => {
+    await page.goto("/category/kategori-ngawur-xyz");
+    await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
   });
 });

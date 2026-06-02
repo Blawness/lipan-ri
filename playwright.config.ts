@@ -22,10 +22,12 @@ export default defineConfig({
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
+  // Pakai production build: jauh lebih stabil & cepat daripada dev
+  // (tanpa compile per-route, tanpa double-render) — menghindari 500 acak.
   webServer: {
-    command: "pnpm dev",
+    command: "pnpm build && pnpm start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 240_000,
   },
 });
