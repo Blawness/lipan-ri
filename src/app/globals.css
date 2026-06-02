@@ -202,3 +202,11 @@
     background: linear-gradient(90deg, hsl(var(--gold)), hsl(var(--brand)));
   }
 }
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.group:hover [style*="ticker-scroll"] {
+  animation-play-state: paused !important;
+}
