@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, Target, Heart } from "lucide-react";
+import type { VisiMisiContent } from "@/lib/page-content";
 
-export function VisiMisi({ data }: { data: any }) {
+export function VisiMisi({ data }: { data: VisiMisiContent }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">
@@ -45,7 +46,7 @@ export function VisiMisi({ data }: { data: any }) {
             <CardTitle className="text-navy-900">Motto</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xl font-bold text-navy-700 italic">"{data.moto}"</p>
+            <p className="text-xl font-bold text-navy-700 italic">&ldquo;{data.moto}&rdquo;</p>
           </CardContent>
         </Card>
       </div>

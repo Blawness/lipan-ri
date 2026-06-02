@@ -60,6 +60,7 @@ export default async function PostPage({ params }: Props) {
         </div>
 
         {post.featuredImage && (
+          // eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image
           <img
             src={post.featuredImage}
             alt={post.title}

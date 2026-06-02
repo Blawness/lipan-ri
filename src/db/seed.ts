@@ -100,7 +100,7 @@ async function seed() {
   }
 
   // Pages
-  const pageData = [
+  const pageData: (typeof pages.$inferInsert)[] = [
     {
       slug: "sekilas-lipan-ri",
       title: "Profil Lembaga",
@@ -260,7 +260,7 @@ async function seed() {
 
   await db.delete(pages);
   for (const page of pageData) {
-    await db.insert(pages).values(page as any);
+    await db.insert(pages).values(page);
   }
 
   console.log("✅ Database seeded successfully!");

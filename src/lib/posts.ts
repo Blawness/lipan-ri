@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts, categories } from "@/db/schema";
-import { eq, desc, and, ilike, or, sql } from "drizzle-orm";
+import { eq, desc, and, ilike, or, sql, ne } from "drizzle-orm";
 
 export async function getFeaturedPosts(limit = 5) {
   return db
@@ -44,6 +44,7 @@ export async function getPostBySlug(slug: string) {
 
 export async function getRecentPosts(limit = 6, excludeSlug?: string) {
   const conditions = [eq(posts.status, "published")];
+  if (excludeSlug) conditions.push(ne(posts.slug, excludeSlug));
   return db
     .select({
       id: posts.id,

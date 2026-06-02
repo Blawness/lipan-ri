@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { posts, pages, categories } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://lipan-ri.org";
 

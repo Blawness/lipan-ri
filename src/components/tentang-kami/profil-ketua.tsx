@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Briefcase, Users, Quote, Target, Lightbulb } from "lucide-react";
+import type { ProfilKetuaContent } from "@/lib/page-content";
 
-export function ProfilKetua({ data }: { data: any }) {
+export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100 text-center">
@@ -42,7 +43,7 @@ export function ProfilKetua({ data }: { data: any }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.pendidikan.map((p: any, i: number) => (
+            {data.pendidikan.map((p, i) => (
               <div key={i} className="flex items-start gap-3">
                 <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{p.tahun}</Badge>
                 <div>
@@ -61,7 +62,7 @@ export function ProfilKetua({ data }: { data: any }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.pekerjaan.map((p: any, i: number) => (
+            {data.pekerjaan.map((p, i) => (
               <div key={i} className="flex items-start gap-3">
                 <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{p.tahun}</Badge>
                 <div>
@@ -81,7 +82,7 @@ export function ProfilKetua({ data }: { data: any }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {data.organisasi.map((o: any, i: number) => (
+          {data.organisasi.map((o, i) => (
             <div key={i} className="flex items-start gap-3">
               <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{o.tahun}</Badge>
               <div>
@@ -112,7 +113,7 @@ export function ProfilKetua({ data }: { data: any }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground italic">"{data.visi}"</p>
+            <p className="text-sm text-muted-foreground italic">&ldquo;{data.visi}&rdquo;</p>
           </CardContent>
         </Card>
         <Card className="border-navy-100">

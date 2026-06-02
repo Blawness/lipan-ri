@@ -1,5 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { StrukturContent, StrukturItem } from "@/lib/page-content";
 
 const levelLabels: Record<number, string> = {
   0: "Dewan",
@@ -20,12 +21,15 @@ function getLevelColor(level: number): string {
   return colors[level] ?? colors[4];
 }
 
-export function StrukturOrg({ data }: { data: any }) {
-  const grouped = data.struktur.reduce((acc: Record<number, any[]>, item: any) => {
-    if (!acc[item.level]) acc[item.level] = [];
-    acc[item.level].push(item);
-    return acc;
-  }, {});
+export function StrukturOrg({ data }: { data: StrukturContent }) {
+  const grouped = data.struktur.reduce<Record<number, StrukturItem[]>>(
+    (acc, item) => {
+      if (!acc[item.level]) acc[item.level] = [];
+      acc[item.level].push(item);
+      return acc;
+    },
+    {}
+  );
 
   const levels = Object.keys(grouped).map(Number).sort();
 
@@ -48,7 +52,7 @@ export function StrukturOrg({ data }: { data: any }) {
               </Badge>
 
               <div className="space-y-2">
-                {grouped[level].map((item: any, i: number) => (
+                {grouped[level].map((item, i) => (
                   <Card key={i} className="border-navy-100 hover:shadow-sm transition-shadow">
                     <CardContent className="p-3 flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg ${getLevelColor(level)} flex items-center justify-center text-xs font-bold`}>

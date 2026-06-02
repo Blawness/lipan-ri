@@ -7,10 +7,13 @@ import { VisiMisi } from "@/components/tentang-kami/visi-misi";
 import { StrukturOrg } from "@/components/tentang-kami/struktur-org";
 import { Legalitas } from "@/components/tentang-kami/legalitas";
 import { ArtiLambang } from "@/components/tentang-kami/arti-lambang";
+import type { PageContent } from "@/lib/page-content";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -22,22 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function parseContent(raw: string) {
+function parseContent(raw: string): PageContent | null {
   try {
-    return JSON.parse(raw);
+    return JSON.parse(raw) as PageContent;
   } catch {
     return null;
   }
 }
-
-const renderers: Record<string, React.ComponentType<{ data: any }>> = {
-  "profil": ProfilLembaga,
-  "profil-ketua": ProfilKetua,
-  "visi-misi": VisiMisi,
-  "struktur": StrukturOrg,
-  "legalitas": Legalitas,
-  "lambang": ArtiLambang,
-};
 
 export default async function StaticPage({ params }: Props) {
   const { slug } = await params;
@@ -45,24 +39,30 @@ export default async function StaticPage({ params }: Props) {
   if (!page) notFound();
 
   const data = parseContent(page.content);
-  if (!data?.type) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-navy-900 mb-6">{page.title}</h1>
-        <div className="prose prose-blue max-w-none" dangerouslySetInnerHTML={{ __html: page.content }} />
-      </div>
-    );
-  }
 
-  const Renderer = renderers[data.type];
-  if (!Renderer) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-navy-900 mb-6">{page.title}</h1>
-        <div className="prose prose-blue max-w-none" dangerouslySetInnerHTML={{ __html: page.content }} />
-      </div>
-    );
-  }
+  const fallback = (
+    <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <h1 className="text-2xl md:text-3xl font-bold text-navy-900 mb-6">{page.title}</h1>
+      <div className="prose prose-blue max-w-none" dangerouslySetInnerHTML={{ __html: page.content }} />
+    </div>
+  );
 
-  return <Renderer data={data} />;
+  if (!data?.type) return fallback;
+
+  switch (data.type) {
+    case "profil":
+      return <ProfilLembaga data={data} />;
+    case "profil-ketua":
+      return <ProfilKetua data={data} />;
+    case "visi-misi":
+      return <VisiMisi data={data} />;
+    case "struktur":
+      return <StrukturOrg data={data} />;
+    case "legalitas":
+      return <Legalitas data={data} />;
+    case "lambang":
+      return <ArtiLambang data={data} />;
+    default:
+      return fallback;
+  }
 }

@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Landmark, CreditCard, Building2, ScrollText } from "lucide-react";
+import type { LegalitasContent } from "@/lib/page-content";
 
-export function Legalitas({ data }: { data: any }) {
+export function Legalitas({ data }: { data: LegalitasContent }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">
@@ -15,7 +16,7 @@ export function Legalitas({ data }: { data: any }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {data.akte.map((a: any, i: number) => (
+          {data.akte.map((a, i) => (
             <div key={i} className="bg-navy-50 rounded-lg p-4">
               <p className="text-xs text-navy-500 font-semibold uppercase tracking-wider mb-1">{a.label}</p>
               <p className="text-sm text-navy-900">{a.detail}</p>
@@ -31,7 +32,7 @@ export function Legalitas({ data }: { data: any }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {data.sk.map((s: any, i: number) => (
+          {data.sk.map((s, i) => (
             <div key={i} className="bg-navy-50 rounded-lg p-4">
               <p className="text-xs text-navy-500 font-semibold uppercase tracking-wider mb-1">{s.label}</p>
               <p className="text-sm text-navy-900">{s.detail}</p>

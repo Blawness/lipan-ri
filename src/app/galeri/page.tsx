@@ -1,6 +1,8 @@
 import { getMediaByAlbum } from "@/lib/media";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Galeri Foto",
 };
@@ -35,6 +37,7 @@ export default async function GalleryPage() {
               rel="noopener noreferrer"
               className="aspect-square rounded-xl overflow-hidden border-2 border-navy-100 hover:border-navy-400 hover:shadow-xl transition-all duration-300 group relative"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image */}
               <img
                 src={photo.url}
                 alt={photo.altText ?? "Foto kegiatan LIPAN RI"}

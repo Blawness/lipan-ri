@@ -26,6 +26,7 @@ export function PostCard({
       <Card className="h-full overflow-hidden border-navy-100 hover:border-brand-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 pt-0">
         <div className="relative aspect-video overflow-hidden">
           {featuredImage ? (
+            // eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image
             <img
               src={featuredImage}
               alt={title}

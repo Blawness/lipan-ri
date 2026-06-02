@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Eye, Archive, Target, Clock } from "lucide-react";
+import type { ProfilContent } from "@/lib/page-content";
 
-export function ProfilLembaga({ data }: { data: any }) {
+export function ProfilLembaga({ data }: { data: ProfilContent }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">

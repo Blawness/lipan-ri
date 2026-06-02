@@ -33,14 +33,15 @@
   --color-gold-500: #c8941b;
   --color-gold-600: #a4730f;
 
-  /* Brand: merah (primary/aksi) */
-  --color-brand-50: #fdeef0;
-  --color-brand-100: #fbd5da;
-  --color-brand-200: #f4a3ad;
-  --color-brand-400: #e23b50;
-  --color-brand-500: #ce1126;
-  --color-brand-600: #ad0f20;
-  --color-brand-700: #8a0c1a;
+  /* Brand: biru (primary/aksi). Shade 500 = sumber tunggal --brand (lihat :root).
+     Mau ganti warna dominan? Cukup ubah --brand di :root. */
+  --color-brand-50: #eef3ff;
+  --color-brand-100: #d9e4fd;
+  --color-brand-200: #b3c8fb;
+  --color-brand-400: #4f78ee;
+  --color-brand-500: hsl(var(--brand));
+  --color-brand-600: #1840b3;
+  --color-brand-700: #13318a;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -80,32 +81,38 @@
 }
 
 :root {
+  /* ── SUMBER WARNA AKSI/DOMINAN ──────────────────────────────
+     Ganti satu baris ini buat ubah warna dominan seluruh situs
+     (tombol, badge, ring, chart, garis aksen, glow hero).
+     Format: "H S% L%" (channel HSL, tanpa hsl()). */
+  --brand: 224 76% 48%; /* royal blue #1d4ed8 */
+
   --background: 0 0% 100%;
   --foreground: 222 45% 12%;
   --card: 0 0% 100%;
   --card-foreground: 222 45% 12%;
   --popover: 0 0% 100%;
   --popover-foreground: 222 45% 12%;
-  --primary: 353 85% 44%;
+  --primary: var(--brand);
   --primary-foreground: 0 0% 100%;
   --secondary: 222 40% 96%;
   --secondary-foreground: 222 45% 18%;
   --muted: 222 30% 96%;
   --muted-foreground: 222 12% 42%;
-  --accent: 353 85% 44%;
+  --accent: var(--brand);
   --accent-foreground: 0 0% 100%;
   --destructive: 0 72% 45%;
   --destructive-foreground: 0 0% 100%;
   --border: 220 22% 90%;
   --input: 220 22% 90%;
-  --ring: 353 85% 44%;
+  --ring: var(--brand);
   --radius: 0.5rem;
   --gold: 44 78% 52%;
   --sidebar-background: 222 50% 11%;
   --sidebar-foreground: 210 40% 96%;
-  --sidebar-primary: 353 85% 50%;
+  --sidebar-primary: 224 84% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --chart-1: 353 85% 44%;
+  --chart-1: var(--brand);
   --chart-2: 222 50% 30%;
   --chart-3: 44 78% 52%;
   --chart-4: 222 40% 50%;
@@ -114,7 +121,7 @@
   --sidebar-accent: 222 33% 22%;
   --sidebar-accent-foreground: 210 40% 96%;
   --sidebar-border: 222 33% 22%;
-  --sidebar-ring: 353 85% 50%;
+  --sidebar-ring: 224 84% 62%;
 }
 
 .dark {
@@ -174,7 +181,7 @@
   /* Hero/banner: navy gradient dengan kedalaman, garis aksen lewat utilitas terpisah */
   .gradient-hero {
     background:
-      radial-gradient(120% 120% at 85% 0%, rgba(206, 17, 38, 0.22), transparent 55%),
+      radial-gradient(120% 120% at 85% 0%, hsl(var(--brand) / 0.28), transparent 55%),
       linear-gradient(135deg, #0e1830 0%, #14223e 55%, #1a2d52 100%);
   }
   .gradient-header {
@@ -192,6 +199,6 @@
     height: 3px;
     width: 3.5rem;
     border-radius: 9999px;
-    background: linear-gradient(90deg, hsl(var(--gold)), hsl(353 85% 44%));
+    background: linear-gradient(90deg, hsl(var(--gold)), hsl(var(--brand)));
   }
 }

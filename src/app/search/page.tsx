@@ -8,6 +8,8 @@ interface Props {
   searchParams: Promise<{ q?: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Pencarian",
 };
