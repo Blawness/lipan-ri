@@ -14,14 +14,14 @@ test.describe("Beranda", () => {
 
     await expect(page.getByRole("banner").getByAltText("Logo LIPAN RI")).toBeVisible();
     await expect(page.getByRole("link", { name: "Tentang Kami" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Lihat Arsip" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Lihat Berita" })).toBeVisible();
   });
 
   test("menampilkan berita utama & terbaru beserta gambar", async ({ page }) => {
-    await page.goto("/");
+    // Berita feed is now at /berita (moved from homepage)
+    await page.goto("/berita");
 
     const main = page.getByRole("main");
-    // h2 (konten utama) — bedakan dari h3 "Berita Terbaru" di sidebar
     await expect(page.getByRole("heading", { level: 2, name: "Berita Terbaru" })).toBeVisible();
 
     const articleLinks = main.locator('a[href^="/"]').filter({ has: page.locator("h2, h3") });
@@ -31,7 +31,8 @@ test.describe("Beranda", () => {
   });
 
   test("sidebar berita terbaru & kategori tampil", async ({ page }) => {
-    await page.goto("/");
+    // Sidebar is now at /berita (moved from homepage)
+    await page.goto("/berita");
     const aside = page.getByRole("complementary");
     await expect(aside.getByRole("heading", { name: "Berita Terbaru" })).toBeVisible();
     await expect(aside.getByRole("heading", { name: "Kategori" })).toBeVisible();
@@ -47,9 +48,9 @@ test.describe("Beranda", () => {
     );
   });
 
-  test("CTA Lihat Arsip menuju halaman arsip", async ({ page }) => {
+  test("CTA Lihat Berita menuju halaman berita", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "Lihat Arsip" }).click();
-    await expect(page).toHaveURL(/\/arsip$/);
+    await page.getByRole("link", { name: "Lihat Berita" }).click();
+    await expect(page).toHaveURL(/\/berita$/);
   });
 });
