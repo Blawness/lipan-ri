@@ -36,11 +36,14 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="relative h-9 w-9 rounded-lg bg-gradient-to-br from-navy-700 to-navy-900 ring-1 ring-gold-400/50 flex items-center justify-center font-heading font-extrabold text-sm shadow-sm">
-              <span className="text-gold-300">L</span>
-              <span className="text-white">R</span>
-              <span className="absolute -bottom-px left-1/2 -translate-x-1/2 h-0.5 w-5 rounded-full bg-brand-500" />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- logo statis kecil, optimasi next/image tak perlu */}
+            <img
+              src="/logo.png"
+              alt="Logo LIPAN RI"
+              width={36}
+              height={36}
+              className="h-9 w-9 object-contain"
+            />
             <div className="hidden sm:block">
               <div className="font-heading text-sm font-extrabold text-navy-900 leading-tight">LIPAN RI</div>
               <div className="text-[10px] text-brand-500 font-semibold tracking-widest uppercase leading-tight">

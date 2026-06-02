@@ -1,5 +1,4 @@
 import "dotenv/config";
-import { eq, desc, inArray } from "drizzle-orm";
 import { db } from "../src/db";
 import { posts, categories } from "../src/db/schema";
 import { uploadImage } from "../src/lib/r2";
