@@ -35,13 +35,15 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold text-sm">
-              LR
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="relative h-9 w-9 rounded-lg bg-gradient-to-br from-navy-700 to-navy-900 ring-1 ring-gold-400/50 flex items-center justify-center font-heading font-extrabold text-sm shadow-sm">
+              <span className="text-gold-300">L</span>
+              <span className="text-white">R</span>
+              <span className="absolute -bottom-px left-1/2 -translate-x-1/2 h-0.5 w-5 rounded-full bg-brand-500" />
             </div>
             <div className="hidden sm:block">
-              <div className="text-sm font-bold text-blue-900 leading-tight">LIPAN RI</div>
-              <div className="text-[10px] text-blue-500 tracking-widest uppercase leading-tight">
+              <div className="font-heading text-sm font-extrabold text-navy-900 leading-tight">LIPAN RI</div>
+              <div className="text-[10px] text-brand-500 font-semibold tracking-widest uppercase leading-tight">
                 Independen
               </div>
             </div>

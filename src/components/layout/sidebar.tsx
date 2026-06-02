@@ -22,8 +22,9 @@ export async function Sidebar() {
 
   return (
     <aside className="space-y-6">
-      <div className="rounded-xl border border-blue-100 p-5">
-        <h3 className="font-bold text-blue-900 mb-4 text-sm uppercase tracking-wider">
+      <div className="rounded-xl border border-navy-100 p-5">
+        <h3 className="font-heading font-bold text-navy-900 mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+          <span className="h-4 w-1 rounded-full bg-brand-500" />
           Berita Terbaru
         </h3>
         <div className="space-y-3">
@@ -33,7 +34,7 @@ export async function Sidebar() {
               href={`/${post.slug}`}
               className="block group"
             >
-              <h4 className="text-sm font-medium text-blue-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+              <h4 className="text-sm font-medium text-navy-900 group-hover:text-brand-600 transition-colors line-clamp-2">
                 {post.title}
               </h4>
               {post.publishedAt && (
@@ -51,8 +52,9 @@ export async function Sidebar() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-blue-100 p-5">
-        <h3 className="font-bold text-blue-900 mb-4 text-sm uppercase tracking-wider">
+      <div className="rounded-xl border border-navy-100 p-5">
+        <h3 className="font-heading font-bold text-navy-900 mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+          <span className="h-4 w-1 rounded-full bg-brand-500" />
           Kategori
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -60,7 +62,7 @@ export async function Sidebar() {
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="px-3 py-1.5 rounded-full bg-blue-50 text-xs font-medium text-blue-700 hover:bg-blue-100 hover:text-blue-900 transition-colors"
+              className="px-3 py-1.5 rounded-full border border-navy-100 bg-white text-xs font-medium text-navy-700 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 transition-colors"
             >
               {cat.name}
             </Link>
@@ -68,14 +70,14 @@ export async function Sidebar() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-blue-100 p-5">
-        <h3 className="font-bold text-blue-900 mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
-          <svg className="h-4 w-4 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+      <div className="rounded-xl border border-navy-100 p-5">
+        <h3 className="font-heading font-bold text-navy-900 mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+          <svg className="h-4 w-4 text-brand-500" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
           </svg>
           YouTube
         </h3>
-        <div className="aspect-video rounded-lg overflow-hidden border border-blue-50">
+        <div className="aspect-video rounded-lg overflow-hidden border border-navy-50">
           <iframe
             src="https://www.youtube.com/embed/6lav7DXUte0"
             title="LIPAN RI YouTube"

@@ -45,7 +45,7 @@ export default async function PostPage({ params }: Props) {
           <Badge className="mb-3">{post.categoryName}</Badge>
         )}
 
-        <h1 className="text-2xl md:text-4xl font-bold text-blue-900 mb-4 leading-tight">
+        <h1 className="text-2xl md:text-4xl font-bold text-navy-900 mb-4 leading-tight">
           {post.title}
         </h1>
 
@@ -68,14 +68,14 @@ export default async function PostPage({ params }: Props) {
         )}
 
         <div
-          className="prose prose-blue max-w-none prose-headings:text-blue-900 prose-a:text-blue-600"
+          className="prose prose-blue max-w-none prose-headings:text-navy-900 prose-a:text-navy-600"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
 
       {relatedPosts.length > 0 && (
         <section className="mt-12 pt-8 border-t">
-          <h2 className="text-xl font-bold text-blue-900 mb-4">
+          <h2 className="text-xl font-bold text-navy-900 mb-4">
             Berita Terkait
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -83,9 +83,9 @@ export default async function PostPage({ params }: Props) {
               <Link
                 key={p.id}
                 href={`/${p.slug}`}
-                className="group block p-4 rounded-lg border border-blue-100 hover:border-blue-300 hover:shadow-sm transition-all"
+                className="group block p-4 rounded-lg border border-navy-100 hover:border-navy-300 hover:shadow-sm transition-all"
               >
-                <h3 className="font-semibold text-sm group-hover:text-blue-700 transition-colors line-clamp-2">
+                <h3 className="font-semibold text-sm group-hover:text-navy-700 transition-colors line-clamp-2">
                   {p.title}
                 </h3>
                 {p.publishedAt && (

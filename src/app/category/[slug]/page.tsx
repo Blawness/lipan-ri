@@ -46,12 +46,12 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         ]}
       />
 
-      <div className="gradient-hero text-white rounded-xl p-8 mb-8">
+      <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">
         <h1 className="text-2xl md:text-3xl font-bold">{category.name}</h1>
         {category.description && (
-          <p className="mt-2 text-blue-200">{category.description}</p>
+          <p className="mt-2 text-navy-200">{category.description}</p>
         )}
-        <p className="mt-2 text-sm text-blue-300">{total} artikel</p>
+        <p className="mt-2 text-sm text-navy-300">{total} artikel</p>
       </div>
 
       {posts.length === 0 ? (

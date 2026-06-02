@@ -21,23 +21,25 @@ export default async function HomePage() {
           }} />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs text-blue-200 tracking-wider uppercase">
+          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur border border-gold-400/30 text-xs text-gold-200 tracking-wider uppercase">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
             Lembaga Independen Milik Masyarakat
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
-            LIPAN RI
+          <h1 className="font-heading text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">
+            LIPAN <span className="text-brand-500">RI</span>
           </h1>
-          <p className="text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
+          <div className="mx-auto mb-5 h-1 w-20 rounded-full bg-gradient-to-r from-brand-500 to-gold-400" />
+          <p className="text-lg md:text-xl text-navy-200 max-w-2xl mx-auto leading-relaxed">
             Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia
           </p>
-          <p className="text-sm text-blue-300/80 mt-4">
+          <p className="text-sm text-navy-300/80 mt-4 tracking-wide">
             Independen &bull; Berintegritas &bull; Profesional
           </p>
-          <div className="flex gap-3 justify-center mt-8">
-            <Link href="/tentang-kami/sekilas-lipan-ri" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-800 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors shadow-lg">
+          <div className="flex flex-wrap gap-3 justify-center mt-8">
+            <Link href="/tentang-kami/sekilas-lipan-ri" className="inline-flex items-center gap-2 px-6 py-2.5 bg-brand-500 text-white rounded-lg text-sm font-semibold hover:bg-brand-600 transition-colors shadow-lg shadow-brand-500/20">
               Tentang Kami
             </Link>
-            <Link href="/arsip" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-500 transition-colors border border-blue-400/30">
+            <Link href="/arsip" className="inline-flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur text-white rounded-lg text-sm font-semibold hover:bg-white/20 transition-colors border border-white/20">
               Lihat Arsip
             </Link>
           </div>
@@ -65,7 +67,7 @@ export default async function HomePage() {
             {/* Other Featured */}
             {otherFeatured.length > 0 && (
               <section className="mb-10">
-                <h2 className="text-xl font-bold text-blue-900 mb-5 border-b border-blue-100 pb-2">
+                <h2 className="font-heading accent-gold-bar text-xl font-bold text-navy-900 mb-6 border-b border-navy-100 pb-3">
                   Berita Utama
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,7 +89,7 @@ export default async function HomePage() {
 
             {/* Recent Posts */}
             <section>
-              <h2 className="text-xl font-bold text-blue-900 mb-5 border-b border-blue-100 pb-2">
+              <h2 className="font-heading accent-gold-bar text-xl font-bold text-navy-900 mb-6 border-b border-navy-100 pb-3">
                 Berita Terbaru
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

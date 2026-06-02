@@ -48,7 +48,7 @@ export default async function StaticPage({ params }: Props) {
   if (!data?.type) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900 mb-6">{page.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-navy-900 mb-6">{page.title}</h1>
         <div className="prose prose-blue max-w-none" dangerouslySetInnerHTML={{ __html: page.content }} />
       </div>
     );
@@ -58,7 +58,7 @@ export default async function StaticPage({ params }: Props) {
   if (!Renderer) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900 mb-6">{page.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-navy-900 mb-6">{page.title}</h1>
         <div className="prose prose-blue max-w-none" dangerouslySetInnerHTML={{ __html: page.content }} />
       </div>
     );

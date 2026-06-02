@@ -36,26 +36,26 @@ export default async function ArsipPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="gradient-hero text-white rounded-xl p-8 mb-8">
+      <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">
         <h1 className="text-2xl md:text-3xl font-bold">Arsip</h1>
-        <p className="mt-2 text-blue-200">
+        <p className="mt-2 text-navy-200">
           Semua artikel LIPAN RI
         </p>
       </div>
 
       <div className="relative pl-8">
-        <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-blue-200" />
+        <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-navy-200" />
 
         {Object.entries(grouped).map(([month, monthPosts]) => (
           <div key={month} className="relative mb-8">
-            <div className="absolute -left-[29px] top-1 w-5 h-5 rounded-full bg-blue-600 border-4 border-blue-100" />
-            <h2 className="text-lg font-bold text-blue-900 mb-3">{month}</h2>
+            <div className="absolute -left-[29px] top-1 w-5 h-5 rounded-full bg-navy-600 border-4 border-navy-100" />
+            <h2 className="text-lg font-bold text-navy-900 mb-3">{month}</h2>
             <div className="space-y-2">
               {monthPosts.map((post) => (
                 <Link
                   key={post.slug}
                   href={`/${post.slug}`}
-                  className="block p-3 rounded-lg border border-blue-100 hover:border-blue-400 hover:shadow-sm transition-all"
+                  className="block p-3 rounded-lg border border-navy-100 hover:border-navy-400 hover:shadow-sm transition-all"
                 >
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                     <Calendar className="h-3 w-3" />
@@ -66,10 +66,10 @@ export default async function ArsipPage() {
                         year: "numeric",
                       })}
                     {post.categoryName && (
-                      <span className="text-blue-500">• {post.categoryName}</span>
+                      <span className="text-navy-500">• {post.categoryName}</span>
                     )}
                   </div>
-                  <h3 className="text-sm font-medium text-blue-900 hover:text-blue-700 transition-colors">
+                  <h3 className="text-sm font-medium text-navy-900 hover:text-navy-700 transition-colors">
                     {post.title}
                   </h3>
                 </Link>

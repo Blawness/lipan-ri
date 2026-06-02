@@ -5,13 +5,13 @@ import { Shield, Eye, Archive, Target, Clock } from "lucide-react";
 export function ProfilLembaga({ data }: { data: any }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="gradient-hero text-white rounded-xl p-8 mb-8">
+      <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100">
         <h1 className="text-2xl md:text-3xl font-bold">Profil Lembaga</h1>
       </div>
 
-      <Card className="border-blue-100 mb-6">
+      <Card className="border-navy-100 mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
+          <CardTitle className="flex items-center gap-2 text-navy-900">
             <Shield className="h-5 w-5" /> Tentang LIPAN RI
           </CardTitle>
         </CardHeader>
@@ -21,9 +21,9 @@ export function ProfilLembaga({ data }: { data: any }) {
         </CardContent>
       </Card>
 
-      <Card className="border-blue-100 mb-6">
+      <Card className="border-navy-100 mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
+          <CardTitle className="flex items-center gap-2 text-navy-900">
             <Eye className="h-5 w-5" /> Kasus yang Ditangani
           </CardTitle>
         </CardHeader>
@@ -31,16 +31,16 @@ export function ProfilLembaga({ data }: { data: any }) {
           <ul className="space-y-2">
             {data.kasus.map((k: string, i: number) => (
               <li key={i} className="flex items-start gap-2 text-muted-foreground">
-                <span className="text-blue-500 mt-1">&#8226;</span> {k}
+                <span className="text-navy-500 mt-1">&#8226;</span> {k}
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
 
-      <Card className="border-blue-100 mb-6">
+      <Card className="border-navy-100 mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
+          <CardTitle className="flex items-center gap-2 text-navy-900">
             <Clock className="h-5 w-5" /> Program Kerja
           </CardTitle>
         </CardHeader>
@@ -50,7 +50,7 @@ export function ProfilLembaga({ data }: { data: any }) {
             <ul className="space-y-1">
               {data.programKerja.pendek.map((p: string, i: number) => (
                 <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-blue-400">&#8226;</span> {p}
+                  <span className="text-navy-400">&#8226;</span> {p}
                 </li>
               ))}
             </ul>
@@ -60,7 +60,7 @@ export function ProfilLembaga({ data }: { data: any }) {
             <ul className="space-y-1">
               {data.programKerja.menengah.map((p: string, i: number) => (
                 <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-blue-400">&#8226;</span> {p}
+                  <span className="text-navy-400">&#8226;</span> {p}
                 </li>
               ))}
             </ul>
@@ -70,7 +70,7 @@ export function ProfilLembaga({ data }: { data: any }) {
             <ul className="space-y-1">
               {data.programKerja.panjang.map((p: string, i: number) => (
                 <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-blue-400">&#8226;</span> {p}
+                  <span className="text-navy-400">&#8226;</span> {p}
                 </li>
               ))}
             </ul>
@@ -79,9 +79,9 @@ export function ProfilLembaga({ data }: { data: any }) {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="border-blue-100">
+        <Card className="border-navy-100">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-900 text-lg">
+            <CardTitle className="flex items-center gap-2 text-navy-900 text-lg">
               <Target className="h-4 w-4" /> Maksud
             </CardTitle>
           </CardHeader>
@@ -89,9 +89,9 @@ export function ProfilLembaga({ data }: { data: any }) {
             <p className="text-sm text-muted-foreground leading-relaxed">{data.maksud}</p>
           </CardContent>
         </Card>
-        <Card className="border-blue-100">
+        <Card className="border-navy-100">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-900 text-lg">
+            <CardTitle className="flex items-center gap-2 text-navy-900 text-lg">
               <Archive className="h-4 w-4" /> Tujuan
             </CardTitle>
           </CardHeader>
