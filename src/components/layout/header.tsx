@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 
 const navLinks = [
-  { label: "Berita", href: "/" },
+  { label: "Berita", href: "/berita" },
   { label: "Press Rilis", href: "/category/press-rilis" },
   {
     label: "Tentang Kami",
