@@ -12,7 +12,11 @@ export function NewsTicker({ items }: { items: TickerItem[] }) {
   const loop = [...items, ...items];
 
   return (
-    <div className="bg-navy-900 text-white border-y border-gold-400/20 overflow-hidden">
+    <div
+      role="region"
+      aria-label="Berita terkini"
+      className="bg-navy-900 text-white border-y border-gold-400/20 overflow-hidden"
+    >
       <div className="container mx-auto flex items-center">
         <span className="flex-shrink-0 flex items-center gap-2 bg-brand-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider">
           <span className="h-1.5 w-1.5 rounded-full bg-gold-300 animate-pulse" />
@@ -31,6 +35,8 @@ export function NewsTicker({ items }: { items: TickerItem[] }) {
               <Link
                 key={`${item.slug}-${i}`}
                 href={`/${item.slug}`}
+                aria-hidden={i >= items.length}
+                tabIndex={i >= items.length ? -1 : undefined}
                 className="inline-flex items-center gap-3 px-6 py-2.5 text-sm text-navy-200 hover:text-white transition-colors"
               >
                 <span className="text-gold-400">•</span>

@@ -15,15 +15,15 @@ export function StatCounter({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const reduce = useReducedMotion();
-  const [display, setDisplay] = useState(reduce ? value : 0);
+  const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (!inView || reduce) return;
-    const duration = 1200;
+    if (!inView && !reduce) return;
+    const duration = reduce ? 0 : 1200;
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const p = Math.min((now - start) / duration, 1);
+      const p = duration === 0 ? 1 : Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
       setDisplay(Math.round(eased * value));
       if (p < 1) raf = requestAnimationFrame(tick);
