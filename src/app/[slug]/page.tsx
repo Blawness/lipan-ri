@@ -14,9 +14,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return { title: "Tidak Ditemukan" };
+  const description = post.excerpt ?? undefined;
+  const images = post.featuredImage ? [post.featuredImage] : undefined;
   return {
     title: post.title,
-    description: post.excerpt ?? undefined,
+    description,
+    alternates: { canonical: `/${slug}` },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description,
+      url: `/${slug}`,
+      images,
+      publishedTime: post.publishedAt
+        ? new Date(post.publishedAt).toISOString()
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images,
+    },
   };
 }
 

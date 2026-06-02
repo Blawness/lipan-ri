@@ -12,17 +12,24 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lipan-ri.org"),
+  metadataBase: new URL("https://www.lipan-ri.com"),
   title: {
     default: "LIPAN RI - Lembaga Investigasi dan Pengawasan Aset Negara",
     template: "%s | LIPAN RI",
   },
   description:
     "Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia. Lembaga independen milik masyarakat yang berkomitmen mengawal aset negara.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
     siteName: "LIPAN RI",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
