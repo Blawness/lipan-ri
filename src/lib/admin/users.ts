@@ -10,7 +10,9 @@ export async function listUsers() {
     .orderBy(asc(users.email));
 }
 
-export async function createUser(email: string, name: string, password: string, role: string) {
+export type UserRole = "admin" | "editor";
+
+export async function createUser(email: string, name: string, password: string, role: UserRole) {
   const passwordHash = await hash(password, 12);
   await db.insert(users).values({ email, name, passwordHash, role });
 }
@@ -20,7 +22,7 @@ export async function updateUserPassword(id: number, password: string) {
   await db.update(users).set({ passwordHash }).where(eq(users.id, id));
 }
 
-export async function updateUserRole(id: number, role: string) {
+export async function updateUserRole(id: number, role: UserRole) {
   await db.update(users).set({ role }).where(eq(users.id, id));
 }
 

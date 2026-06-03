@@ -6,13 +6,24 @@ import { Input } from "@/components/ui/input";
 
 export const dynamic = "force-dynamic";
 
-export default async function CategoriesPage() {
+export default async function CategoriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   await requireAdmin();
   const rows = await listCategories();
+  const { error } = await searchParams;
 
   return (
     <div className="max-w-2xl">
       <h1 className="font-heading text-2xl font-bold text-navy-900 mb-6">Kategori</h1>
+
+      {error && (
+        <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
 
       <form action={createCategoryAction} className="flex gap-2 mb-6">
         <Input name="name" placeholder="Nama kategori" required />

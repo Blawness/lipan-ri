@@ -1,14 +1,23 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth-helpers";
+import { isUniqueViolation } from "@/lib/db-errors";
 import { createCategory, updateCategory, deleteCategory } from "@/lib/admin/categories";
 
 export async function createCategoryAction(formData: FormData) {
   await requireAdmin();
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) return;
-  await createCategory(name, String(formData.get("description") ?? "") || null);
+  if (!name) redirect("/admin/categories?error=Nama+kategori+wajib+diisi");
+  try {
+    await createCategory(name, String(formData.get("description") ?? "") || null);
+  } catch (e) {
+    if (isUniqueViolation(e)) {
+      redirect("/admin/categories?error=Kategori+dengan+nama+serupa+sudah+ada");
+    }
+    throw e;
+  }
   revalidatePath("/admin/categories");
 }
 
@@ -23,6 +32,8 @@ export async function updateCategoryAction(formData: FormData) {
 
 export async function deleteCategoryAction(formData: FormData) {
   await requireAdmin();
-  await deleteCategory(Number(formData.get("id")));
+  const id = Number(formData.get("id"));
+  if (!id) return;
+  await deleteCategory(id);
   revalidatePath("/admin/categories");
 }

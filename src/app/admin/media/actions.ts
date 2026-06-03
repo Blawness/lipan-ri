@@ -36,6 +36,8 @@ export async function uploadImageAction(formData: FormData): Promise<{ url?: str
 
 export async function deleteMediaAction(formData: FormData) {
   await requireUser();
-  await deleteMediaRow(Number(formData.get("id")));
+  const id = Number(formData.get("id"));
+  if (!id) return;
+  await deleteMediaRow(id);
   revalidatePath("/admin/media");
 }

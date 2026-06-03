@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-helpers";
+import { isUniqueViolation } from "@/lib/db-errors";
 import { createUser, updateUserPassword, updateUserRole, deleteUser } from "@/lib/admin/users";
 
 const createSchema = z.object({
@@ -20,9 +22,18 @@ export async function createUserAction(formData: FormData) {
     password: formData.get("password"),
     role: formData.get("role"),
   });
-  if (!parsed.success) return;
+  if (!parsed.success) {
+    redirect("/admin/users?error=Data+tidak+valid+(email+benar,+password+min+8+karakter)");
+  }
   const { email, name, password, role } = parsed.data;
-  await createUser(email, name, password, role);
+  try {
+    await createUser(email, name, password, role);
+  } catch (e) {
+    if (isUniqueViolation(e)) {
+      redirect("/admin/users?error=Email+sudah+terdaftar");
+    }
+    throw e;
+  }
   revalidatePath("/admin/users");
 }
 
@@ -47,7 +58,7 @@ export async function setRoleAction(formData: FormData) {
 export async function deleteUserAction(formData: FormData) {
   const session = await requireAdmin();
   const id = Number(formData.get("id"));
-  if (id === Number(session.user.id)) return; // never delete yourself
+  if (!id || id === Number(session.user.id)) return; // never delete yourself / invalid id
   await deleteUser(id);
   revalidatePath("/admin/users");
 }

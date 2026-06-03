@@ -6,13 +6,24 @@ import { Input } from "@/components/ui/input";
 
 export const dynamic = "force-dynamic";
 
-export default async function UsersPage() {
+export default async function UsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const session = await requireAdmin();
   const rows = await listUsers();
+  const { error } = await searchParams;
 
   return (
     <div className="max-w-3xl">
       <h1 className="font-heading text-2xl font-bold text-navy-900 mb-6">User</h1>
+
+      {error && (
+        <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
 
       <form action={createUserAction} className="grid grid-cols-2 gap-2 mb-6 bg-white p-4 rounded-lg ring-1 ring-navy-100">
         <Input name="name" placeholder="Nama" required />
