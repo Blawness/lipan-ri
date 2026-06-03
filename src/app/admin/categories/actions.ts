@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth-helpers";
-import { isUniqueViolation } from "@/lib/db-errors";
+import { isUniqueViolation, isForeignKeyViolation } from "@/lib/db-errors";
 import { createCategory, updateCategory, deleteCategory } from "@/lib/admin/categories";
 
 export async function createCategoryAction(formData: FormData) {
@@ -34,6 +34,13 @@ export async function deleteCategoryAction(formData: FormData) {
   await requireAdmin();
   const id = Number(formData.get("id"));
   if (!id) return;
-  await deleteCategory(id);
+  try {
+    await deleteCategory(id);
+  } catch (e) {
+    if (isForeignKeyViolation(e)) {
+      redirect("/admin/categories?error=Kategori+masih+dipakai+oleh+berita");
+    }
+    throw e;
+  }
   revalidatePath("/admin/categories");
 }

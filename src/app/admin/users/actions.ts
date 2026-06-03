@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-helpers";
-import { isUniqueViolation } from "@/lib/db-errors";
+import { isUniqueViolation, isForeignKeyViolation } from "@/lib/db-errors";
 import { createUser, updateUserPassword, updateUserRole, deleteUser } from "@/lib/admin/users";
 
 const createSchema = z.object({
@@ -59,6 +59,13 @@ export async function deleteUserAction(formData: FormData) {
   const session = await requireAdmin();
   const id = Number(formData.get("id"));
   if (!id || id === Number(session.user.id)) return; // never delete yourself / invalid id
-  await deleteUser(id);
+  try {
+    await deleteUser(id);
+  } catch (e) {
+    if (isForeignKeyViolation(e)) {
+      redirect("/admin/users?error=User+ini+masih+menjadi+penulis+berita");
+    }
+    throw e;
+  }
   revalidatePath("/admin/users");
 }
