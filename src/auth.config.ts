@@ -3,6 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 export const authConfig: NextAuthConfig = {
   pages: { signIn: "/admin/login" },
   session: { strategy: "jwt" },
+  trustHost: true,
   providers: [], // real provider added in auth.ts (Node runtime)
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {

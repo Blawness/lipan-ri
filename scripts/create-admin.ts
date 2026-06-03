@@ -1,6 +1,5 @@
 import "dotenv/config";
 import { hash } from "bcryptjs";
-import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { users } from "../src/db/schema";
 

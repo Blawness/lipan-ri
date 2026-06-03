@@ -3,7 +3,8 @@ import { authConfig } from "./auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-export const proxy = auth;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default auth as any;
 
 export const config = {
   matcher: ["/admin/:path*"],
