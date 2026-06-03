@@ -51,7 +51,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-semibold text-navy-900">Website</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  www.lipan-ri.org
+                  www.lipan-ri.com
                 </p>
               </div>
             </div>
