@@ -49,3 +49,4 @@ next-env.d.ts
 /blob-report/
 /.playwright-cli/
 /playwright/.cache/
+/e2e/.auth/
