@@ -36,7 +36,7 @@ test.describe("Metadata & SEO", () => {
   test("sitemap.xml tersedia", async ({ page }) => {
     const res = await page.goto("/sitemap.xml");
     expect(res?.status()).toBe(200);
-    expect(await page.content()).toContain("lipan-ri.org");
+    expect(await page.content()).toContain("lipan-ri.com");
   });
 
   test("robots.txt tersedia", async ({ request }) => {
