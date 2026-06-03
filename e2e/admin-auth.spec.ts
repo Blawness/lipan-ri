@@ -17,6 +17,7 @@ const ADMIN_PAGES: ReadonlyArray<readonly [path: string, heading: RegExp]> = [
   ["/admin/media", /Galeri/],
   ["/admin/categories", /Kategori/],
   ["/admin/users", /User/],
+  ["/admin/banners", /Banner/],
 ];
 
 test.describe("Admin (terotentikasi)", () => {

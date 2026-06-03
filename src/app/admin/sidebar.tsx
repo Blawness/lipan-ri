@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Newspaper, Images, Tags, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Newspaper, Images, Tags, Users, LogOut, GalleryHorizontal } from "lucide-react";
 import { signOutAction } from "./actions";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, admin: false },
   { href: "/admin/posts", label: "Berita", icon: Newspaper, admin: false },
   { href: "/admin/media", label: "Galeri", icon: Images, admin: false },
+  { href: "/admin/banners", label: "Banner", icon: GalleryHorizontal, admin: true },
   { href: "/admin/categories", label: "Kategori", icon: Tags, admin: true },
   { href: "/admin/users", label: "User", icon: Users, admin: true },
 ];

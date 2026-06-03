@@ -60,3 +60,15 @@ export const media = pgTable("media", {
   album: text("album"),
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
+
+export const banners = pgTable("banners", {
+  id: serial("id").primaryKey(),
+  imageUrl: text("image_url").notNull(),
+  title: text("title"),
+  subtitle: text("subtitle"),
+  buttonText: text("button_text"),
+  buttonLink: text("button_link"),
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
