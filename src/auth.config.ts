@@ -9,7 +9,12 @@ export const authConfig: NextAuthConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isAdminArea = nextUrl.pathname.startsWith("/admin");
       const isLogin = nextUrl.pathname === "/admin/login";
-      if (isLogin) return true;
+      // Already-authenticated users have no business on the login page.
+      if (isLogin) {
+        return auth?.user
+          ? Response.redirect(new URL("/admin", nextUrl))
+          : true;
+      }
       if (isAdminArea) return !!auth?.user;
       return true;
     },
