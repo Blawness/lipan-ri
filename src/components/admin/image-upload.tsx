@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { uploadImageAction } from "@/app/admin/media/actions";
-import { Button } from "@/components/ui/button";
 
 export function ImageUpload({
   value,
