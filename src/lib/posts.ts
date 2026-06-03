@@ -141,3 +141,41 @@ export async function getPostCount() {
     .where(eq(posts.status, "published"));
   return Number(result[0]?.count ?? 0);
 }
+
+export async function getPaginatedPosts(page = 1, perPage = 9) {
+  const offset = (page - 1) * perPage;
+
+  const [result, countResult] = await Promise.all([
+    db
+      .select({
+        id: posts.id,
+        slug: posts.slug,
+        title: posts.title,
+        excerpt: posts.excerpt,
+        featuredImage: posts.featuredImage,
+        publishedAt: posts.publishedAt,
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
+      .from(posts)
+      .leftJoin(categories, eq(posts.categoryId, categories.id))
+      .where(eq(posts.status, "published"))
+      .orderBy(desc(posts.publishedAt))
+      .limit(perPage)
+      .offset(offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(posts)
+      .where(eq(posts.status, "published")),
+  ]);
+
+  const total = Number(countResult[0]?.count ?? 0);
+
+  return {
+    posts: result,
+    total,
+    page,
+    perPage,
+    totalPages: Math.ceil(total / perPage),
+  };
+}

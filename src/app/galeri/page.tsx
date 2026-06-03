@@ -1,5 +1,6 @@
 import { getMediaByAlbum } from "@/lib/media";
 import type { Metadata } from "next";
+import { SafeImage } from "@/components/safe-image";
 
 export const dynamic = "force-dynamic";
 
@@ -37,8 +38,7 @@ export default async function GalleryPage() {
               rel="noopener noreferrer"
               className="aspect-square rounded-xl overflow-hidden border-2 border-navy-100 hover:border-navy-400 hover:shadow-xl transition-all duration-300 group relative"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image */}
-              <img
+              <SafeImage
                 src={photo.url}
                 alt={photo.altText ?? "Foto kegiatan LIPAN RI"}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

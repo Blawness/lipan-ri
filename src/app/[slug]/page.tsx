@@ -5,6 +5,7 @@ import { Calendar } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/breadcrumb";
+import { SafeImage } from "@/components/safe-image";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -79,8 +80,7 @@ export default async function PostPage({ params }: Props) {
         </div>
 
         {post.featuredImage && (
-          // eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image
-          <img
+          <SafeImage
             src={post.featuredImage}
             alt={post.title}
             className="w-full rounded-lg mb-8 object-cover max-h-96"

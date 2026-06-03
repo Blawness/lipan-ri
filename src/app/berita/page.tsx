@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
-import { getFeaturedPosts, getRecentPosts } from "@/lib/posts";
+import { getFeaturedPosts, getPaginatedPosts } from "@/lib/posts";
 import { FeaturedPost } from "@/components/featured-post";
 import { PostCard } from "@/components/post-card";
 import { Sidebar } from "@/components/layout/sidebar";
+import { Pagination } from "@/components/ui/pagination";
 
 export const metadata: Metadata = {
   title: "Berita",
   description: "Berita utama dan terbaru LIPAN RI",
 };
 
-export default async function BeritaPage() {
+export default async function BeritaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+
   const featuredPosts = await getFeaturedPosts(5);
-  const recentPosts = await getRecentPosts(6);
+  const { posts: recentPosts, totalPages, page: actualPage } = await getPaginatedPosts(currentPage);
+
   const mainFeatured = featuredPosts[0];
   const otherFeatured = featuredPosts.slice(1);
 
@@ -55,7 +64,7 @@ export default async function BeritaPage() {
             </section>
           )}
 
-          <section>
+          <section id="berita-list">
             <h2 className="font-heading accent-gold-bar text-xl font-bold text-navy-900 mb-6 border-b border-navy-100 pb-3">
               Berita Terbaru
             </h2>
@@ -73,6 +82,7 @@ export default async function BeritaPage() {
                 />
               ))}
             </div>
+            <Pagination page={actualPage} totalPages={totalPages} basePath="/berita" scrollTo="berita-list" />
           </section>
         </div>
         <div className="w-full lg:w-80 flex-shrink-0">

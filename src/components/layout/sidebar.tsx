@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts, categories } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql, and } from "drizzle-orm";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
 
@@ -16,9 +16,17 @@ export async function Sidebar() {
     .orderBy(desc(posts.publishedAt))
     .limit(5);
 
-  const allCategories = await db
-    .select({ slug: categories.slug, name: categories.name })
-    .from(categories);
+  const usedCategories = await db
+    .select({
+      slug: categories.slug,
+      name: categories.name,
+      count: sql<number>`count(${posts.id})`,
+    })
+    .from(categories)
+    .leftJoin(posts, and(eq(posts.categoryId, categories.id), eq(posts.status, "published")))
+    .groupBy(categories.id)
+    .having(sql`count(${posts.id}) > 0`)
+    .orderBy(desc(sql`count(${posts.id})`));
 
   return (
     <aside className="space-y-6">
@@ -58,13 +66,14 @@ export async function Sidebar() {
           Kategori
         </h3>
         <div className="flex flex-wrap gap-2">
-          {allCategories.slice(0, 10).map((cat) => (
+          {usedCategories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
               className="px-3 py-1.5 rounded-full border border-navy-100 bg-white text-xs font-medium text-navy-700 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 transition-colors"
             >
-              {cat.name}
+              {cat.name}{" "}
+              <span className="text-navy-400">({cat.count})</span>
             </Link>
           ))}
         </div>

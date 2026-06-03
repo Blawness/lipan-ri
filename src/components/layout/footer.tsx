@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { CheckCircle } from "lucide-react";
 
 export function Footer() {
   return (
@@ -40,6 +41,12 @@ export function Footer() {
           </div>
         </div>
         <Separator className="my-8 bg-navy-700/50" />
+        <div className="flex justify-center mb-4">
+          <div className="flex items-center gap-2 bg-navy-800/50 rounded-full px-4 py-2 text-xs text-navy-300">
+            <CheckCircle className="h-3.5 w-3.5 text-green-400" />
+            Terdaftar Kemenkumham RI — AHU-0010835.AH.01.07 Tahun 2017
+          </div>
+        </div>
         <p className="text-center text-sm text-navy-300">
           Copyright &copy; {new Date().getFullYear()} LIPAN RI. All rights reserved.
         </p>

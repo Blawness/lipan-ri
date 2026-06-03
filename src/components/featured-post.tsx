@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { SafeImage } from "@/components/safe-image";
 
 interface FeaturedPostProps {
   title: string;
@@ -24,8 +25,7 @@ export function FeaturedPost({
     <Link href={`/${slug}`} className="group block">
       <div className="relative overflow-hidden rounded-2xl ring-1 ring-navy-100 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 text-white min-h-[380px] flex flex-col justify-end p-8">
         {featuredImage ? (
-          // eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image
-          <img
+          <SafeImage
             src={featuredImage}
             alt={title}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

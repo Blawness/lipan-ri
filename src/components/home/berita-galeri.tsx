@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PostCard } from "@/components/post-card";
+import { SafeImage } from "@/components/safe-image";
 
 type Post = {
   id: number;
@@ -75,8 +76,7 @@ export function BeritaGaleri({
                   rel="noopener noreferrer"
                   className="aspect-square rounded-xl overflow-hidden border-2 border-navy-100 hover:border-navy-400 hover:shadow-xl transition-all duration-300 group relative"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image */}
-                  <img
+                  <SafeImage
                     src={photo.url}
                     alt={photo.altText ?? "Dokumentasi LIPAN RI"}
                     className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"

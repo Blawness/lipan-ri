@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { SafeImage } from "@/components/safe-image";
 
 interface PostCardProps {
   title: string;
@@ -26,8 +27,7 @@ export function PostCard({
       <Card className="h-full overflow-hidden border-navy-100 hover:border-brand-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 pt-0">
         <div className="relative aspect-video overflow-hidden">
           {featuredImage ? (
-            // eslint-disable-next-line @next/next/no-img-element -- URL gambar eksternal (R2), tanpa next/image
-            <img
+            <SafeImage
               src={featuredImage}
               alt={title}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -42,10 +42,12 @@ export function PostCard({
                   backgroundSize: "22px 22px",
                 }}
               />
-              <span className="font-heading text-3xl font-extrabold tracking-tight">
-                <span className="text-gold-300">L</span>
-                <span className="text-white">R</span>
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="LIPAN RI"
+                className="w-14 h-14 opacity-60 object-contain"
+              />
               <span className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 to-gold-400" />
             </div>
           )}
