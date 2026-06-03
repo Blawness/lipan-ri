@@ -1,0 +1,24 @@
+import type { ReactNode } from "react";
+import { auth } from "@/auth";
+import { Sidebar } from "./sidebar";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
+
+  // The only unauthenticated route reachable here is /admin/login: the proxy
+  // (src/proxy.ts) redirects every other /admin/* to login, and each admin
+  // page additionally calls requireUser()/requireAdmin() before touching data.
+  // So rendering bare children here (no shell) cannot leak protected content.
+  if (!session?.user) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className="min-h-screen flex bg-navy-50">
+      <Sidebar role={session.user.role} />
+      <div className="flex-1 p-8">{children}</div>
+    </div>
+  );
+}
