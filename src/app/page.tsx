@@ -30,10 +30,10 @@ export default async function HomePage() {
         <Stats postCount={postCount} years={years} />
       </Reveal>
       <Reveal>
-        <MisiPilar />
+        <ProfilKetua />
       </Reveal>
       <Reveal>
-        <ProfilKetua />
+        <MisiPilar />
       </Reveal>
       <Reveal>
         <LegalitasStrip />
