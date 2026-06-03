@@ -103,26 +103,27 @@ function Slide({ slide }: { slide: HeroSlide }) {
         <div className="gradient-hero absolute inset-0" />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/40 to-navy-950/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/30 to-transparent" />
 
       {(slide.title || slide.subtitle || slide.buttonText) && (
-        <div className="container relative z-[1] mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
+        <div className="container relative z-[1] mx-auto flex h-full flex-col justify-end px-6 pb-10 md:pb-14">
           {slide.title && (
-            <h1 className="font-heading text-3xl font-extrabold tracking-tight drop-shadow md:text-5xl">
+            <h1 className="font-heading text-2xl font-extrabold tracking-tight text-white drop-shadow-lg md:text-4xl md:max-w-2xl">
               {slide.title}
             </h1>
           )}
           {slide.subtitle && (
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-navy-100 drop-shadow md:text-lg">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-navy-100/90 drop-shadow md:text-base">
               {slide.subtitle}
             </p>
           )}
           {slide.buttonText && slide.buttonLink && (
             <Link
               href={slide.buttonLink}
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/20 transition-colors hover:bg-brand-600"
+              className="mt-5 inline-flex items-center gap-1.5 w-fit text-sm font-semibold text-gold-300 hover:text-gold-200 transition-colors group"
             >
               {slide.buttonText}
+              <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
             </Link>
           )}
         </div>
