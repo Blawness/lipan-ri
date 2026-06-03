@@ -1,15 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Briefcase, Users, Quote, Target, Lightbulb } from "lucide-react";
+import { Quote, Target, Lightbulb } from "lucide-react";
+import Image from "next/image";
 import type { ProfilKetuaContent } from "@/lib/page-content";
 
 export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="gradient-hero text-white rounded-2xl p-8 mb-8 relative overflow-hidden border-l-4 border-brand-500 ring-1 ring-navy-100 text-center">
+        <Image
+          src="/ketua-harun-prayitno.png"
+          alt={data.nama}
+          width={128}
+          height={128}
+          className="mx-auto rounded-full mb-4 border-2 border-white/30"
+        />
         <h1 className="text-2xl md:text-3xl font-bold mb-2">{data.nama}</h1>
         <p className="text-navy-200">Ketua Umum LIPAN-RI</p>
-        <p className="text-navy-300 text-sm mt-1">{data.lahir}</p>
+        <p className="text-navy-300 text-sm mt-1">Putra Asli Banyumas</p>
       </div>
 
       <Card className="border-navy-100 mb-6">
@@ -34,65 +41,6 @@ export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
           <p key={i} className="text-muted-foreground leading-relaxed">{p}</p>
         ))}
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <Card className="border-navy-100">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-navy-900 text-lg">
-              <GraduationCap className="h-4 w-4" /> Pendidikan Formal
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {data.pendidikan.map((p, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{p.tahun}</Badge>
-                <div>
-                  <p className="text-sm font-medium text-navy-900">{p.jurusan}</p>
-                  <p className="text-xs text-muted-foreground">{p.institusi}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="border-navy-100">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-navy-900 text-lg">
-              <Briefcase className="h-4 w-4" /> Pengalaman Pekerjaan
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {data.pekerjaan.map((p, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{p.tahun}</Badge>
-                <div>
-                  <p className="text-sm font-medium text-navy-900">{p.jabatan}</p>
-                  <p className="text-xs text-muted-foreground">{p.perusahaan}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="border-navy-100 mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-navy-900 text-lg">
-            <Users className="h-4 w-4" /> Pengalaman Organisasi
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {data.organisasi.map((o, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <Badge variant="outline" className="mt-0.5 flex-shrink-0 text-xs font-mono">{o.tahun}</Badge>
-              <div>
-                <p className="text-sm font-medium text-navy-900">{o.jabatan}</p>
-                <p className="text-xs text-muted-foreground">{o.organisasi}</p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       <Card className="border-navy-100 mb-6">
         <CardHeader>
