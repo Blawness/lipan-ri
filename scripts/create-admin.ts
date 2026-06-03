@@ -1,4 +1,8 @@
-import "dotenv/config";
+import { config } from "dotenv";
+// Load .env.local first (Next.js convention, where AUTH_SECRET/ADMIN_*/DATABASE_URL
+// live), then fall back to .env without overriding values already set.
+config({ path: ".env.local" });
+config();
 import { hash } from "bcryptjs";
 import { db } from "../src/db";
 import { users } from "../src/db/schema";
