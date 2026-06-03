@@ -3,6 +3,7 @@ import { listCategories } from "@/lib/admin/categories";
 import { createCategoryAction, deleteCategoryAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Plus, Trash2, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -17,30 +18,40 @@ export default async function CategoriesPage({
 
   return (
     <div className="max-w-2xl">
-      <h1 className="font-heading text-2xl font-bold text-navy-900 mb-6">Kategori</h1>
+      <h1 className="font-heading text-2xl font-bold text-navy-900">Kategori</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{rows.length} kategori</p>
 
       {error && (
-        <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600" role="alert">
+        <p className="mt-4 flex items-center gap-1.5 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 ring-1 ring-red-100" role="alert">
+          <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </p>
       )}
 
-      <form action={createCategoryAction} className="flex gap-2 mb-6">
-        <Input name="name" placeholder="Nama kategori" required />
-        <Input name="description" placeholder="Deskripsi (opsional)" />
-        <Button type="submit">Tambah</Button>
+      <form
+        action={createCategoryAction}
+        className="mt-6 flex flex-wrap gap-2 rounded-xl border border-navy-100 bg-white p-4 shadow-sm"
+      >
+        <Input name="name" placeholder="Nama kategori" required className="min-w-40 flex-1" />
+        <Input name="description" placeholder="Deskripsi (opsional)" className="min-w-40 flex-1" />
+        <Button type="submit">
+          <Plus className="h-4 w-4" />
+          Tambah
+        </Button>
       </form>
 
-      <ul className="bg-white rounded-lg ring-1 ring-navy-100 divide-y divide-navy-50">
+      <ul className="mt-6 divide-y divide-navy-50 overflow-hidden rounded-xl border border-navy-100 bg-white shadow-sm">
         {rows.map((c) => (
-          <li key={c.id} className="flex items-center justify-between p-3">
+          <li key={c.id} className="flex items-center justify-between p-3 transition-colors hover:bg-navy-50/40">
             <div>
               <p className="font-medium text-navy-900">{c.name}</p>
               <p className="text-xs text-muted-foreground">/{c.slug}</p>
             </div>
             <form action={deleteCategoryAction}>
               <input type="hidden" name="id" value={c.id} />
-              <Button size="sm" variant="outline" type="submit">Hapus</Button>
+              <Button size="sm" variant="outline" type="submit" aria-label="Hapus">
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
             </form>
           </li>
         ))}

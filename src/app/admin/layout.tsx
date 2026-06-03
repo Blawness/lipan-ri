@@ -16,9 +16,22 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <div className="min-h-screen flex bg-navy-50">
+    <div className="flex min-h-screen bg-navy-50/60">
       <Sidebar role={session.user.role} />
-      <div className="flex-1 p-8">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-navy-100 bg-white/80 px-6 backdrop-blur-sm">
+          <span className="text-sm font-medium text-navy-500">Panel Admin</span>
+          <div className="flex items-center gap-2.5">
+            <span className="hidden text-sm text-navy-600 sm:inline">
+              {session.user.email}
+            </span>
+            <span className="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold capitalize text-brand-700 ring-1 ring-brand-100">
+              {session.user.role}
+            </span>
+          </div>
+        </header>
+        <main className="flex-1 p-6 md:p-8">{children}</main>
+      </div>
     </div>
   );
 }
