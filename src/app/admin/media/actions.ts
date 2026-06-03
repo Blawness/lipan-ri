@@ -18,7 +18,15 @@ export async function uploadImageAction(formData: FormData): Promise<{ url?: str
 
   const buf = Buffer.from(await file.arrayBuffer());
   const keyBase = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  const { url } = await uploadImage(buf, keyBase);
+
+  let url: string;
+  try {
+    // sharp (inside uploadImage) throws on data that isn't really an image,
+    // e.g. a non-image file sent with a spoofed image MIME type.
+    ({ url } = await uploadImage(buf, keyBase));
+  } catch {
+    return { error: "Gambar gagal diproses. Pastikan berkas benar-benar gambar." };
+  }
 
   await db.insert(media).values({ url, altText: file.name });
   revalidatePath("/admin/media");

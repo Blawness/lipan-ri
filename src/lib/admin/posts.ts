@@ -57,6 +57,19 @@ export async function createPost(input: PostInput, authorId: number) {
 
 export async function updatePost(id: number, input: PostInput) {
   const slug = await uniquePostSlug(input.title, id);
+  // Stamp publishedAt the first time a post goes live; the public site orders
+  // and filters by it, so a draft promoted to published must get a date.
+  const [existing] = await db
+    .select({ publishedAt: posts.publishedAt })
+    .from(posts)
+    .where(eq(posts.id, id))
+    .limit(1);
+  if (!existing) throw new Error(`Post ${id} tidak ditemukan`);
+  const publishedAt =
+    input.status === "published"
+      ? (existing?.publishedAt ?? new Date())
+      : existing?.publishedAt ?? null;
+
   await db
     .update(posts)
     .set({
@@ -68,6 +81,7 @@ export async function updatePost(id: number, input: PostInput) {
       categoryId: input.categoryId ?? null,
       isFeatured: input.isFeatured,
       status: input.status,
+      publishedAt,
       updatedAt: new Date(),
     })
     .where(eq(posts.id, id));

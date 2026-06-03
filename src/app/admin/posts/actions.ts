@@ -68,6 +68,7 @@ export async function updatePostAction(id: number, _prev: PostFormState, formDat
 export async function deletePostAction(formData: FormData) {
   await requireUser();
   const id = Number(formData.get("id"));
+  if (!Number.isInteger(id) || id <= 0) return;
   await deletePost(id);
   revalidatePath("/admin/posts");
 }

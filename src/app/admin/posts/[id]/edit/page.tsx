@@ -12,6 +12,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   await requireUser();
   const { id } = await params;
   const postId = Number(id);
+  if (!Number.isInteger(postId) || postId <= 0) notFound();
   const post = await getPostByIdAdmin(postId);
   if (!post) notFound();
   const cats = await db.select({ id: categories.id, name: categories.name }).from(categories);
