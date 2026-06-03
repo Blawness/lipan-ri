@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth-helpers";
 import { uploadImage } from "@/lib/r2";
 import { db } from "@/db";
 import { media } from "@/db/schema";
+import { deleteMediaRow } from "@/lib/admin/media";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const OK_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -31,4 +32,10 @@ export async function uploadImageAction(formData: FormData): Promise<{ url?: str
   await db.insert(media).values({ url, altText: file.name });
   revalidatePath("/admin/media");
   return { url };
+}
+
+export async function deleteMediaAction(formData: FormData) {
+  await requireUser();
+  await deleteMediaRow(Number(formData.get("id")));
+  revalidatePath("/admin/media");
 }
