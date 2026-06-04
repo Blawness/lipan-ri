@@ -497,6 +497,26 @@ verify step, do not start Phase 2 — revisit the build strategy first.
 
 ---
 
+## ✅ Phase 1 RESULT (2026-06-04) — COMPLETE, gate PASSED
+
+- `@blawness/admin-kit` created at `github.com/Blawness/admin-kit` (private), 7 commits, tag `v0.1.0`.
+- `tsc`-only build preserves `"use client";` on line 1 of `dist/components/ui/dialog.js`
+  and `dist/components/confirm-delete.js` (verified independently).
+- Throwaway **Next.js 16.2.7** app consumed it via Git-tag dependency +
+  `transpilePackages`: `pnpm build` exit 0, runtime HTTP 200, component rendered.
+- `slug.ts::uniquePostSlug` (DB-coupled) intentionally NOT ported — belongs to the
+  DB/posts extraction in a later phase. Only `slugify` shipped.
+- `sonner` was a missing dep of `confirm-delete.tsx`; added as a package dependency.
+
+### ⚠️ Carry-forward for Phase 3 (LIPAN migration)
+pnpm v10 blocks a Git dependency's `prepare` script by default
+(`ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`). **LIPAN must add `@blawness/admin-kit` to
+`pnpm.onlyBuiltDependencies`** in its `package.json` so the package's `tsc` build runs
+on install and `dist/` exists. Without this, the LIPAN build will fail to resolve the
+package. Bake this into the Phase 3 plan's install step and the Vercel build.
+
+---
+
 ## Self-Review notes
 
 - **Spec coverage (Phase 1 slice):** distribution via Git tag (Task 6), directive
