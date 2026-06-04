@@ -3,7 +3,8 @@ import { listCategories } from "@/lib/admin/categories";
 import { createCategoryAction, deleteCategoryAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, AlertCircle } from "lucide-react";
+import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { Plus, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -47,12 +48,16 @@ export default async function CategoriesPage({
               <p className="font-medium text-navy-900">{c.name}</p>
               <p className="text-xs text-muted-foreground">/{c.slug}</p>
             </div>
-            <form action={deleteCategoryAction}>
-              <input type="hidden" name="id" value={c.id} />
-              <Button size="sm" variant="outline" type="submit" aria-label="Hapus">
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
-            </form>
+            <ConfirmDelete
+              action={deleteCategoryAction}
+              id={c.id}
+              title="Hapus kategori?"
+              description={
+                <>
+                  Kategori <span className="font-medium text-navy-900">{c.name}</span> akan dihapus.
+                </>
+              }
+            />
           </li>
         ))}
       </ul>

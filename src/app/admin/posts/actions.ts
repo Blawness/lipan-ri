@@ -49,7 +49,7 @@ export async function createPostAction(_prev: PostFormState, formData: FormData)
   }
   await createPost(input, Number(session.user.id));
   revalidatePath("/admin/posts");
-  redirect("/admin/posts");
+  redirect("/admin/posts?saved=created");
 }
 
 export async function updatePostAction(id: number, _prev: PostFormState, formData: FormData): Promise<PostFormState> {
@@ -62,7 +62,7 @@ export async function updatePostAction(id: number, _prev: PostFormState, formDat
   }
   await updatePost(id, input);
   revalidatePath("/admin/posts");
-  redirect("/admin/posts");
+  redirect("/admin/posts?saved=updated");
 }
 
 export async function deletePostAction(formData: FormData) {

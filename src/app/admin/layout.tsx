@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { auth } from "@/auth";
+import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "./sidebar";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         </header>
         <main className="flex-1 p-6 md:p-8">{children}</main>
       </div>
+      <Toaster />
     </div>
   );
 }

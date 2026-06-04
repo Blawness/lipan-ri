@@ -7,7 +7,8 @@ import {
   reorderBannerAction,
 } from "./actions";
 import { Button } from "@/components/ui/button";
-import { Trash2, ArrowUp, ArrowDown, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { ArrowUp, ArrowDown, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -95,12 +96,20 @@ export default async function BannersPage({
                   {b.isActive ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                 </Button>
               </form>
-              <form action={deleteBannerAction}>
-                <input type="hidden" name="id" value={b.id} />
-                <Button size="sm" variant="outline" type="submit" aria-label="Hapus">
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </form>
+              <ConfirmDelete
+                action={deleteBannerAction}
+                id={b.id}
+                title="Hapus banner?"
+                description={
+                  b.title ? (
+                    <>
+                      Banner <span className="font-medium text-navy-900">{b.title}</span> akan dihapus.
+                    </>
+                  ) : (
+                    "Banner ini akan dihapus permanen."
+                  )
+                }
+              />
             </div>
           </li>
         ))}

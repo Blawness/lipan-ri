@@ -4,6 +4,10 @@ import { useRef, useState, useTransition } from "react";
 import { UploadCloud, Loader2, AlertCircle } from "lucide-react";
 import { uploadImageAction } from "@/app/admin/media/actions";
 
+// Mirror the server action (src/app/admin/media/actions.ts) — keep in sync.
+const OK_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_BYTES = 8 * 1024 * 1024;
+
 /**
  * Clear drag-and-drop / click-to-upload zone backed by the R2 upload action.
  * Used for both a post's featured image (with `value`) and the gallery (no
@@ -25,8 +29,12 @@ export function ImageUpload({
 
   function upload(file: File | undefined) {
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Berkas harus berupa gambar.");
+    if (!OK_TYPES.includes(file.type)) {
+      setError("Format tidak didukung — gunakan JPG, PNG, WebP, atau GIF.");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      setError("Ukuran gambar maksimal 8MB.");
       return;
     }
     const fd = new FormData();
@@ -92,7 +100,7 @@ export function ImageUpload({
                 {pending ? "Mengunggah…" : `Klik untuk unggah ${label}`}
               </span>
               <span className="mt-0.5 block text-xs text-muted-foreground">
-                atau seret &amp; lepas di sini · PNG, JPG, WebP (maks 8MB)
+                atau seret &amp; lepas di sini · JPG, PNG, WebP, GIF (maks 8MB)
               </span>
             </span>
           </>

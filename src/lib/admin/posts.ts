@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts, categories } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, ilike } from "drizzle-orm";
 import { uniquePostSlug } from "@/lib/slug";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -14,20 +14,50 @@ export type PostInput = {
   status: "draft" | "published";
 };
 
-export async function listPostsAdmin() {
-  return db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      slug: posts.slug,
-      status: posts.status,
-      isFeatured: posts.isFeatured,
-      updatedAt: posts.updatedAt,
-      categoryName: categories.name,
-    })
-    .from(posts)
-    .leftJoin(categories, eq(posts.categoryId, categories.id))
-    .orderBy(desc(posts.updatedAt));
+export type ListPostsAdminParams = {
+  q?: string;
+  status?: "published" | "draft" | "all";
+  page?: number;
+  pageSize?: number;
+};
+
+export async function listPostsAdmin({
+  q,
+  status = "all",
+  page = 1,
+  pageSize = 15,
+}: ListPostsAdminParams = {}) {
+  const conditions = [];
+  if (q && q.trim()) conditions.push(ilike(posts.title, `%${q.trim()}%`));
+  if (status === "published" || status === "draft") {
+    conditions.push(eq(posts.status, status));
+  }
+  const where = conditions.length ? and(...conditions) : undefined;
+
+  const safePage = Math.max(1, page);
+  const offset = (safePage - 1) * pageSize;
+
+  const [rows, countResult] = await Promise.all([
+    db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        slug: posts.slug,
+        status: posts.status,
+        isFeatured: posts.isFeatured,
+        updatedAt: posts.updatedAt,
+        categoryName: categories.name,
+      })
+      .from(posts)
+      .leftJoin(categories, eq(posts.categoryId, categories.id))
+      .where(where)
+      .orderBy(desc(posts.updatedAt))
+      .limit(pageSize)
+      .offset(offset),
+    db.select({ value: count() }).from(posts).where(where),
+  ]);
+
+  return { rows, total: Number(countResult[0]?.value ?? 0) };
 }
 
 export async function getPostByIdAdmin(id: number) {

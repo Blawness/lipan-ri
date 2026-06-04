@@ -3,7 +3,8 @@ import { listUsers } from "@/lib/admin/users";
 import { createUserAction, resetPasswordAction, setRoleAction, deleteUserAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserPlus, KeyRound, Trash2, AlertCircle } from "lucide-react";
+import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { UserPlus, KeyRound, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -104,12 +105,18 @@ export default async function UsersPage({
                   </Button>
                 </form>
                 {!isSelf && (
-                  <form action={deleteUserAction} className="ml-auto">
-                    <input type="hidden" name="id" value={u.id} />
-                    <Button size="sm" variant="outline" type="submit" aria-label="Hapus user">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </form>
+                  <div className="ml-auto">
+                    <ConfirmDelete
+                      action={deleteUserAction}
+                      id={u.id}
+                      title="Hapus user?"
+                      description={
+                        <>
+                          User <span className="font-medium text-navy-900">{u.email}</span> akan dihapus.
+                        </>
+                      }
+                    />
+                  </div>
                 )}
               </div>
             </li>

@@ -2,13 +2,19 @@ import { requireUser } from "@/lib/auth-helpers";
 import { listMedia } from "@/lib/admin/media";
 import { deleteMediaAction } from "./actions";
 import { GalleryUploader } from "./uploader";
-import { Trash2, ImageOff } from "lucide-react";
+import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { Trash2, ImageOff, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function MediaPage() {
+export default async function MediaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   await requireUser();
   const items = await listMedia();
+  const { error } = await searchParams;
 
   return (
     <div className="max-w-5xl">
@@ -18,6 +24,13 @@ export default async function MediaPage() {
           {items.length} gambar tersimpan
         </p>
       </div>
+
+      {error && (
+        <p className="mb-4 flex items-center gap-1.5 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 ring-1 ring-red-100" role="alert">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {error}
+        </p>
+      )}
 
       <GalleryUploader />
 
@@ -42,16 +55,23 @@ export default async function MediaPage() {
                 alt={m.altText ?? ""}
                 className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <form action={deleteMediaAction} className="absolute right-2 top-2">
-                <input type="hidden" name="id" value={m.id} />
-                <button
-                  type="submit"
-                  aria-label="Hapus gambar"
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-navy-600 opacity-100 shadow-sm ring-1 ring-navy-100 backdrop-blur transition-all hover:bg-red-50 hover:text-red-600 sm:opacity-0 sm:group-hover:opacity-100"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </form>
+              <div className="absolute right-2 top-2">
+                <ConfirmDelete
+                  action={deleteMediaAction}
+                  id={m.id}
+                  title="Hapus gambar?"
+                  description="Gambar akan dihapus permanen dari media."
+                  trigger={
+                    <button
+                      type="button"
+                      aria-label="Hapus gambar"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-navy-600 opacity-100 shadow-sm ring-1 ring-navy-100 backdrop-blur transition-all hover:bg-red-50 hover:text-red-600 sm:opacity-0 sm:group-hover:opacity-100"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  }
+                />
+              </div>
             </div>
           ))}
         </div>

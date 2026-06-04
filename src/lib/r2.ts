@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 
 const endpoint = process.env.R2_ENDPOINT;
@@ -51,4 +51,17 @@ export async function uploadImage(
   }
 
   return { url: `${R2_PUBLIC_URL}/${key}`, key, size: optimized.length };
+}
+
+/**
+ * Hapus objek dari R2 berdasarkan URL publiknya. Hanya menghapus objek yang
+ * memang berada di bawah R2_PUBLIC_URL — URL eksternal/seed diabaikan dengan
+ * aman (return false). Kegagalan jaringan dibiarkan melempar ke pemanggil.
+ */
+export async function deleteObjectByUrl(url: string): Promise<boolean> {
+  if (!R2_PUBLIC_URL || !url.startsWith(`${R2_PUBLIC_URL}/`)) return false;
+  const key = url.slice(R2_PUBLIC_URL.length + 1);
+  if (!key) return false;
+  await r2.send(new DeleteObjectCommand({ Bucket: R2_BUCKET, Key: key }));
+  return true;
 }
