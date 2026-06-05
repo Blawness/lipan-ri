@@ -66,63 +66,77 @@ export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <Section delay={0}>
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 p-8 mb-8 border-l-4 border-gold-400">
-                    <BackgroundFigure side="left" imageSrc="/presiden-ri.jpg" />
-                    <BackgroundFigure side="right" imageSrc="/wapres-ri.jpg" />
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,31,60,0.72)_0%,rgba(15,31,60,0.56)_24%,rgba(15,31,60,0.24)_44%,rgba(15,31,60,0)_70%)]" />
-                    <div className="absolute inset-0 opacity-[0.04]">
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                backgroundImage:
-                                    "radial-gradient(circle at 50% 30%, white 1px, transparent 1px)",
-                                backgroundSize: "40px 40px",
-                            }}
-                        />
+                <div className="mb-8">
+                    <div className="mb-6 text-center">
+                        <div className="mb-2 flex items-center justify-center gap-2">
+                            <span className="h-px w-6 bg-gold-400/60" />
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">
+                                Profil Ketua Umum
+                            </p>
+                            <span className="h-px w-6 bg-gold-400/60" />
+                        </div>
+                        <h1 className="font-heading text-2xl font-extrabold leading-tight text-navy-950 md:text-3xl">
+                            {data.nama}
+                        </h1>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            Ketua Umum LIPAN-RI · Putra Asli Banyumas
+                        </p>
                     </div>
 
-                    <div className="relative z-10">
-                        <div className="mb-7 text-center">
-                            <div className="mb-2 flex items-center justify-center gap-2">
-                                <span className="h-px w-6 bg-gold-400/40" />
-                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">
-                                    Profil Ketua Umum
-                                </p>
-                                <span className="h-px w-6 bg-gold-400/40" />
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 px-8 pb-8 pt-36 border-l-4 border-gold-400">
+                        <BackgroundFigure side="left" imageSrc="/presiden-ri.jpg" />
+                        <BackgroundFigure side="right" imageSrc="/wapres-ri.jpg" />
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,31,60,0.72)_0%,rgba(15,31,60,0.56)_24%,rgba(15,31,60,0.24)_44%,rgba(15,31,60,0)_70%)]" />
+                        <div
+                            className="pointer-events-none absolute top-5 left-1/2 z-20 hidden h-28 w-44 -translate-x-1/2 overflow-hidden md:block"
+                            aria-hidden="true"
+                        >
+                            {/* eslint-disable-next-line @next/next/no-img-element -- aset lokal dari Wikimedia Commons */}
+                            <img
+                                src="/garuda-pancasila.png"
+                                alt=""
+                                className="h-full w-full object-contain opacity-60 saturate-110 contrast-125"
+                            />
+                        </div>
+                        <div className="absolute inset-0 opacity-[0.04]">
+                            <div
+                                className="absolute inset-0"
+                                style={{
+                                    backgroundImage:
+                                        "radial-gradient(circle at 50% 30%, white 1px, transparent 1px)",
+                                    backgroundSize: "40px 40px",
+                                }}
+                            />
+                        </div>
+
+                        <div className="relative z-10">
+                            <div className="relative mx-auto w-40 md:w-48">
+                                <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-gold-400/20 via-gold-400/5 to-transparent blur-md" />
+                                <div className="relative h-52 w-40 overflow-hidden rounded-2xl border border-white/10 bg-white/8 shadow-lg shadow-navy-950/30 md:h-60 md:w-48">
+                                    {/* eslint-disable-next-line @next/next/no-img-element -- aset lokal */}
+                                    <img
+                                        src="/ketua-harun-prayitno.png"
+                                        alt={data.nama}
+                                        className="h-full w-full object-cover object-top"
+                                    />
+                                </div>
+                                <div className="mt-3 text-center">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-300">
+                                        Ketua Umum LIPAN-RI
+                                    </p>
+                                    <p className="mt-1 text-xs leading-snug text-navy-200/80">
+                                        {data.nama}
+                                    </p>
+                                </div>
                             </div>
-                            <h1 className="font-heading text-2xl font-extrabold leading-tight text-white md:text-3xl">
-                                {data.nama}
-                            </h1>
-                            <p className="mt-2 text-sm text-navy-300">
-                                Ketua Umum LIPAN-RI · Putra Asli Banyumas
+
+                            <p className="mx-auto mt-7 max-w-2xl text-center text-sm leading-relaxed text-navy-200/80">
+                                Dalam semangat pengabdian kepada bangsa dan
+                                negara, LIPAN-RI berperan mengawal kepentingan
+                                masyarakat pada bidang aset negara dan
+                                pertanahan.
                             </p>
                         </div>
-
-                        <div className="relative mx-auto w-40 md:w-48">
-                            <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-gold-400/20 via-gold-400/5 to-transparent blur-md" />
-                            <div className="relative h-52 w-40 overflow-hidden rounded-2xl border border-white/10 bg-white/8 shadow-lg shadow-navy-950/30 md:h-60 md:w-48">
-                                {/* eslint-disable-next-line @next/next/no-img-element -- aset lokal */}
-                                <img
-                                    src="/ketua-harun-prayitno.png"
-                                    alt={data.nama}
-                                    className="h-full w-full object-cover object-top"
-                                />
-                            </div>
-                            <div className="mt-3 text-center">
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-300">
-                                    Ketua Umum LIPAN-RI
-                                </p>
-                                <p className="mt-1 text-xs leading-snug text-navy-200/80">
-                                    {data.nama}
-                                </p>
-                            </div>
-                        </div>
-
-                        <p className="mx-auto mt-7 max-w-2xl text-center text-sm leading-relaxed text-navy-200/80">
-                            Dalam semangat pengabdian kepada bangsa dan negara,
-                            LIPAN-RI berperan mengawal kepentingan masyarakat
-                            pada bidang aset negara dan pertanahan.
-                        </p>
                     </div>
                 </div>
             </Section>
