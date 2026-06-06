@@ -5,7 +5,7 @@ config({ path: ".env.local" });
 config();
 import { hash } from "bcryptjs";
 import { db } from "../src/db";
-import { users } from "../src/db/schema";
+import { users } from "@blawness/admin-kit/schema";
 
 async function main() {
   const email = process.env.ADMIN_EMAIL;

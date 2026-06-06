@@ -4,7 +4,7 @@ import path from "node:path";
 import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { posts } from "../src/db/schema";
-import { uploadImage, R2_PUBLIC_URL } from "../src/lib/r2";
+import { uploadImage, R2_PUBLIC_URL } from "@blawness/admin-kit";
 
 /**
  * Migrasi gambar lokal di public/uploads/<slug>.<ext> ke Cloudflare R2.

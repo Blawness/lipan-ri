@@ -1,4 +1,4 @@
-import { MediaLibraryScreen } from "@blawness/admin-kit/screens/media";
+import MediaLibraryScreen from "@blawness/admin-kit/screens/media";
 import { handleDeleteMedia } from "@blawness/admin-kit/screens/media/lib";
 import { countMediaReferences } from "@/lib/admin/media";
 

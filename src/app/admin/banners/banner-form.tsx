@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ImageUpload } from "@blawness/admin-kit/components";
+import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBannerAction, updateBannerAction } from "./actions";
@@ -23,7 +24,12 @@ export function BannerForm({ banner }: { banner?: Banner }) {
         <label className="mb-1.5 block text-sm font-medium text-navy-900">
           Gambar banner <span className="text-red-500">*</span>
         </label>
-        <ImageUpload value={imageUrl} onChange={setImageUrl} label="banner" />
+        <ImageUpload
+          value={imageUrl}
+          onChange={setImageUrl}
+          label="banner"
+          uploadAction={uploadImageAction}
+        />
       </div>
 
       <Input name="title" defaultValue={banner?.title ?? ""} placeholder="Judul (opsional)" />
