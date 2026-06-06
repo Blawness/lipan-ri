@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { requireUser } from "@/lib/auth-helpers";
+import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { listPostsAdmin } from "@/lib/admin/posts";
 import { deletePostAction } from "./actions";
 import { Button } from "@/components/ui/button";
-import { ConfirmDelete } from "@/components/admin/confirm-delete";
-import { ToastOnParam } from "@/components/admin/toast-on-param";
+import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
 import {
   Plus,
   Pencil,

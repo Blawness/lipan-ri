@@ -5,8 +5,7 @@ import { useActionState, useState } from "react";
 import { Save, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Editor } from "@/components/admin/editor";
-import { ImageUpload } from "@/components/admin/image-upload";
+import { Editor, ImageUpload } from "@blawness/admin-kit/components";
 import type { PostFormState } from "./actions";
 
 export type PostFormValues = {

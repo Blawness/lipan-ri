@@ -1,9 +1,9 @@
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
 import { listCategories } from "@/lib/admin/categories";
 import { createCategoryAction, deleteCategoryAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { ConfirmDelete } from "@blawness/admin-kit/components";
 import { Plus, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";

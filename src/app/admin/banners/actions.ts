@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
 import {
   createBanner,
   updateBanner,

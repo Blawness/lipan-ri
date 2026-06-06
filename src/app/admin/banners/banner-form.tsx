@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ImageUpload } from "@/components/admin/image-upload";
+import { ImageUpload } from "@blawness/admin-kit/components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBannerAction, updateBannerAction } from "./actions";
