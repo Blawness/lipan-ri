@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { db } from "../src/db";
 import { posts, categories } from "../src/db/schema";
-import { uploadImage } from "../src/lib/r2";
+import { uploadImage } from "@blawness/admin-kit";
 
 /**
  * Scrape semua berita dari lipan-ri.org (WordPress REST API) ke DB.

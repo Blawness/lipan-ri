@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
 import { listBanners } from "@/lib/admin/banners";
 import { BannerForm } from "./banner-form";
 import {
@@ -7,7 +7,7 @@ import {
   reorderBannerAction,
 } from "./actions";
 import { Button } from "@/components/ui/button";
-import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { ConfirmDelete } from "@blawness/admin-kit/components";
 import { ArrowUp, ArrowDown, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";

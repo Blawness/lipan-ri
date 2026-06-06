@@ -1,39 +1,25 @@
 import type { ReactNode } from "react";
-import { auth } from "@/auth";
-import { Toaster } from "@/components/ui/sonner";
-import { Sidebar } from "./sidebar";
+import { AdminLayout } from "@blawness/admin-kit/shell";
+import type { NavItem } from "@blawness/admin-kit/shell/sidebar";
+import {
+  LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const session = await auth();
+const navItems: NavItem[] = [
+  { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { href: "/admin/posts", label: "Berita", icon: <Newspaper className="h-4 w-4" /> },
+  { href: "/admin/media", label: "Galeri", icon: <Images className="h-4 w-4" /> },
+  { href: "/admin/banners", label: "Banner", icon: <GalleryHorizontal className="h-4 w-4" />, adminOnly: true },
+  { href: "/admin/categories", label: "Kategori", icon: <Tags className="h-4 w-4" />, adminOnly: true },
+  { href: "/admin/users", label: "User", icon: <Users className="h-4 w-4" />, adminOnly: true },
+];
 
-  // The only unauthenticated route reachable here is /admin/login: the proxy
-  // (src/proxy.ts) redirects every other /admin/* to login, and each admin
-  // page additionally calls requireUser()/requireAdmin() before touching data.
-  // So rendering bare children here (no shell) cannot leak protected content.
-  if (!session?.user) {
-    return <>{children}</>;
-  }
-
+export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-navy-50/60">
-      <Sidebar role={session.user.role} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-navy-100 bg-white/80 px-6 backdrop-blur-sm">
-          <span className="text-sm font-medium text-navy-500">Panel Admin</span>
-          <div className="flex items-center gap-2.5">
-            <span className="hidden text-sm text-navy-600 sm:inline">
-              {session.user.email}
-            </span>
-            <span className="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold capitalize text-brand-700 ring-1 ring-brand-100">
-              {session.user.role}
-            </span>
-          </div>
-        </header>
-        <main className="flex-1 p-6 md:p-8">{children}</main>
-      </div>
-      <Toaster />
-    </div>
+    <AdminLayout navItems={navItems} logoSrc="/logo.png" brandName="LIPAN RI">
+      {children}
+    </AdminLayout>
   );
 }

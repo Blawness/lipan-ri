@@ -5,8 +5,8 @@ import { useActionState, useState } from "react";
 import { Save, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Editor } from "@/components/admin/editor";
-import { ImageUpload } from "@/components/admin/image-upload";
+import { Editor, ImageUpload } from "@blawness/admin-kit/components";
+import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
 import type { PostFormState } from "./actions";
 
 export type PostFormValues = {
@@ -49,7 +49,12 @@ export function PostForm({
 
         <div className="space-y-1.5">
           <label className={labelClass}>Gambar utama</label>
-          <ImageUpload value={featuredImage} onChange={setFeaturedImage} label="gambar utama" />
+          <ImageUpload
+            value={featuredImage}
+            onChange={setFeaturedImage}
+            label="gambar utama"
+            uploadAction={uploadImageAction}
+          />
         </div>
 
         <div className="space-y-1.5">

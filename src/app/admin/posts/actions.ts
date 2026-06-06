@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth-helpers";
+import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { createPost, updatePost, deletePost, type PostInput } from "@/lib/admin/posts";
 
 const schema = z.object({

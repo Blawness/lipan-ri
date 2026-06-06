@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { media } from "@/db/schema";
+import { media } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
 
 export async function getMediaByAlbum(album: string) {

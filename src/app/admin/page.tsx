@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { db } from "@/db";
-import { posts, media, users } from "@/db/schema";
+import { posts } from "@/db/schema";
+import { media, users } from "@blawness/admin-kit/schema";
 import { sql, desc } from "drizzle-orm";
-import { requireUser } from "@/lib/auth-helpers";
+import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { Newspaper, FileEdit, Images, Users, ArrowUpRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";

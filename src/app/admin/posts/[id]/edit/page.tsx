@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireUser } from "@/lib/auth-helpers";
+import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { db } from "@/db";
 import { categories } from "@/db/schema";
 import { getPostByIdAdmin } from "@/lib/admin/posts";
