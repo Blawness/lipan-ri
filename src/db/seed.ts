@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { db } from "./index";
-import { categories, posts, pages, users, media } from "./schema";
+import { categories, posts, pages } from "./schema";
+import { users, media } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
 
 async function seed() {

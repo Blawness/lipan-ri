@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth-helpers";
 import { uploadImage, deleteObjectByUrl } from "@/lib/r2";
 import { db } from "@/db";
-import { media } from "@/db/schema";
+import { media } from "@blawness/admin-kit/schema";
 import { deleteMediaRow, getMediaById, countMediaReferences } from "@/lib/admin/media";
 
 const MAX_BYTES = 8 * 1024 * 1024;

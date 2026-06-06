@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { users } from "@blawness/admin-kit/schema";
 import { asc, eq } from "drizzle-orm";
 import { hash } from "bcryptjs";
 

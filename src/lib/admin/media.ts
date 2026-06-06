@@ -1,5 +1,6 @@
 import { db } from "@/db";
-import { media, posts, banners } from "@/db/schema";
+import { posts, banners } from "@/db/schema";
+import { media } from "@blawness/admin-kit/schema";
 import { desc, eq, sql } from "drizzle-orm";
 
 export async function listMedia() {
