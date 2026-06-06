@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
+import { authConfig } from "@blawness/admin-kit/auth/config";
 
 const { auth } = NextAuth(authConfig);
 
