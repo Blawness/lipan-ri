@@ -18,7 +18,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1058.0",
     "@base-ui/react": "^1.5.0",
-    "@blawness/admin-kit": "file:/home/blawness/projects/admin-kit",
+    "@blawness/admin-kit": "0.2.0",
     "@tiptap/extension-image": "^3.25.0",
     "@tiptap/extension-link": "^3.25.0",
     "@tiptap/pm": "^3.25.0",
@@ -47,7 +47,10 @@
     "zod": "^4.4.3"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["sharp", "@img/sharp-linux-x64"]
+    "onlyBuiltDependencies": [
+      "sharp",
+      "@img/sharp-linux-x64"
+    ]
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
