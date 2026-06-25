@@ -50,7 +50,7 @@ test.describe("Verifikasi dokumen", () => {
   });
 
   test("slug tidak ditemukan → halaman not-found", async ({ page }) => {
-    const res = await page.goto(`/verifikasi/${NONEXISTENT_SLUG}`);
+    await page.goto(`/verifikasi/${NONEXISTENT_SLUG}`);
     // Next.js may return 200 for custom not-found pages in production;
     // verify the fallback page rendered (no "Dokumen Valid" or "Dokumen Tidak Berlaku")
     await expect(
