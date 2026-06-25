@@ -16,7 +16,7 @@ const LOGO_SIZE = Math.round(QR_SIZE * 0.22);
 const LOGO_PADDING = 8;
 
 async function generateQR(slug: string): Promise<Buffer> {
-  const url = `https://lipan-ri.or.id/verifikasi/${slug}`;
+  const url = `https://www.lipan-ri.com/verifikasi/${slug}`;
   const qrBuffer = await QRCode.toBuffer(url, {
     width: QR_SIZE,
     margin: 2,

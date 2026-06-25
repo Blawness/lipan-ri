@@ -14,7 +14,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const url = `https://lipan-ri.or.id/verifikasi/${slug}`;
+  const url = `https://www.lipan-ri.com/verifikasi/${slug}`;
 
   const qrBuffer = await QRCode.toBuffer(url, {
     width: QR_SIZE,
