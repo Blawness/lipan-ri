@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "./index";
-import { categories, posts, pages } from "./schema";
+import { categories, posts, pages, documents } from "./schema";
 import { users, media } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
 
@@ -262,6 +262,38 @@ async function seed() {
   await db.delete(pages);
   for (const page of pageData) {
     await db.insert(pages).values(page);
+  }
+
+  // Dokumen (legalitas QR)
+  const documentData = [
+    {
+      slug: "test-certificate-001-a1b2c3",
+      number: "001/SK/LIPAN/VI/2025",
+      title: "Surat Keterangan Keanggotaan",
+      signatory: "Harun Prayitno, SE, SH, MH",
+      issuedAt: new Date("2025-06-15"),
+      status: "active" as const,
+    },
+    {
+      slug: "002-sk-lipan-vi-2025-d4e5f6",
+      number: "002/SK/LIPAN/VI/2025",
+      title: "Surat Mandat Investigasi",
+      signatory: "Harun Prayitno, SE, SH, MH",
+      issuedAt: new Date("2025-07-01"),
+      status: "active" as const,
+    },
+    {
+      slug: "003-revoked-g7h8i9",
+      number: "003/SK/LIPAN/VIII/2025",
+      title: "Surat Tugas Pencabutan Demo",
+      signatory: "Dr. H. Ahmad Fauzi, M.Si.",
+      issuedAt: new Date("2025-08-10"),
+      status: "revoked" as const,
+    },
+  ];
+
+  for (const doc of documentData) {
+    await db.insert(documents).values(doc).onConflictDoNothing();
   }
 
   console.log("✅ Database seeded successfully!");
