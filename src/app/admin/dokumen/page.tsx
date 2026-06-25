@@ -4,8 +4,8 @@ import { listDocumentsAdmin } from "@/lib/admin/documents";
 import { deleteDocumentAction, revokeDocumentAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
+import { CreateDokumenButton } from "./create-button";
 import {
-  Plus,
   Pencil,
   Download,
   FileText,
@@ -89,14 +89,7 @@ export default async function DokumenListPage({
               </Button>
             </a>
           )}
-          <Button
-            render={
-              <Link href="/admin/dokumen/baru">
-                <Plus className="h-4 w-4" />
-                Tambah Dokumen
-              </Link>
-            }
-          />
+          <CreateDokumenButton />
         </div>
       </div>
 
