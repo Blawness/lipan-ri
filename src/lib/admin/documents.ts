@@ -116,10 +116,10 @@ export async function updateDocument(id: number, input: DocumentInput) {
     .where(eq(documents.id, id));
 }
 
-export async function revokeDocument(id: number) {
+export async function revokeDocument(id: number, reason?: string) {
   await db
     .update(documents)
-    .set({ status: "revoked", updatedAt: new Date() })
+    .set({ status: "revoked", revokeReason: reason ?? null, updatedAt: new Date() })
     .where(eq(documents.id, id));
 }
 

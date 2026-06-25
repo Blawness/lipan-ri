@@ -12,6 +12,7 @@ export async function getDocumentBySlug(slug: string) {
       signatory: documents.signatory,
       issuedAt: documents.issuedAt,
       status: documents.status,
+      revokeReason: documents.revokeReason,
     })
     .from(documents)
     .where(eq(documents.slug, slug))
@@ -34,6 +35,7 @@ export async function getDocumentBySlugAndIncrement(slug: string) {
       signatory: documents.signatory,
       issuedAt: documents.issuedAt,
       status: documents.status,
+      revokeReason: documents.revokeReason,
     });
 
   return results[0] ?? null;

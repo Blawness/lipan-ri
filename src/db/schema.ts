@@ -68,6 +68,7 @@ export const documents = pgTable("documents", {
   fileUrl: text("file_url"),
   status: documentStatusEnum("status").default("active"),
   viewCount: integer("view_count").default(0),
+  revokeReason: text("revoke_reason"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

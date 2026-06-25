@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Ban,
   Eye,
+  Package,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -76,14 +77,27 @@ export default async function DokumenListPage({
             {total} dokumen
           </p>
         </div>
-        <Button
-          render={
-            <Link href="/admin/dokumen/baru">
-              <Plus className="h-4 w-4" />
-              Tambah Dokumen
-            </Link>
-          }
-        />
+        <div className="flex items-center gap-2">
+          {rows.length > 0 && (
+            <a
+              href="/api/admin/dokumen/qr-bulk"
+              download
+              title="Download semua QR codes sebagai ZIP"
+            >
+              <Button size="sm" variant="ghost" type="button">
+                <Package className="h-4 w-4" />
+              </Button>
+            </a>
+          )}
+          <Button
+            render={
+              <Link href="/admin/dokumen/baru">
+                <Plus className="h-4 w-4" />
+                Tambah Dokumen
+              </Link>
+            }
+          />
+        </div>
       </div>
 
       <div className="mb-4">
@@ -196,8 +210,14 @@ export default async function DokumenListPage({
                         }
                       />
                       {r.status === "active" && (
-                        <form action={revokeDocumentAction}>
+                        <form action={revokeDocumentAction} className="flex items-center gap-1">
                           <input type="hidden" name="id" value={r.id} />
+                          <input
+                            type="text"
+                            name="revokeReason"
+                            placeholder="Alasan..."
+                            className="h-8 w-28 rounded-md border border-navy-200 px-2 text-xs text-navy-700 placeholder:text-navy-400 focus:border-red-300 focus:outline-none focus:ring-1 focus:ring-red-200"
+                          />
                           <Button
                             size="sm"
                             variant="outline"

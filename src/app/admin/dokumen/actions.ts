@@ -83,7 +83,8 @@ export async function revokeDocumentAction(formData: FormData) {
   await requireUser();
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
-  await revokeDocument(id);
+  const reason = formData.get("revokeReason")?.toString()?.trim() || undefined;
+  await revokeDocument(id, reason);
   revalidatePath("/admin/dokumen");
 }
 

@@ -212,3 +212,13 @@
 .group:hover [style*="ticker-scroll"] {
   animation-play-state: paused !important;
 }
+
+@media print {
+  header, footer, nav, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

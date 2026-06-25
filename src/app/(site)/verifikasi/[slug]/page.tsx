@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getDocumentBySlugAndIncrement } from "@/lib/documents";
 import { CheckCircle, XCircle, Calendar, User, FileText } from "lucide-react";
+import { PrintButton } from "./print-button";
 
 export const dynamic = "force-dynamic";
 
@@ -79,9 +80,20 @@ export default async function VerifikasiPage({ params }: Props) {
           </div>
         </div>
 
+        {!isValid && doc.revokeReason && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-left text-sm">
+            <p className="text-xs font-medium text-red-700">Alasan Pencabutan</p>
+            <p className="mt-1 text-red-600">{doc.revokeReason}</p>
+          </div>
+        )}
+
         <p className="mt-6 text-xs text-muted-foreground">
           Verifikasi oleh LIPAN RI &middot; Informasi ini bersifat publik
         </p>
+      </div>
+
+      <div className="mt-4 text-center no-print">
+        <PrintButton />
       </div>
     </div>
   );
