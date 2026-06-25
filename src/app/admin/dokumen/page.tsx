@@ -191,8 +191,9 @@ export default async function DokumenListPage({
                     <div className="flex justify-end gap-2">
                       <a
                         href={`/api/verifikasi/${r.slug}/qr`}
-                        download={`qr-${r.slug}.png`}
-                        title="Download QR code"
+                        target="_blank"
+                        rel="noopener"
+                        title="Pratinjau QR code"
                       >
                         <Button size="sm" variant="ghost" type="button">
                           <Download className="h-3.5 w-3.5" />
