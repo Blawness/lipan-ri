@@ -61,6 +61,7 @@ export async function listDocumentsAdmin({
         issuedAt: documents.issuedAt,
         status: documents.status,
         slug: documents.slug,
+        viewCount: documents.viewCount,
         updatedAt: documents.updatedAt,
       })
       .from(documents)

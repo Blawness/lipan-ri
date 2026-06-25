@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Ban,
+  Eye,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -135,6 +136,7 @@ export default async function DokumenListPage({
               <tr className="border-b border-navy-100 bg-navy-50/50 text-left text-xs uppercase tracking-wide text-navy-500">
                 <th className="px-4 py-3 font-semibold">Nomor / Perihal</th>
                 <th className="px-4 py-3 font-semibold">Tgl Terbit</th>
+                <th className="px-4 py-3 font-semibold">Verifikasi</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -151,6 +153,12 @@ export default async function DokumenListPage({
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {dateFmt.format(r.issuedAt)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center gap-1 text-sm text-navy-600">
+                      <Eye className="h-3.5 w-3.5 text-navy-400" />
+                      {r.viewCount ?? 0}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     {r.status === "active" ? (

@@ -67,6 +67,7 @@ export const documents = pgTable("documents", {
   issuedAt: timestamp("issued_at").notNull(),
   fileUrl: text("file_url"),
   status: documentStatusEnum("status").default("active"),
+  viewCount: integer("view_count").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

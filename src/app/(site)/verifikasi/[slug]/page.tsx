@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getDocumentBySlug } from "@/lib/documents";
+import { getDocumentBySlugAndIncrement } from "@/lib/documents";
 import { CheckCircle, XCircle, Calendar, User, FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ interface Props {
 
 export default async function VerifikasiPage({ params }: Props) {
   const { slug } = await params;
-  const doc = await getDocumentBySlug(slug);
+  const doc = await getDocumentBySlugAndIncrement(slug);
 
   if (!doc) {
     notFound();
