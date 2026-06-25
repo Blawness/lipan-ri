@@ -10,6 +10,7 @@ import {
 import { users } from "@blawness/admin-kit/schema";
 
 export const postStatusEnum = pgEnum("post_status", ["draft", "published"]);
+export const documentStatusEnum = pgEnum("document_status", ["active", "revoked"]);
 
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
@@ -55,4 +56,17 @@ export const banners = pgTable("banners", {
   sortOrder: integer("sort_order").default(0),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const documents = pgTable("documents", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  number: text("number").notNull(),
+  title: text("title").notNull(),
+  signatory: text("signatory").notNull(),
+  issuedAt: timestamp("issued_at").notNull(),
+  fileUrl: text("file_url"),
+  status: documentStatusEnum("status").default("active"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
