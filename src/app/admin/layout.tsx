@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { AdminLayout } from "@blawness/admin-kit/shell";
 import type { NavItem } from "@blawness/admin-kit/shell/sidebar";
 import {
-  LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal,
+  LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal, FileCheck,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,7 @@ const navItems: NavItem[] = [
   { href: "/admin/banners", label: "Banner", icon: <GalleryHorizontal className="h-4 w-4" />, adminOnly: true },
   { href: "/admin/categories", label: "Kategori", icon: <Tags className="h-4 w-4" />, adminOnly: true },
   { href: "/admin/users", label: "User", icon: <Users className="h-4 w-4" />, adminOnly: true },
+  { href: "/admin/dokumen", label: "Dokumen", icon: <FileCheck className="h-4 w-4" />, adminOnly: true },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
