@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requireUser, requireUserId } from "@blawness/admin-kit/auth-helpers";
 import { createPost, updatePost, deletePost, type PostInput } from "@/lib/admin/posts";
 
 const schema = z.object({
@@ -40,14 +40,14 @@ function parse(formData: FormData): PostInput {
 }
 
 export async function createPostAction(_prev: PostFormState, formData: FormData): Promise<PostFormState> {
-  const session = await requireUser();
+  const authorId = await requireUserId();
   let input: PostInput;
   try {
     input = parse(formData);
   } catch (e) {
     return { error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid." };
   }
-  await createPost(input, Number(session.user.id));
+  await createPost(input, authorId);
   revalidatePath("/admin/posts");
   redirect("/admin/posts?saved=created");
 }
