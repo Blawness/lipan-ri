@@ -24,6 +24,7 @@ export function DokumenForm({
   action,
   initial,
   signatories,
+  onCancel,
 }: {
   action: (
     prev: DocumentFormState,
@@ -31,6 +32,7 @@ export function DokumenForm({
   ) => Promise<DocumentFormState>;
   initial: DocumentFormValues;
   signatories: { id: number; name: string; title: string | null }[];
+  onCancel?: () => void;
 }) {
   const [state, formAction, pending] = useActionState<
     DocumentFormState,
@@ -138,11 +140,17 @@ export function DokumenForm({
           )}
           {pending ? "Menyimpan…" : "Simpan"}
         </Button>
-        <Link href="/admin/dokumen">
-          <Button variant="outline" type="button">
+        {onCancel ? (
+          <Button variant="outline" type="button" onClick={onCancel}>
             Batal
           </Button>
-        </Link>
+        ) : (
+          <Link href="/admin/dokumen">
+            <Button variant="outline" type="button">
+              Batal
+            </Button>
+          </Link>
+        )}
       </div>
     </form>
   );

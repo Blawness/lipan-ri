@@ -74,6 +74,7 @@ export function EditDokumenModal({
               status: doc.status,
             }}
             signatories={signatories}
+            onCancel={() => handleClose(false)}
           />
         )}
       </DialogContent>

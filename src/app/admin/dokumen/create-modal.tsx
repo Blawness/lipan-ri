@@ -34,6 +34,7 @@ export function CreateDokumenModal({
             status: "active",
           }}
           signatories={signatories}
+          onCancel={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>
