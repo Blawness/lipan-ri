@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { UploadCloud, Loader2, AlertCircle, File } from "lucide-react";
-import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { uploadDocumentAction } from "./upload-action";
 import { Button } from "@/components/ui/button";
 
 const OK_TYPES = [
@@ -39,7 +39,7 @@ export function PdfUpload({
     fd.set("file", file);
     setError(undefined);
     start(async () => {
-      const res = await uploadImageAction(fd);
+      const res = await uploadDocumentAction(fd);
       if (res.error) setError(res.error);
       else if (res.url) onChange(res.url);
     });
