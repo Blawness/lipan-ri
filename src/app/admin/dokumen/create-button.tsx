@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useDokumenCreateStore } from "@/lib/store";
 import { CreateDokumenModal } from "./create-modal";
 
-export function CreateDokumenButton() {
+export function CreateDokumenButton({
+  signatories,
+}: {
+  signatories: { id: number; name: string; title: string | null }[];
+}) {
   const setOpen = useDokumenCreateStore((s) => s.setOpen);
 
   return (
@@ -14,7 +18,7 @@ export function CreateDokumenButton() {
         <Plus className="h-4 w-4" />
         Tambah Dokumen
       </Button>
-      <CreateDokumenModal />
+      <CreateDokumenModal signatories={signatories} />
     </>
   );
 }

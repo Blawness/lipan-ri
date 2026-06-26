@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "./index";
-import { categories, posts, pages, documents } from "./schema";
+import { categories, posts, pages, documents, signatories } from "./schema";
 import { users, media } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
 
@@ -262,6 +262,19 @@ async function seed() {
   await db.delete(pages);
   for (const page of pageData) {
     await db.insert(pages).values(page);
+  }
+
+  // Penandatangan
+  const signatoryData = [
+    { name: "Harun Prayitno", title: "SE, SH, MH" },
+    { name: "Dr. H. Ahmad Fauzi", title: "M.Si." },
+    { name: "Hj. Siti Maryam", title: "SH" },
+    { name: "Budi Santoso", title: "S.H., M.Kn." },
+  ];
+
+  await db.delete(signatories);
+  for (const s of signatoryData) {
+    await db.insert(signatories).values(s);
   }
 
   // Dokumen (legalitas QR)

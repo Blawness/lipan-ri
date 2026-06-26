@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { listDocumentsAdmin } from "@/lib/admin/documents";
+import { getSignatories } from "@/lib/signatories";
 import { deleteDocumentAction, revokeDocumentAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
@@ -8,7 +9,6 @@ import { CreateDokumenButton } from "./create-button";
 import { QrPreviewButton } from "./qr-preview-button";
 import { QrPreviewModal } from "./qr-preview-modal";
 import { EditDokumenButton } from "./edit-button";
-import { EditDokumenModal } from "./edit-modal";
 import {
   FileText,
   Search,
@@ -61,6 +61,8 @@ export default async function DokumenListPage({
     }
   }
 
+  const sigs = await getSignatories();
+
   return (
     <div className="max-w-5xl">
       <ToastOnParam
@@ -92,7 +94,7 @@ export default async function DokumenListPage({
               </Button>
             </a>
           )}
-          <CreateDokumenButton />
+          <CreateDokumenButton signatories={sigs} />
         </div>
       </div>
 
@@ -190,7 +192,7 @@ export default async function DokumenListPage({
                         number={r.number}
                         title={r.title}
                       />
-                      <EditDokumenButton id={r.id} />
+                      <EditDokumenButton id={r.id} signatories={sigs} />
                       {r.status === "active" && (
                         <form action={revokeDocumentAction} className="flex items-center gap-1">
                           <input type="hidden" name="id" value={r.id} />
@@ -281,7 +283,6 @@ export default async function DokumenListPage({
         </nav>
       )}
       <QrPreviewModal />
-      <EditDokumenModal />
     </div>
   );
 }

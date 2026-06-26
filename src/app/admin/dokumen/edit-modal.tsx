@@ -26,7 +26,11 @@ type DocData = {
 const dateToInput = (d: string | Date) =>
   new Date(d).toISOString().slice(0, 10);
 
-export function EditDokumenModal() {
+export function EditDokumenModal({
+  signatories,
+}: {
+  signatories: { id: number; name: string; title: string | null }[];
+}) {
   const { id, close } = useDokumenEditStore();
   const open = id !== null;
   const [doc, setDoc] = useState<DocData | null>(null);
@@ -69,6 +73,7 @@ export function EditDokumenModal() {
               fileUrl: doc.fileUrl ?? "",
               status: doc.status,
             }}
+            signatories={signatories}
           />
         )}
       </DialogContent>

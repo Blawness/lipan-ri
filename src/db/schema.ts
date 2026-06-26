@@ -72,3 +72,10 @@ export const documents = pgTable("documents", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const signatories = pgTable("signatories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  title: text("title"),
+  createdAt: timestamp("created_at").defaultNow(),
+});

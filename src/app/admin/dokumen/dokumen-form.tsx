@@ -23,12 +23,14 @@ const labelClass = "text-sm font-medium text-navy-800";
 export function DokumenForm({
   action,
   initial,
+  signatories,
 }: {
   action: (
     prev: DocumentFormState,
     fd: FormData
   ) => Promise<DocumentFormState>;
   initial: DocumentFormValues;
+  signatories: { id: number; name: string; title: string | null }[];
 }) {
   const [state, formAction, pending] = useActionState<
     DocumentFormState,
@@ -74,10 +76,18 @@ export function DokumenForm({
           <Input
             id="signatory"
             name="signatory"
+            list="signatory-list"
             defaultValue={initial.signatory}
             required
-            placeholder="Dr. H. Ahmad Fauzi, M.Si."
+            placeholder="Pilih atau ketik nama…"
           />
+          <datalist id="signatory-list">
+            {signatories.map((s) => (
+              <option key={s.id} value={s.name}>
+                {s.title ? `${s.name}, ${s.title}` : s.name}
+              </option>
+            ))}
+          </datalist>
         </div>
 
         <div className="space-y-1.5">

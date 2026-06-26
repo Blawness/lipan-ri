@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import { getDocumentById } from "@/lib/admin/documents";
+import { getSignatories } from "@/lib/signatories";
 import { DokumenForm } from "../../dokumen-form";
 import { updateDocumentAction } from "../../actions";
 
@@ -15,7 +16,10 @@ export default async function EditDokumenPage({
 }) {
   await requireUser();
   const { id } = await params;
-  const doc = await getDocumentById(Number(id));
+  const [doc, signatories] = await Promise.all([
+    getDocumentById(Number(id)),
+    getSignatories(),
+  ]);
 
   if (!doc) {
     notFound();
@@ -38,6 +42,7 @@ export default async function EditDokumenPage({
           fileUrl: doc.fileUrl ?? "",
           status: doc.status ?? "active",
         }}
+        signatories={signatories}
       />
     </div>
   );

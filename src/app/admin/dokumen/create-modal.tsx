@@ -10,7 +10,11 @@ import { DokumenForm } from "./dokumen-form";
 import { createDocumentAction } from "./actions";
 import { useDokumenCreateStore } from "@/lib/store";
 
-export function CreateDokumenModal() {
+export function CreateDokumenModal({
+  signatories,
+}: {
+  signatories: { id: number; name: string; title: string | null }[];
+}) {
   const { open, setOpen } = useDokumenCreateStore();
 
   return (
@@ -29,6 +33,7 @@ export function CreateDokumenModal() {
             fileUrl: "",
             status: "active",
           }}
+          signatories={signatories}
         />
       </DialogContent>
     </Dialog>
