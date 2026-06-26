@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,16 +8,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Copy, Check } from "lucide-react";
 import { useQrPreviewStore } from "@/lib/store";
 
 export function QrPreviewModal() {
   const { slug, number, title, close } = useQrPreviewStore();
   const open = slug !== null;
+  const [copied, setCopied] = useState(false);
 
   if (!slug) return null;
 
   const qrUrl = `/api/verifikasi/${slug}/qr`;
+
+  async function handleCopy() {
+    try {
+      const res = await fetch(qrUrl);
+      const blob = await res.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard API not supported or denied
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && close()}>
@@ -39,16 +55,37 @@ export function QrPreviewModal() {
               <p className="text-xs text-muted-foreground">{title}</p>
             )}
           </div>
-          <a
-            href={qrUrl}
-            download={`qr-${slug}.png`}
-            className="w-full"
-          >
-            <Button size="sm" className="w-full">
-              <Download className="h-4 w-4" />
-              Unduh QR
+          <div className="flex w-full gap-2">
+            <a
+              href={qrUrl}
+              download={`qr-${slug}.png`}
+              className="flex-1"
+            >
+              <Button size="sm" className="w-full">
+                <Download className="h-4 w-4" />
+                Unduh
+              </Button>
+            </a>
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1"
+              onClick={handleCopy}
+              disabled={copied}
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  Tersalin
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  Salin
+                </>
+              )}
             </Button>
-          </a>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
