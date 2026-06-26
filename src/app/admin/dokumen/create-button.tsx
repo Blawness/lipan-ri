@@ -10,11 +10,10 @@ export function CreateDokumenButton() {
 
   return (
     <>
-      <Button
-        type="button"
-        onClick={() => setOpen(true)}
-        render={<span><Plus className="h-4 w-4" /> Tambah Dokumen</span>}
-      />
+      <Button type="button" onClick={() => setOpen(true)}>
+        <Plus className="h-4 w-4" />
+        Tambah Dokumen
+      </Button>
       <CreateDokumenModal />
     </>
   );
