@@ -5,8 +5,7 @@ import { useActionState, useState } from "react";
 import { Save, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ImageUpload } from "@blawness/admin-kit/components";
-import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { PdfUpload } from "./pdf-upload";
 import type { DocumentFormState } from "./actions";
 
 export type DocumentFormValues = {
@@ -95,11 +94,9 @@ export function DokumenForm({
 
         <div className="space-y-1.5">
           <label className={labelClass}>Dokumen PDF (opsional)</label>
-          <ImageUpload
+          <PdfUpload
             value={fileUrl}
             onChange={setFileUrl}
-            label="dokumen PDF"
-            uploadAction={uploadImageAction}
           />
         </div>
       </div>
