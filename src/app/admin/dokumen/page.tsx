@@ -149,6 +149,7 @@ export default async function DokumenListPage({
                 <th className="px-4 py-3 font-semibold">Nomor / Perihal</th>
                 <th className="px-4 py-3 font-semibold">Tgl Terbit</th>
                 <th className="px-4 py-3 font-semibold">Verifikasi</th>
+                <th className="px-4 py-3 font-semibold">Dokumen</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -170,7 +171,29 @@ export default async function DokumenListPage({
                     <span className="inline-flex items-center gap-1 text-sm text-navy-600">
                       <Eye className="h-3.5 w-3.5 text-navy-400" />
                       {r.viewCount ?? 0}
+                      {r.viewCount ?? 0}
                     </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {r.fileUrl ? (
+                      <div className="flex flex-col gap-0.5">
+                        <a
+                          href={r.fileUrl}
+                          target="_blank"
+                          rel="noopener"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700"
+                        >
+                          Lihat
+                        </a>
+                        {r.showDocument ? (
+                          <span className="text-xs text-emerald-600">Publik</span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Privat</span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     {r.status === "active" ? (

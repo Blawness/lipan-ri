@@ -21,6 +21,7 @@ type DocData = {
   issuedAt: string;
   fileUrl: string | null;
   status: "active" | "revoked";
+  showDocument: boolean;
 };
 
 const dateToInput = (d: string | Date) =>
@@ -72,6 +73,7 @@ export function EditDokumenModal({
               issuedAt: dateToInput(doc.issuedAt),
               fileUrl: doc.fileUrl ?? "",
               status: doc.status,
+              showDocument: doc.showDocument ?? false,
             }}
             signatories={signatories}
             onCancel={() => handleClose(false)}

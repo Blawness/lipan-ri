@@ -41,6 +41,7 @@ export default async function EditDokumenPage({
           issuedAt: dateToInput(doc.issuedAt),
           fileUrl: doc.fileUrl ?? "",
           status: doc.status ?? "active",
+          showDocument: doc.showDocument ?? false,
         }}
         signatories={signatories}
       />

@@ -26,5 +26,6 @@ export async function GET(
     issuedAt: doc.issuedAt,
     fileUrl: doc.fileUrl,
     status: doc.status,
+    showDocument: doc.showDocument ?? false,
   });
 }

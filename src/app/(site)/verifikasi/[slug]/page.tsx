@@ -87,6 +87,21 @@ export default async function VerifikasiPage({ params }: Props) {
           </div>
         )}
 
+        {doc.showDocument && doc.fileUrl && (
+          <div className="mt-4 rounded-lg border border-navy-200 bg-navy-50/50 p-4 text-center">
+            <p className="text-xs text-muted-foreground mb-2">Dokumen Asli</p>
+            <a
+              href={doc.fileUrl}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700"
+            >
+              <FileText className="h-4 w-4" />
+              Lihat Dokumen
+            </a>
+          </div>
+        )}
+
         <p className="mt-6 text-xs text-muted-foreground">
           Verifikasi oleh LIPAN RI &middot; Informasi ini bersifat publik
         </p>

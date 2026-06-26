@@ -22,6 +22,7 @@ export type DocumentInput = {
   issuedAt: Date;
   fileUrl?: string | null;
   status?: "active" | "revoked";
+  showDocument?: boolean;
 };
 
 export type ListDocumentsAdminParams = {
@@ -61,6 +62,8 @@ export async function listDocumentsAdmin({
         issuedAt: documents.issuedAt,
         status: documents.status,
         slug: documents.slug,
+        fileUrl: documents.fileUrl,
+        showDocument: documents.showDocument,
         viewCount: documents.viewCount,
         updatedAt: documents.updatedAt,
       })
@@ -96,6 +99,7 @@ export async function createDocument(input: DocumentInput) {
       issuedAt: input.issuedAt,
       fileUrl: input.fileUrl ?? null,
       status: input.status ?? "active",
+      showDocument: input.showDocument ?? false,
     })
     .returning({ id: documents.id });
   return row.id;
@@ -111,6 +115,7 @@ export async function updateDocument(id: number, input: DocumentInput) {
       issuedAt: input.issuedAt,
       fileUrl: input.fileUrl ?? null,
       status: input.status ?? "active",
+      showDocument: input.showDocument ?? false,
       updatedAt: new Date(),
     })
     .where(eq(documents.id, id));

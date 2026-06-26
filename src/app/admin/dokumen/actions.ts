@@ -19,6 +19,7 @@ const schema = z.object({
   issuedAt: z.string().min(1, "Tanggal terbit wajib diisi"),
   fileUrl: z.string().optional(),
   status: z.enum(["active", "revoked"]).optional(),
+  showDocument: z.coerce.boolean().optional(),
 });
 
 export type DocumentFormState = { error?: string };
@@ -31,6 +32,7 @@ function parse(formData: FormData): DocumentInput {
     issuedAt: formData.get("issuedAt"),
     fileUrl: formData.get("fileUrl") || undefined,
     status: formData.get("status") || undefined,
+    showDocument: formData.get("showDocument") || undefined,
   });
   return {
     number: data.number,
@@ -39,6 +41,7 @@ function parse(formData: FormData): DocumentInput {
     issuedAt: new Date(data.issuedAt),
     fileUrl: data.fileUrl ?? null,
     status: data.status as "active" | "revoked" | undefined,
+    showDocument: data.showDocument ?? false,
   };
 }
 

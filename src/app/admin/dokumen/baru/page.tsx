@@ -22,6 +22,7 @@ export default async function NewDokumenPage() {
           issuedAt: "",
           fileUrl: "",
           status: "active",
+          showDocument: false,
         }}
         signatories={signatories}
       />

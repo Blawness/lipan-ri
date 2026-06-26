@@ -16,6 +16,7 @@ export type DocumentFormValues = {
   issuedAt: string;
   fileUrl: string;
   status: "active" | "revoked";
+  showDocument: boolean;
 };
 
 const labelClass = "text-sm font-medium text-navy-800";
@@ -122,6 +123,16 @@ export function DokumenForm({
             uploadAction={uploadImageAction}
           />
         </div>
+
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-navy-800">
+          <input
+            type="checkbox"
+            name="showDocument"
+            defaultChecked={initial.showDocument}
+            className="h-4 w-4 accent-brand-600"
+          />
+          Tampilkan dokumen di halaman verifikasi publik
+        </label>
       </div>
 
       {state.error && (

@@ -32,6 +32,7 @@ export function CreateDokumenModal({
             issuedAt: "",
             fileUrl: "",
             status: "active",
+            showDocument: false,
           }}
           signatories={signatories}
           onCancel={() => setOpen(false)}
