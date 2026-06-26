@@ -100,6 +100,9 @@ test.describe("Verifikasi dengan QR slug edge-cases", () => {
       return;
     }
 
+    // Scroll to top of card to ensure labels are visible
+    await page.getByRole("heading", { name: "Dokumen Valid" }).scrollIntoViewIfNeeded();
+
     const labels = [
       "Nomor Surat",
       "Perihal",
