@@ -117,10 +117,11 @@ export function DokumenForm({
           )}
           {pending ? "Menyimpan…" : "Simpan"}
         </Button>
-        <Button
-          variant="outline"
-          render={<Link href="/admin/dokumen">Batal</Link>}
-        />
+        <Link href="/admin/dokumen">
+          <Button variant="outline" type="button">
+            Batal
+          </Button>
+        </Link>
       </div>
     </form>
   );
