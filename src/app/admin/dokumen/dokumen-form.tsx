@@ -6,7 +6,7 @@ import { Save, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageUpload } from "@blawness/admin-kit/components";
-import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { uploadDocumentFileAction } from "./upload-action";
 import type { DocumentFormState } from "./actions";
 
 export type DocumentFormValues = {
@@ -119,7 +119,7 @@ export function DokumenForm({
               "image/webp",
             ]}
             maxBytes={16 * 1024 * 1024}
-            uploadAction={uploadImageAction}
+            uploadAction={uploadDocumentFileAction}
           />
         </div>
       </div>
