@@ -25,3 +25,15 @@ export const useQrPreviewStore = create<QrPreviewStore>((set) => ({
   open: (slug, number, title) => set({ slug, number, title }),
   close: () => set({ slug: null, number: null, title: null }),
 }));
+
+type DokumenEditStore = {
+  id: number | null;
+  open: (id: number) => void;
+  close: () => void;
+};
+
+export const useDokumenEditStore = create<DokumenEditStore>((set) => ({
+  id: null,
+  open: (id) => set({ id }),
+  close: () => set({ id: null }),
+}));

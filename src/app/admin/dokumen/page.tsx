@@ -7,8 +7,9 @@ import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
 import { CreateDokumenButton } from "./create-button";
 import { QrPreviewButton } from "./qr-preview-button";
 import { QrPreviewModal } from "./qr-preview-modal";
+import { EditDokumenButton } from "./edit-button";
+import { EditDokumenModal } from "./edit-modal";
 import {
-  Pencil,
   FileText,
   Search,
   ChevronLeft,
@@ -82,11 +83,12 @@ export default async function DokumenListPage({
           {rows.length > 0 && (
             <a
               href="/api/admin/dokumen/qr-bulk"
-              download
-              title="Download semua QR codes sebagai ZIP"
+              download="qr-lipan-ri.zip"
+              title="Unduh semua QR code sebagai ZIP"
             >
               <Button size="sm" variant="ghost" type="button">
                 <Package className="h-4 w-4" />
+                Semua QR
               </Button>
             </a>
           )}
@@ -188,16 +190,7 @@ export default async function DokumenListPage({
                         number={r.number}
                         title={r.title}
                       />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        render={
-                          <Link href={`/admin/dokumen/${r.id}/edit`}>
-                            <Pencil className="h-3.5 w-3.5" />
-                            Edit
-                          </Link>
-                        }
-                      />
+                      <EditDokumenButton id={r.id} />
                       {r.status === "active" && (
                         <form action={revokeDocumentAction} className="flex items-center gap-1">
                           <input type="hidden" name="id" value={r.id} />
@@ -288,6 +281,7 @@ export default async function DokumenListPage({
         </nav>
       )}
       <QrPreviewModal />
+      <EditDokumenModal />
     </div>
   );
 }
