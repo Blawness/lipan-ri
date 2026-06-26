@@ -11,6 +11,7 @@ import {
 import { DokumenForm } from "./dokumen-form";
 import { updateDocumentAction } from "./actions";
 import { useDokumenEditStore } from "@/lib/store";
+import { DocumentLogs } from "./document-logs";
 import { Loader2 } from "lucide-react";
 
 type DocData = {
@@ -64,20 +65,25 @@ export function EditDokumenModal({
             <Loader2 className="h-6 w-6 animate-spin text-navy-400" />
           </div>
         ) : (
-          <DokumenForm
-            action={updateDocumentAction.bind(null, doc.id)}
-            initial={{
-              number: doc.number,
-              title: doc.title,
-              signatory: doc.signatory,
-              issuedAt: dateToInput(doc.issuedAt),
-              fileUrl: doc.fileUrl ?? "",
-              status: doc.status,
-              showDocument: doc.showDocument ?? false,
-            }}
-            signatories={signatories}
-            onCancel={() => handleClose(false)}
-          />
+          <>
+            <DokumenForm
+              action={updateDocumentAction.bind(null, doc.id)}
+              initial={{
+                number: doc.number,
+                title: doc.title,
+                signatory: doc.signatory,
+                issuedAt: dateToInput(doc.issuedAt),
+                fileUrl: doc.fileUrl ?? "",
+                status: doc.status,
+                showDocument: doc.showDocument ?? false,
+              }}
+              signatories={signatories}
+              onCancel={() => handleClose(false)}
+            />
+            <div className="-mx-4 -mb-4 mt-4 border-t border-navy-100 px-4 pb-4 pt-2">
+              <DocumentLogs documentId={doc.id} />
+            </div>
+          </>
         )}
       </DialogContent>
     </Dialog>

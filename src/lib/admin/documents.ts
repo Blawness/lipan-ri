@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { documents } from "@/db/schema";
+import { documents, documentLogs } from "@/db/schema";
 import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
@@ -130,4 +130,26 @@ export async function revokeDocument(id: number, reason?: string) {
 
 export async function deleteDocument(id: number) {
   await db.delete(documents).where(eq(documents.id, id));
+}
+
+export async function getDocumentLogs(documentId: number) {
+  return db
+    .select()
+    .from(documentLogs)
+    .where(eq(documentLogs.documentId, documentId))
+    .orderBy(desc(documentLogs.createdAt));
+}
+
+export async function createDocumentLog(
+  documentId: number,
+  actorId: number,
+  action: "created" | "updated" | "revoked",
+  metadata?: string,
+) {
+  await db.insert(documentLogs).values({
+    documentId,
+    actorId,
+    action,
+    metadata: metadata ?? null,
+  });
 }

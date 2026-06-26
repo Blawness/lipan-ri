@@ -80,3 +80,20 @@ export const signatories = pgTable("signatories", {
   title: text("title"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const documentLogActionEnum = pgEnum("document_log_action", [
+  "created",
+  "updated",
+  "revoked",
+]);
+
+export const documentLogs = pgTable("document_logs", {
+  id: serial("id").primaryKey(),
+  documentId: integer("document_id")
+    .notNull()
+    .references(() => documents.id, { onDelete: "cascade" }),
+  actorId: integer("actor_id").notNull(),
+  action: documentLogActionEnum("action").notNull(),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});

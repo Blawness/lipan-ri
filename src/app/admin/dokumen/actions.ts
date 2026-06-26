@@ -3,12 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requireUser, requireUserId } from "@blawness/admin-kit/auth-helpers";
 import {
   createDocument,
   updateDocument,
   revokeDocument,
   deleteDocument,
+  createDocumentLog,
   type DocumentInput,
 } from "@/lib/admin/documents";
 
@@ -58,7 +59,9 @@ export async function createDocumentAction(
       error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid.",
     };
   }
-  await createDocument(input);
+  const docId = await createDocument(input);
+  const actorId = await requireUserId();
+  await createDocumentLog(docId, actorId, "created");
   revalidatePath("/admin/dokumen");
   redirect("/admin/dokumen?saved=created");
 }
@@ -83,11 +86,12 @@ export async function updateDocumentAction(
 }
 
 export async function revokeDocumentAction(formData: FormData) {
-  await requireUser();
+  const actorId = await requireUserId();
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
   const reason = formData.get("revokeReason")?.toString()?.trim() || undefined;
   await revokeDocument(id, reason);
+  await createDocumentLog(id, actorId, "revoked", reason);
   revalidatePath("/admin/dokumen");
 }
 
