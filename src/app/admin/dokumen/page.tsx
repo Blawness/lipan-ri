@@ -5,9 +5,10 @@ import { deleteDocumentAction, revokeDocumentAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
 import { CreateDokumenButton } from "./create-button";
+import { QrPreviewButton } from "./qr-preview-button";
+import { QrPreviewModal } from "./qr-preview-modal";
 import {
   Pencil,
-  Download,
   FileText,
   Search,
   ChevronLeft,
@@ -182,17 +183,11 @@ export default async function DokumenListPage({
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <a
-                        href={`/api/verifikasi/${r.slug}/qr`}
-                        target="_blank"
-                        rel="noopener"
-                        title="Pratinjau QR code"
-                      >
-                        <Button size="sm" variant="ghost" type="button">
-                          <Download className="h-3.5 w-3.5" />
-                          QR
-                        </Button>
-                      </a>
+                      <QrPreviewButton
+                        slug={r.slug}
+                        number={r.number}
+                        title={r.title}
+                      />
                       <Button
                         size="sm"
                         variant="outline"
@@ -292,6 +287,7 @@ export default async function DokumenListPage({
           )}
         </nav>
       )}
+      <QrPreviewModal />
     </div>
   );
 }
