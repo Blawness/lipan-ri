@@ -1,5 +1,7 @@
+import "@/rbac"; // side-effect: registers RBAC before any built-in screen renders
 import type { ReactNode } from "react";
 import { AdminLayout } from "@blawness/admin-kit/shell";
+import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import type { NavItem } from "@blawness/admin-kit/shell/sidebar";
 import {
   LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal, FileCheck, PenLine, FolderOpen, Settings,
@@ -39,7 +41,8 @@ const navItems: NavItem[] = [
   },
 ];
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default async function Layout({ children }: { children: ReactNode }) {
+  await requireUser(); // redirect to login if unauthenticated
   return (
     <AdminLayout navItems={navItems} logoSrc="/logo.png" brandName="LIPAN RI">
       {children}
