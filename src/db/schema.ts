@@ -7,12 +7,18 @@ import {
   boolean,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { users, media } from "@blawness/admin-kit/schema";
+import {
+  users,
+  media,
+  loginAttempts,
+  auditLogs,
+} from "@blawness/admin-kit/schema";
 
 // Re-export admin-kit-owned tables so drizzle-kit sees the complete schema
-// (otherwise `media`, which nothing in this file references, is invisible to
-// migrations and a push would propose dropping it).
-export { users, media };
+// (otherwise tables nothing in this file references — e.g. `media`,
+// `login_attempts` (login rate limiter), `audit_logs` (admin action log) —
+// are invisible to migrations and would never be created / get dropped).
+export { users, media, loginAttempts, auditLogs };
 
 export const postStatusEnum = pgEnum("post_status", ["draft", "published"]);
 export const documentStatusEnum = pgEnum("document_status", ["active", "revoked"]);
