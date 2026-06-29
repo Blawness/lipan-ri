@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import {
   createBanner,
   updateBanner,
@@ -34,7 +34,7 @@ function revalidate() {
 }
 
 export async function createBannerAction(formData: FormData) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const input = readInput(formData);
   if (!input) redirect("/admin/banners?error=Gambar+banner+wajib+diunggah");
   await createBanner(input);
@@ -43,7 +43,7 @@ export async function createBannerAction(formData: FormData) {
 }
 
 export async function updateBannerAction(formData: FormData) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   const input = readInput(formData);
   if (!id || !input) redirect("/admin/banners?error=Data+banner+tidak+lengkap");
@@ -53,7 +53,7 @@ export async function updateBannerAction(formData: FormData) {
 }
 
 export async function deleteBannerAction(formData: FormData) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   if (!id) return;
   await deleteBanner(id);
@@ -61,7 +61,7 @@ export async function deleteBannerAction(formData: FormData) {
 }
 
 export async function toggleBannerAction(formData: FormData) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   if (!id) return;
   await toggleBanner(id);
@@ -69,7 +69,7 @@ export async function toggleBannerAction(formData: FormData) {
 }
 
 export async function reorderBannerAction(formData: FormData) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   const dir = String(formData.get("dir"));
   if (!id || (dir !== "up" && dir !== "down")) return;

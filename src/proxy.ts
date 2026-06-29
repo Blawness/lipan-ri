@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
-import { authConfig } from "@blawness/admin-kit/auth/config";
+import { rbac } from "./rbac";
 
-const { auth } = NextAuth(authConfig);
+const { auth } = NextAuth(rbac.authConfig);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default auth as any;

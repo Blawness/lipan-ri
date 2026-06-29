@@ -19,8 +19,8 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0(@types/react@19.2.15)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@blawness/admin-kit':
-        specifier: 0.7.3
-        version: 0.7.3(@floating-ui/dom@1.7.6)(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@types/pg@8.20.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(next@16.2.6(@babel/core@7.29.7)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.0)
+        specifier: ^0.8.0
+        version: 0.8.0(@floating-ui/dom@1.7.6)(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@types/pg@8.20.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(next@16.2.6(@babel/core@7.29.7)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.0)
       '@tiptap/extension-image':
         specifier: ^3.25.0
         version: 3.25.0(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))
@@ -457,8 +457,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@blawness/admin-kit@0.7.3':
-    resolution: {integrity: sha512-YdD+bnFRGx7O0qNVB8Uj/quQbQbwU6maFdhGjqf9Hq2c7S+//+hSBd/m4X9rJdzplhkHJkw1hdJ6MQIHUrlzPg==}
+  '@blawness/admin-kit@0.8.0':
+    resolution: {integrity: sha512-I8cTBebMqEYNH3fBg8JzcfOyzUe/sAAVNXaBvoCyI5ATk3+h8sKffjAqJROVuckgVLiM52woRBSodhgA44ozqQ==}
     peerDependencies:
       next: ^16.2.0
       react: ^19.2.0
@@ -4905,7 +4905,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.15
 
-  '@blawness/admin-kit@0.7.3(@floating-ui/dom@1.7.6)(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@types/pg@8.20.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(next@16.2.6(@babel/core@7.29.7)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.0)':
+  '@blawness/admin-kit@0.8.0(@floating-ui/dom@1.7.6)(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@types/pg@8.20.0)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(next@16.2.6(@babel/core@7.29.7)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.3.0)':
     dependencies:
       '@aws-sdk/client-s3': 3.1058.0
       '@base-ui/react': 1.5.0(@types/react@19.2.15)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

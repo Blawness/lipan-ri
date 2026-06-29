@@ -1,4 +1,4 @@
-import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { listCategories } from "@/lib/admin/categories";
 import { createCategoryAction, deleteCategoryAction } from "./actions";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ export default async function CategoriesPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdmin();
+  await requirePermission("categories.read");
   const rows = await listCategories();
   const { error } = await searchParams;
 

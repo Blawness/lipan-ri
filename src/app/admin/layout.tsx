@@ -15,8 +15,8 @@ const navItems: NavItem[] = [
     icon: <FolderOpen className="h-4 w-4" />,
     children: [
       { href: "/admin/posts", label: "Berita", icon: <Newspaper className="h-4 w-4" /> },
-      { href: "/admin/categories", label: "Kategori", icon: <Tags className="h-4 w-4" />, adminOnly: true },
-      { href: "/admin/banners", label: "Banner", icon: <GalleryHorizontal className="h-4 w-4" />, adminOnly: true },
+      { href: "/admin/categories", label: "Kategori", icon: <Tags className="h-4 w-4" />, requires: "categories.read" },
+      { href: "/admin/banners", label: "Banner", icon: <GalleryHorizontal className="h-4 w-4" />, requires: "banners.manage" },
       { href: "/admin/media", label: "Galeri", icon: <Images className="h-4 w-4" /> },
     ],
   },
@@ -25,8 +25,8 @@ const navItems: NavItem[] = [
     label: "Dokumen",
     icon: <FileCheck className="h-4 w-4" />,
     children: [
-      { href: "/admin/dokumen", label: "Dokumen", icon: <FileCheck className="h-4 w-4" />, adminOnly: true },
-      { href: "/admin/penandatangan", label: "Penandatangan", icon: <PenLine className="h-4 w-4" />, adminOnly: true },
+      { href: "/admin/dokumen", label: "Dokumen", icon: <FileCheck className="h-4 w-4" />, requires: "documents.manage" },
+      { href: "/admin/penandatangan", label: "Penandatangan", icon: <PenLine className="h-4 w-4" />, requires: "signatories.manage" },
     ],
   },
 
@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
     label: "Pengaturan",
     icon: <Settings className="h-4 w-4" />,
     children: [
-      { href: "/admin/users", label: "User", icon: <Users className="h-4 w-4" />, adminOnly: true },
+      { href: "/admin/users", label: "User", icon: <Users className="h-4 w-4" />, requires: "users.read" },
     ],
   },
 ];

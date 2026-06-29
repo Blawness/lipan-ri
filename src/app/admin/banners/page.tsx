@@ -1,4 +1,4 @@
-import { requireAdmin } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { listBanners } from "@/lib/admin/banners";
 import { BannerForm } from "./banner-form";
 import {
@@ -17,7 +17,7 @@ export default async function BannersPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdmin();
+  await requirePermission("banners.manage");
   const rows = await listBanners();
   const { error } = await searchParams;
 
