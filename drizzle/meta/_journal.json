@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1779786193253,
-      "tag": "0000_opposite_jigsaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1780499114948,
-      "tag": "0001_wild_stryfe",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1782366787987,
-      "tag": "0002_add_documents",
+      "when": 1782716852663,
+      "tag": "0000_baseline",
       "breakpoints": true
     }
   ]
