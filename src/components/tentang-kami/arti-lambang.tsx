@@ -1,5 +1,5 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { Pentagon } from "lucide-react";
 import type { LambangContent } from "@/lib/page-content";
 
 export function ArtiLambang({ data }: { data: LambangContent }) {
@@ -10,13 +10,14 @@ export function ArtiLambang({ data }: { data: LambangContent }) {
       </div>
 
       <div className="flex justify-center mb-10">
-        <div className="w-48 h-48 rounded-full bg-gradient-to-br from-navy-900 via-navy-700 to-navy-500 flex items-center justify-center shadow-xl">
-          <div className="text-center">
-            <Pentagon className="h-20 w-20 text-white mx-auto mb-2" />
-            <div className="text-white text-xs font-bold tracking-widest">LIPAN RI</div>
-            <div className="text-navy-200 text-[10px] mt-1">Setya Bhakti Pertiwi</div>
-          </div>
-        </div>
+        <Image
+          src="/logo.png"
+          alt="Lambang LIPAN RI"
+          width={192}
+          height={192}
+          className="w-48 h-48 object-contain drop-shadow-xl"
+          priority
+        />
       </div>
 
       <div className="grid gap-4">
