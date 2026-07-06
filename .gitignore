@@ -50,3 +50,7 @@ next-env.d.ts
 /.playwright-cli/
 /playwright/.cache/
 /e2e/.auth/
+
+# Local PDF export (requires pdf-lib, not a build dependency)
+/pdf-export/
+/scripts/export-pages-pdf.ts
