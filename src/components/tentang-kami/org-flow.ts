@@ -46,7 +46,12 @@ export const EDGES: FlowEdgeDef[] = [
   { source: "ketua", target: "koordinator-keamanan", sh: "sb", th: "tt", busY: 236 },
   { source: "ketua", target: "sekjen", sh: "sb", th: "tt", busY: 300 },
   { source: "ketua", target: "bendahara", sh: "sb", th: "tt", busY: 300 },
-  { source: "ketua", target: "sdm", sh: "sb", th: "tt", busY: 300 },
+  // SDM hangs below Sekjen & Bendahara (as in struktur-lipanv2.svg): both converge
+  // down into SDM via a shared bus just above it, not straight from Ketua. Order
+  // matters — sekjen is listed last so PARENT[sdm] resolves to sekjen (the chain
+  // of command that hover-highlighting walks up).
+  { source: "bendahara", target: "sdm", sh: "sb", th: "tt", busY: 415 },
+  { source: "sekjen", target: "sdm", sh: "sb", th: "tt", busY: 415 },
   { source: "sdm", target: "div-hukum", sh: "sb", th: "tt", busY: 512 },
   { source: "sdm", target: "div-pengawasan", sh: "sb", th: "tt", busY: 512 },
   { source: "sdm", target: "div-media", sh: "sb", th: "tt", busY: 512 },
