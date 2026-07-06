@@ -244,12 +244,27 @@
     background-size: 320px 180px;
   }
 
+  /* React Flow edges: draw in on reveal, transparent canvas over the wavy bg */
+  .struktur-chart .react-flow {
+    background: transparent;
+  }
+  .struktur-chart .react-flow__edge-path {
+    stroke-dasharray: 680;
+    stroke-dashoffset: 680;
+    transition: stroke-dashoffset 0.9s ease, stroke 0.3s ease;
+  }
+  .struktur-chart.is-revealed .react-flow__edge-path {
+    stroke-dashoffset: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .struktur-chart .org-card,
-    .struktur-chart .org-connector {
+    .struktur-chart .org-connector,
+    .struktur-chart .react-flow__edge-path {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
+      stroke-dashoffset: 0 !important;
     }
   }
 }
