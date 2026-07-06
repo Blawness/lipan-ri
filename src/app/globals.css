@@ -205,6 +205,50 @@
   }
 }
 
+/* ── Struktur organisasi (animated org chart) ───────────────────────── */
+@layer components {
+  .struktur-chart .org-card {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, --tw-ring-color 0.3s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+  .struktur-chart.is-revealed .org-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .org-connector {
+    background: rgba(255, 255, 255, 0.85);
+    transition: transform 0.4s ease, background 0.3s ease, box-shadow 0.3s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+  .struktur-chart .org-connector[data-dir="x"] { transform: scaleX(0); transform-origin: left center; }
+  .struktur-chart .org-connector[data-dir="x-right"] { transform: scaleX(0); transform-origin: right center; }
+  .struktur-chart .org-connector[data-dir="y"] { transform: scaleY(0); transform-origin: top center; }
+  .struktur-chart.is-revealed .org-connector { transform: scale(1); }
+
+  .org-connector[data-highlighted] {
+    background: hsl(var(--brand));
+    box-shadow: 0 0 8px hsl(var(--brand) / 0.7);
+  }
+
+  .struktur-bg {
+    background-color: hsl(var(--brand));
+    background-image: var(--struktur-wave);
+    background-size: 320px 180px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .struktur-chart .org-card,
+    .struktur-chart .org-connector {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+}
+
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
