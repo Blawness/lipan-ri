@@ -16,7 +16,7 @@ export function StrukturOrg({}: { data: StrukturContent }) {
         <CardContent className="p-4 md:p-6">
           <div className="relative w-full overflow-x-auto rounded-lg bg-white">
             <Image
-              src="/struktur-lipan.svg"
+              src="/struktur-lipanv2.svg"
               alt="Bagan Struktur Organisasi LIPAN RI"
               width={1440}
               height={810}
