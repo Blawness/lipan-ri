@@ -1,7 +1,8 @@
 import { ORG, type OrgMember } from "./org-data";
 
-// Uniform node width; card is centered inside it.
+// Uniform node size — every card is identical width & height for consistency.
 export const NODE_W = 210;
+export const NODE_H = 56;
 
 // Exact top-left card positions lifted from the source SVG (viewBox 1440x810).
 export const POS: Record<string, { x: number; y: number }> = {
@@ -26,25 +27,29 @@ export const POS: Record<string, { x: number; y: number }> = {
 };
 
 // Edge definitions with source/target handle ids (see org-node.tsx).
+// `busY` = shared horizontal bus line (SVG y-coord) so siblings route cleanly;
+// `toTargetY` routes straight into a side handle (Penasehat branch).
 export interface FlowEdgeDef {
   source: string;
   target: string;
   sh: string; // source handle id
   th: string; // target handle id
+  busY?: number;
+  toTargetY?: boolean;
 }
 
 export const EDGES: FlowEdgeDef[] = [
   { source: "pembina", target: "ketua", sh: "sb", th: "tt" },
-  { source: "pembina", target: "penasehat", sh: "sb", th: "tr" },
-  { source: "ketua", target: "staf-khusus", sh: "sr", th: "tt" },
-  { source: "ketua", target: "koordinator-keamanan", sh: "sr", th: "tt" },
-  { source: "ketua", target: "sekjen", sh: "sb", th: "tt" },
-  { source: "ketua", target: "bendahara", sh: "sb", th: "tt" },
-  { source: "ketua", target: "sdm", sh: "sb", th: "tt" },
-  { source: "sdm", target: "div-hukum", sh: "sb", th: "tt" },
-  { source: "sdm", target: "div-pengawasan", sh: "sb", th: "tt" },
-  { source: "sdm", target: "div-media", sh: "sb", th: "tt" },
-  { source: "sdm", target: "div-investigasi", sh: "sb", th: "tt" },
+  { source: "pembina", target: "penasehat", sh: "sb", th: "tr", toTargetY: true },
+  { source: "ketua", target: "staf-khusus", sh: "sb", th: "tt", busY: 236 },
+  { source: "ketua", target: "koordinator-keamanan", sh: "sb", th: "tt", busY: 236 },
+  { source: "ketua", target: "sekjen", sh: "sb", th: "tt", busY: 300 },
+  { source: "ketua", target: "bendahara", sh: "sb", th: "tt", busY: 300 },
+  { source: "ketua", target: "sdm", sh: "sb", th: "tt", busY: 300 },
+  { source: "sdm", target: "div-hukum", sh: "sb", th: "tt", busY: 512 },
+  { source: "sdm", target: "div-pengawasan", sh: "sb", th: "tt", busY: 512 },
+  { source: "sdm", target: "div-media", sh: "sb", th: "tt", busY: 512 },
+  { source: "sdm", target: "div-investigasi", sh: "sb", th: "tt", busY: 512 },
   { source: "div-hukum", target: "hukum-1", sh: "sb", th: "tt" },
   { source: "hukum-1", target: "hukum-2", sh: "sb", th: "tt" },
   { source: "div-pengawasan", target: "pengawasan-1", sh: "sb", th: "tt" },

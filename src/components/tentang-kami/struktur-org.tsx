@@ -14,9 +14,33 @@ import type { StrukturContent } from "@/lib/page-content";
 import { ORG } from "./org-data";
 import { OrgCard } from "./org-card";
 import { OrgNode } from "./org-node";
-import { MEMBERS, POS, EDGES, ancestors, type OrgNodeData } from "./org-flow";
+import { OrgEdge } from "./org-edge";
+import {
+  MEMBERS,
+  POS,
+  EDGES,
+  NODE_W,
+  NODE_H,
+  ancestors,
+  type OrgNodeData,
+} from "./org-flow";
 
 const nodeTypes = { org: OrgNode };
+const edgeTypes = { org: OrgEdge };
+
+// Stretch the chart vertically so cards breathe; also lets fitView render
+// closer to 1:1 (crisper text) instead of shrinking a wide, short graph.
+const VSCALE = 1.32;
+
+// Bounding box of the (vertically scaled) layout — drives the container aspect
+// ratio so fitView uses the full width with no wasted vertical space.
+const BOUNDS = (() => {
+  const xs = Object.values(POS).map((p) => p.x);
+  const ys = Object.values(POS).map((p) => p.y * VSCALE);
+  const w = Math.max(...xs) + NODE_W - Math.min(...xs);
+  const h = Math.max(...ys) + NODE_H - Math.min(...ys);
+  return { w, h };
+})();
 
 const delay = (n: number): CSSProperties => ({
   ["--delay" as string]: `${n * 90}ms`,
@@ -58,10 +82,10 @@ export function StrukturOrg({}: { data: StrukturContent }) {
 
   const nodes = useMemo<Node<OrgNodeData>[]>(
     () =>
-      Object.entries(POS).map(([id, position]) => ({
+      Object.entries(POS).map(([id, p]) => ({
         id,
         type: "org",
-        position,
+        position: { x: p.x, y: p.y * VSCALE },
         data: { member: MEMBERS[id], highlighted: path.has(id) },
         draggable: false,
         selectable: false,
@@ -80,9 +104,14 @@ export function StrukturOrg({}: { data: StrukturContent }) {
           target: e.target,
           sourceHandle: e.sh,
           targetHandle: e.th,
-          type: "smoothstep",
+          type: "org",
+          data: {
+            busY: e.busY != null ? e.busY * VSCALE : undefined,
+            toTargetY: e.toTargetY,
+          },
           focusable: false,
           selectable: false,
+          zIndex: on ? 10 : 0,
           style: {
             stroke: on ? "hsl(var(--gold))" : "rgba(255,255,255,0.85)",
             strokeWidth: on ? 3 : 2,
@@ -107,11 +136,12 @@ export function StrukturOrg({}: { data: StrukturContent }) {
           >
             {/* Desktop: React Flow — exact SVG coordinates, edges never break */}
             <div className="hidden xl:block">
-              <div style={{ width: "100%", aspectRatio: "1440 / 810" }}>
+              <div style={{ width: "100%", aspectRatio: `${BOUNDS.w} / ${BOUNDS.h}` }}>
                 <ReactFlow
                   nodes={nodes}
                   edges={edges}
                   nodeTypes={nodeTypes}
+                  edgeTypes={edgeTypes}
                   fitView
                   fitViewOptions={{ padding: 0.05 }}
                   proOptions={{ hideAttribution: true }}
