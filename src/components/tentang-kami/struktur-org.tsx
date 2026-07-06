@@ -73,11 +73,12 @@ export function StrukturOrg({}: { data: StrukturContent }) {
     [path],
   );
 
-  const edges = useMemo<Edge[]>(
-    () =>
-      EDGES.map((e) => {
-        const on = path.has(e.source) && path.has(e.target);
-        return {
+  const edges = useMemo<Edge[]>(() => {
+    const built = EDGES.map((e) => {
+      const on = path.has(e.source) && path.has(e.target);
+      return {
+        on,
+        edge: {
           id: `${e.source}__${e.target}`,
           source: e.source,
           target: e.target,
@@ -90,15 +91,22 @@ export function StrukturOrg({}: { data: StrukturContent }) {
           },
           focusable: false,
           selectable: false,
-          zIndex: on ? 10 : 0,
+          // Keep every edge in the SAME zIndex layer: toggling zIndex on hover
+          // moves the edge to a different React Flow layer, which remounts it and
+          // replays the draw-in dash animation → visible flicker. Instead we paint
+          // highlighted edges last (see sort below) so gold stays on top, no remount.
+          zIndex: 0,
           style: {
             stroke: on ? "hsl(var(--gold))" : "rgba(255,255,255,0.85)",
             strokeWidth: on ? 3 : 2,
           },
-        };
-      }),
-    [path],
-  );
+        } as Edge,
+      };
+    });
+    // Stable sort: highlighted edges render after (above) the rest, no layer change.
+    built.sort((a, b) => Number(a.on) - Number(b.on));
+    return built.map((b) => b.edge);
+  }, [path]);
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">

@@ -6,7 +6,8 @@ export const NODE_H = 56;
 
 // Exact top-left card positions lifted from the source SVG (viewBox 1440x810).
 export const POS: Record<string, { x: number; y: number }> = {
-  pembina: { x: 615, y: 30 },
+  // pembina shares ketua/sdm's x so the central spine is dead-straight (was 615).
+  pembina: { x: 612, y: 30 },
   penasehat: { x: 320, y: 107 },
   ketua: { x: 612, y: 174 },
   "staf-khusus": { x: 810, y: 246 },
