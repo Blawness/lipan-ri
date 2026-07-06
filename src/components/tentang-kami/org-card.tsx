@@ -27,7 +27,7 @@ export function OrgCard({ member, highlighted, onActivate, onDeactivate }: OrgCa
         "outline-none transition duration-300 will-change-transform",
         "hover:-translate-y-1 hover:shadow-lg hover:ring-brand-400",
         "focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:ring-brand-500",
-        "data-[highlighted]:ring-brand-400 data-[highlighted]:shadow-lg",
+        "data-[highlighted]:ring-2 data-[highlighted]:ring-[hsl(var(--gold))] data-[highlighted]:shadow-lg",
         variantClass[member.variant],
       ].join(" ")}
     >
