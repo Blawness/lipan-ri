@@ -1,18 +1,11 @@
 "use client";
 
 import "@xyflow/react/dist/style.css";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { ReactFlow, type Edge, type Node } from "@xyflow/react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { StrukturContent } from "@/lib/page-content";
-import { ORG } from "./org-data";
-import { OrgCard } from "./org-card";
 import { OrgNode } from "./org-node";
 import { OrgEdge } from "./org-edge";
 import {
@@ -28,6 +21,8 @@ import {
 const nodeTypes = { org: OrgNode };
 const edgeTypes = { org: OrgEdge };
 
+const SVG_SRC = "/struktur-lipanv2.svg";
+
 // Stretch the chart vertically so cards breathe; also lets fitView render
 // closer to 1:1 (crisper text) instead of shrinking a wide, short graph.
 const VSCALE = 1.32;
@@ -41,22 +36,6 @@ const BOUNDS = (() => {
   const h = Math.max(...ys) + NODE_H - Math.min(...ys);
   return { w, h };
 })();
-
-const delay = (n: number): CSSProperties => ({
-  ["--delay" as string]: `${n * 90}ms`,
-});
-
-// Flat top-to-bottom order for the mobile vertical stack.
-const MOBILE_ORDER = [
-  ORG.pembina,
-  ORG.penasehat,
-  ORG.ketua,
-  ...ORG.stafKhusus,
-  ORG.sekjen,
-  ORG.bendahara,
-  ORG.sdm,
-  ...ORG.divisi.flatMap((d) => [d.head, ...d.staf]),
-];
 
 export function StrukturOrg({}: { data: StrukturContent }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -165,29 +144,18 @@ export function StrukturOrg({}: { data: StrukturContent }) {
               </div>
             </div>
 
-            {/* Mobile / tablet: vertical stack */}
-            <div className="flex flex-col items-center gap-2 p-6 xl:hidden">
-              {MOBILE_ORDER.map((m, i) => (
-                <div
-                  key={m.id}
-                  className="flex flex-col items-center"
-                  style={delay(i)}
-                >
-                  {i > 0 && (
-                    <span
-                      className="org-connector"
-                      data-dir="y"
-                      style={{ width: 3, height: 14 }}
-                    />
-                  )}
-                  <OrgCard
-                    member={m}
-                    highlighted={path.has(m.id)}
-                    onActivate={setActive}
-                    onDeactivate={() => setActive(null)}
-                  />
-                </div>
-              ))}
+            {/* Mobile / tablet: fall back to the source SVG (scroll to read) */}
+            <div className="p-4 xl:hidden">
+              <div className="overflow-x-auto rounded-lg">
+                <Image
+                  src={SVG_SRC}
+                  alt="Bagan Struktur Organisasi LIPAN RI"
+                  width={1440}
+                  height={810}
+                  className="mx-auto h-auto w-full min-w-[760px]"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </CardContent>
