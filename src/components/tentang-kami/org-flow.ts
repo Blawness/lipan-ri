@@ -95,7 +95,10 @@ export const MEMBERS: Record<string, OrgMember> = (() => {
   return m;
 })();
 
+// Node data carries ONLY the member. Highlight state is read from context by the
+// node itself (see OrgPathContext) so the `nodes` array can stay referentially
+// stable across hovers — recreating node objects resets React Flow's measured
+// dimensions and makes every edge unmount for a frame (visible flicker).
 export interface OrgNodeData extends Record<string, unknown> {
   member: OrgMember;
-  highlighted: boolean;
 }

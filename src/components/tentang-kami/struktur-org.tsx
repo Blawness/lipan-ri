@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ReactFlow, type Edge, type Node } from "@xyflow/react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { StrukturContent } from "@/lib/page-content";
-import { OrgNode } from "./org-node";
+import { OrgNode, OrgPathContext } from "./org-node";
 import { OrgEdge } from "./org-edge";
 import {
   MEMBERS,
@@ -59,26 +59,28 @@ export function StrukturOrg({}: { data: StrukturContent }) {
     return () => obs.disconnect();
   }, []);
 
+  // Built once and never rebuilt: highlight is read from OrgPathContext by each
+  // node. Rebuilding this array on hover resets React Flow's measured node
+  // dimensions, which unmounts every edge for a frame → flicker.
   const nodes = useMemo<Node<OrgNodeData>[]>(
     () =>
       Object.entries(POS).map(([id, p]) => ({
         id,
         type: "org",
         position: { x: p.x, y: p.y * VSCALE },
-        data: { member: MEMBERS[id], highlighted: path.has(id) },
+        data: { member: MEMBERS[id] },
         draggable: false,
         selectable: false,
         connectable: false,
       })),
-    [path],
+    [],
   );
 
-  const edges = useMemo<Edge[]>(() => {
-    const built = EDGES.map((e) => {
-      const on = path.has(e.source) && path.has(e.target);
-      return {
-        on,
-        edge: {
+  const edges = useMemo<Edge[]>(
+    () =>
+      EDGES.map((e) => {
+        const on = path.has(e.source) && path.has(e.target);
+        return {
           id: `${e.source}__${e.target}`,
           source: e.source,
           target: e.target,
@@ -91,22 +93,20 @@ export function StrukturOrg({}: { data: StrukturContent }) {
           },
           focusable: false,
           selectable: false,
-          // Keep every edge in the SAME zIndex layer: toggling zIndex on hover
-          // moves the edge to a different React Flow layer, which remounts it and
-          // replays the draw-in dash animation → visible flicker. Instead we paint
-          // highlighted edges last (see sort below) so gold stays on top, no remount.
+          // NEVER change edge order or zIndex on hover. React Flow renders edges as
+          // `edgeIds.map(...)` sorted by zIndex; any reorder (a zIndex bump OR sorting
+          // this array) re-keys the list and unmounts/remounts every edge SVG for
+          // ~1 frame → all the lines blink = the hover flicker. Highlight is conveyed
+          // by stroke color/width only, so the edge order stays constant.
           zIndex: 0,
           style: {
             stroke: on ? "hsl(var(--gold))" : "rgba(255,255,255,0.85)",
             strokeWidth: on ? 3 : 2,
           },
-        } as Edge,
-      };
-    });
-    // Stable sort: highlighted edges render after (above) the rest, no layer change.
-    built.sort((a, b) => Number(a.on) - Number(b.on));
-    return built.map((b) => b.edge);
-  }, [path]);
+        } as Edge;
+      }),
+    [path],
+  );
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -124,31 +124,33 @@ export function StrukturOrg({}: { data: StrukturContent }) {
             {/* Desktop: React Flow — exact SVG coordinates, edges never break */}
             <div className="hidden xl:block">
               <div style={{ width: "100%", aspectRatio: `${BOUNDS.w} / ${BOUNDS.h}` }}>
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  nodeTypes={nodeTypes}
-                  edgeTypes={edgeTypes}
-                  fitView
-                  fitViewOptions={{ padding: 0.05 }}
-                  proOptions={{ hideAttribution: true }}
-                  nodesDraggable={false}
-                  nodesConnectable={false}
-                  nodesFocusable={false}
-                  edgesFocusable={false}
-                  elementsSelectable={false}
-                  panOnDrag={false}
-                  panOnScroll={false}
-                  zoomOnScroll={false}
-                  zoomOnPinch={false}
-                  zoomOnDoubleClick={false}
-                  preventScrolling={false}
-                  minZoom={0.2}
-                  maxZoom={1.5}
-                  onNodeMouseEnter={(_, n) => setActive(n.id)}
-                  onNodeMouseLeave={() => setActive(null)}
-                  style={{ background: "transparent" }}
-                />
+                <OrgPathContext.Provider value={path}>
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    nodeTypes={nodeTypes}
+                    edgeTypes={edgeTypes}
+                    fitView
+                    fitViewOptions={{ padding: 0.05 }}
+                    proOptions={{ hideAttribution: true }}
+                    nodesDraggable={false}
+                    nodesConnectable={false}
+                    nodesFocusable={false}
+                    edgesFocusable={false}
+                    elementsSelectable={false}
+                    panOnDrag={false}
+                    panOnScroll={false}
+                    zoomOnScroll={false}
+                    zoomOnPinch={false}
+                    zoomOnDoubleClick={false}
+                    preventScrolling={false}
+                    minZoom={0.2}
+                    maxZoom={1.5}
+                    onNodeMouseEnter={(_, n) => setActive(n.id)}
+                    onNodeMouseLeave={() => setActive(null)}
+                    style={{ background: "transparent" }}
+                  />
+                </OrgPathContext.Provider>
               </div>
             </div>
 

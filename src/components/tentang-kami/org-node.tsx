@@ -1,7 +1,12 @@
 "use client";
 
+import { createContext, useContext } from "react";
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import { NODE_W, NODE_H, type OrgNodeData } from "./org-flow";
+
+// Hover-highlight path (set of ancestor ids), read by each node so the `nodes`
+// array passed to React Flow never has to change on hover — see org-flow.ts.
+export const OrgPathContext = createContext<Set<string>>(new Set());
 
 // Handles carry the edge endpoints but must be invisible on a static chart.
 const hiddenHandle = {
@@ -15,8 +20,9 @@ const hiddenHandle = {
   pointerEvents: "none",
 } as const;
 
-export function OrgNode({ data }: NodeProps<Node<OrgNodeData>>) {
-  const { member, highlighted } = data;
+export function OrgNode({ id, data }: NodeProps<Node<OrgNodeData>>) {
+  const { member } = data;
+  const highlighted = useContext(OrgPathContext).has(id);
   return (
     <div style={{ width: NODE_W, height: NODE_H }}>
       <Handle id="tt" type="target" position={Position.Top} style={hiddenHandle} />
