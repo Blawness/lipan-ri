@@ -89,6 +89,9 @@
      Format: "H S% L%" (channel HSL, tanpa hsl()). */
   --brand: 224 76% 48%; /* royal blue #1d4ed8 */
 
+  /* Subtle wavy pattern for struktur background (white lines over --brand) */
+  --struktur-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.06' stroke-width='2'%3E%3Cpath d='M-20 30 C 60 0 100 60 160 30 S 260 0 340 30'/%3E%3Cpath d='M-20 75 C 60 45 100 105 160 75 S 260 45 340 75'/%3E%3Cpath d='M-20 120 C 60 90 100 150 160 120 S 260 90 340 120'/%3E%3Cpath d='M-20 165 C 60 135 100 195 160 165 S 260 135 340 165'/%3E%3C/g%3E%3C/svg%3E");
+
   --background: 0 0% 100%;
   --foreground: 222 45% 12%;
   --card: 0 0% 100%;
@@ -202,6 +205,67 @@
     width: 3.5rem;
     border-radius: 9999px;
     background: linear-gradient(90deg, hsl(var(--gold)), hsl(var(--brand)));
+  }
+}
+
+/* ── Struktur organisasi (animated org chart) ───────────────────────── */
+@layer components {
+  .struktur-chart .org-card {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, --tw-ring-color 0.3s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+  .struktur-chart.is-revealed .org-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .org-connector {
+    background: rgba(255, 255, 255, 0.85);
+    transition: transform 0.4s ease, background 0.3s ease, box-shadow 0.3s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+  .struktur-chart .org-connector[data-dir="x"] { transform: scaleX(0); transform-origin: left center; }
+  .struktur-chart .org-connector[data-dir="x-right"] { transform: scaleX(0); transform-origin: right center; }
+  .struktur-chart .org-connector[data-dir="x-center"] { transform: scaleX(0); transform-origin: center; }
+  .struktur-chart .org-connector[data-dir="y"] { transform: scaleY(0); transform-origin: top center; }
+  .struktur-chart .org-connector[data-dir="y-bottom"] { transform: scaleY(0); transform-origin: bottom center; }
+  .struktur-chart.is-revealed .org-connector { transform: scale(1); }
+
+  .org-connector[data-highlighted] {
+    background: hsl(var(--gold));
+    box-shadow: 0 0 8px hsl(var(--gold) / 0.8);
+  }
+
+  .struktur-bg {
+    background-color: hsl(var(--brand));
+    background-image: var(--struktur-wave);
+    background-size: 320px 180px;
+  }
+
+  /* React Flow edges: draw in on reveal, transparent canvas over the wavy bg */
+  .struktur-chart .react-flow {
+    background: transparent;
+  }
+  .struktur-chart .react-flow__edge-path {
+    stroke-dasharray: 680;
+    stroke-dashoffset: 680;
+    transition: stroke-dashoffset 0.9s ease, stroke 0.3s ease;
+  }
+  .struktur-chart.is-revealed .react-flow__edge-path {
+    stroke-dashoffset: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .struktur-chart .org-card,
+    .struktur-chart .org-connector,
+    .struktur-chart .react-flow__edge-path {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      stroke-dashoffset: 0 !important;
+    }
   }
 }
 
