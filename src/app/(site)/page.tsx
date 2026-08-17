@@ -9,6 +9,9 @@ import { ProfilKetua } from "@/components/home/profil-ketua";
 import { LegalitasStrip } from "@/components/home/legalitas-strip";
 import { BeritaGaleri } from "@/components/home/berita-galeri";
 import { CtaKontak } from "@/components/home/cta-kontak";
+import { UcapanHutRi } from "@/components/home/ucapan-hut-ri";
+import { UcapanHutRiModal } from "@/components/home/ucapan-hut-ri-modal";
+import { isPeriodeHutRi } from "@/lib/hut-ri";
 
 const FOUNDED_YEAR = 2017;
 
@@ -21,10 +24,17 @@ export default async function HomePage() {
 
   const years = new Date().getFullYear() - FOUNDED_YEAR;
   const tickerItems = recentPosts.map((p) => ({ title: p.title, slug: p.slug }));
+  const hutRi = isPeriodeHutRi();
 
   return (
     <div className="min-h-screen">
+      {hutRi && <UcapanHutRiModal />}
       <Hero />
+      {hutRi && (
+        <Reveal>
+          <UcapanHutRi />
+        </Reveal>
+      )}
       <NewsTicker items={tickerItems} />
       <Reveal>
         <Stats postCount={postCount} years={years} />
