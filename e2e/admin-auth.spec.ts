@@ -38,4 +38,19 @@ test.describe("Admin (terotentikasi)", () => {
       await expect(page.getByRole("heading", { level: 1 })).toContainText(heading);
     });
   }
+
+  test("unduh QR massal pengurus menghasilkan ZIP", async ({ request }) => {
+    const res = await request.get("/api/admin/pengurus/qr-bulk");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toBe("application/zip");
+
+    const body = await res.body();
+    // Signature ZIP lokal file header: "PK\x03\x04".
+    expect(body.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))).toBe(
+      true,
+    );
+    // Tiap entri punya satu local file header; 18 pengurus → 18 entri.
+    const entri = body.toString("latin1").split("PK\x03\x04").length - 1;
+    expect(entri).toBe(18);
+  });
 });

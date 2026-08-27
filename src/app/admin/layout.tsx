@@ -4,7 +4,7 @@ import { AdminLayout } from "@blawness/admin-kit/shell";
 import { requireUser } from "@blawness/admin-kit/auth-helpers";
 import type { NavItem } from "@blawness/admin-kit/shell/sidebar";
 import {
-  LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal, FileCheck, PenLine, FolderOpen, Settings,
+  LayoutDashboard, Newspaper, Images, Tags, Users, GalleryHorizontal, FileCheck, PenLine, FolderOpen, Settings, IdCard,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +29,14 @@ const navItems: NavItem[] = [
     children: [
       { href: "/admin/dokumen", label: "Dokumen", icon: <FileCheck className="h-4 w-4" />, requires: "documents.manage" },
       { href: "/admin/penandatangan", label: "Penandatangan", icon: <PenLine className="h-4 w-4" />, requires: "signatories.manage" },
+    ],
+  },
+
+  {
+    label: "Organisasi",
+    icon: <IdCard className="h-4 w-4" />,
+    children: [
+      { href: "/admin/pengurus", label: "Pengurus", icon: <IdCard className="h-4 w-4" />, requires: "pengurus.manage" },
     ],
   },
 
