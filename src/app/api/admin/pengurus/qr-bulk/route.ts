@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
-import { createRequire } from "node:module";
+import { ZipArchive } from "archiver";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { pengurus } from "@/db/schema";
 import { generateQrPng } from "@/lib/qr";
-
-const req = createRequire(import.meta.url);
-const archiver = req("archiver");
 
 export async function GET() {
   const session = await auth();
@@ -26,7 +23,7 @@ export async function GET() {
     return new NextResponse("No pengurus found", { status: 404 });
   }
 
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
   const chunks: Buffer[] = [];
   archive.on("data", (chunk: Buffer) => chunks.push(chunk));
 

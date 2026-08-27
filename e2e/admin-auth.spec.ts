@@ -39,6 +39,17 @@ test.describe("Admin (terotentikasi)", () => {
     });
   }
 
+  test("unduh QR massal dokumen menghasilkan ZIP", async ({ request }) => {
+    const res = await request.get("/api/admin/dokumen/qr-bulk");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toBe("application/zip");
+
+    const body = await res.body();
+    expect(body.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))).toBe(
+      true,
+    );
+  });
+
   test("unduh QR massal pengurus menghasilkan ZIP", async ({ request }) => {
     const res = await request.get("/api/admin/pengurus/qr-bulk");
     expect(res.status()).toBe(200);
