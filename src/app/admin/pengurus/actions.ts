@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import {
   createPengurus,
   updatePengurus,
@@ -64,7 +64,7 @@ export async function createPengurusAction(
   _prev: PengurusFormState,
   formData: FormData,
 ): Promise<PengurusFormState> {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   let input: PengurusInput;
   try {
     input = parse(formData);
@@ -84,7 +84,7 @@ export async function updatePengurusAction(
   _prev: PengurusFormState,
   formData: FormData,
 ): Promise<PengurusFormState> {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   let input: PengurusInput;
   try {
     input = parse(formData);
@@ -100,7 +100,7 @@ export async function updatePengurusAction(
 }
 
 export async function deletePengurusAction(formData: FormData) {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
   await deletePengurus(id);

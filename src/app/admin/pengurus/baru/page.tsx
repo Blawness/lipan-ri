@@ -1,4 +1,4 @@
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { suggestNomorAnggota } from "@/lib/admin/pengurus";
 import { createPengurusAction } from "../actions";
 import { PengurusForm } from "../pengurus-form";
@@ -6,7 +6,7 @@ import { PengurusForm } from "../pengurus-form";
 export const dynamic = "force-dynamic";
 
 export default async function PengurusBaruPage() {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   const nomorAnggota = await suggestNomorAnggota();
 
   return (

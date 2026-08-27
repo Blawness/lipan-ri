@@ -40,8 +40,12 @@ export async function GET() {
       `https://www.lipan-ri.com/verifikasi-pengurus/${row.slug}`,
     );
     // Nama berkas memuat nomor anggota agar mudah dicocokkan saat menata cetakan.
-    const aman = row.nama.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    archive.append(png, { name: `${row.nomorAnggota}-${aman}.png` });
+    // nomorAnggota juga teks bebas ketikan admin (bukan hanya `nama`), jadi
+    // disanitasi sama seperti `nama` supaya "/" atau ".." tidak lolos ke entri ZIP.
+    const sanitasi = (s: string) => s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    const nomorAman = sanitasi(row.nomorAnggota);
+    const aman = sanitasi(row.nama);
+    archive.append(png, { name: `${nomorAman}-${aman}.png` });
   }
 
   await archive.finalize();

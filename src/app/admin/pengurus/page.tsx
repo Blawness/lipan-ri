@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { ConfirmDelete } from "@blawness/admin-kit/components";
 import { Button } from "@/components/ui/button";
 import { Plus, Download, Pencil } from "lucide-react";
@@ -19,7 +19,7 @@ function urutBagan(slot: string | null): number {
 }
 
 export default async function PengurusPage() {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   const rows = (await getAllPengurus()).sort(
     (a, b) => urutBagan(a.slot) - urutBagan(b.slot),
   );

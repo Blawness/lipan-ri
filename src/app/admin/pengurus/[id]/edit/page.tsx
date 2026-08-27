@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getPengurusById } from "@/lib/admin/pengurus";
 import { updatePengurusAction } from "../../actions";
 import { PengurusForm } from "../../pengurus-form";
@@ -13,7 +13,7 @@ export default async function PengurusEditPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireUser();
+  await requirePermission("pengurus.manage");
   const { id } = await params;
   const p = await getPengurusById(Number(id));
   if (!p) notFound();
