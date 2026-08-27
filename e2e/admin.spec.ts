@@ -12,3 +12,10 @@ test("wrong password shows error", async ({ page }) => {
   await page.click('button[type="submit"]');
   await expect(page.locator('p[role="alert"]')).toContainText("salah");
 });
+
+test("login page renders without redirect loop", async ({ page }) => {
+  const res = await page.goto("/admin/login");
+  expect(res?.status()).toBe(200);
+  await expect(page).toHaveURL(/\/admin\/login$/);
+  await expect(page.locator('input[name="email"]')).toBeVisible();
+});
