@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Mail, Phone, X } from "lucide-react";
-import type { OrgMember } from "./org-data";
+import type { OrgMember } from "./org-flow";
 
 interface OrgDetailPanelProps {
   member: OrgMember;

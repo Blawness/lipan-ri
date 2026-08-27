@@ -1,4 +1,42 @@
-import { ORG, type OrgMember } from "./org-data";
+export type OrgVariant = "utama" | "divisi" | "staf";
+
+export interface OrgMember {
+  /** id slot di POS. */
+  id: string;
+  role: string;
+  nama: string;
+  variant: OrgVariant;
+  foto?: string;
+  deskripsi?: string;
+  email?: string;
+  telepon?: string;
+  /** true = slot belum terisi; kartu digambar tapi tidak bisa diklik. */
+  kosong?: boolean;
+}
+
+// Label jabatan tiap slot. Ini metadata layout, bukan data orang: dipakai saat
+// sebuah slot belum punya baris di DB, supaya bagan tetap utuh dan garis tetap
+// tersambung alih-alih menyisakan kartu kosong tanpa keterangan.
+export const SLOT_LABELS: Record<string, { role: string; variant: OrgVariant }> = {
+  pembina: { role: "Dewan Pembina", variant: "utama" },
+  penasehat: { role: "Dewan Penasehat/Kehormatan", variant: "utama" },
+  ketua: { role: "Ketua", variant: "utama" },
+  "staf-khusus": { role: "Staf Khusus Ketua", variant: "utama" },
+  "koordinator-keamanan": { role: "Koordinator Keamanan", variant: "utama" },
+  sekjen: { role: "Sekretaris Jenderal", variant: "utama" },
+  bendahara: { role: "Bendahara Umum", variant: "utama" },
+  sdm: { role: "SDM dan Umum", variant: "utama" },
+  "div-hukum": { role: "Divisi Bantuan Hukum & HAM", variant: "divisi" },
+  "div-pengawasan": { role: "Divisi Pengawasan", variant: "divisi" },
+  "div-media": { role: "Divisi Media Infokom", variant: "divisi" },
+  "div-investigasi": { role: "Divisi Investigasi", variant: "divisi" },
+  "hukum-1": { role: "Staf Divisi", variant: "staf" },
+  "hukum-2": { role: "Staf Divisi", variant: "staf" },
+  "pengawasan-1": { role: "Staf Divisi", variant: "staf" },
+  "media-1": { role: "Staf Divisi", variant: "staf" },
+  "media-2": { role: "Staf Divisi", variant: "staf" },
+  "media-3": { role: "Staf Divisi", variant: "staf" },
+};
 
 // Uniform node size — every card is identical width & height for consistency.
 export const NODE_W = 210;
@@ -90,26 +128,6 @@ export function ancestors(id: string | null): Set<string> {
   }
   return set;
 }
-
-// id -> OrgMember lookup, flattened from the org tree.
-export const MEMBERS: Record<string, OrgMember> = (() => {
-  const m: Record<string, OrgMember> = {};
-  const add = (x: OrgMember) => {
-    m[x.id] = x;
-  };
-  add(ORG.pembina);
-  add(ORG.penasehat);
-  add(ORG.ketua);
-  ORG.stafKhusus.forEach(add);
-  add(ORG.sekjen);
-  add(ORG.bendahara);
-  add(ORG.sdm);
-  ORG.divisi.forEach((d) => {
-    add(d.head);
-    d.staf.forEach(add);
-  });
-  return m;
-})();
 
 // Node data carries ONLY the member. Highlight state is read from context by the
 // node itself (see OrgPathContext) so the `nodes` array can stay referentially

@@ -21,7 +21,6 @@ import {
 import { OrgEdge } from "./org-edge";
 import { OrgDetailPanel } from "./org-detail-panel";
 import {
-  MEMBERS,
   POS,
   EDGES,
   PARENT,
