@@ -10,7 +10,7 @@ test.describe("Verifikasi pengurus", () => {
     await expect(page.getByText("Cahya Puspita Rini, S.E.")).toBeVisible();
     await expect(page.getByText("Sekretaris Jenderal")).toBeVisible();
     await expect(page.getByText(/LIPAN-2026-\d{4}/)).toBeVisible();
-    await expect(page.getByText(/s\.d\. sekarang|—/)).toBeVisible();
+    await expect(page.getByText("1 Januari 2026 s.d. sekarang")).toBeVisible();
   });
 
   test("kontak tidak dibocorkan di halaman publik", async ({ page }) => {
