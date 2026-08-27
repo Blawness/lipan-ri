@@ -1,3 +1,4 @@
+import type { Page, Response } from "@playwright/test";
 import { test, expect } from "./fixtures";
 
 /**
@@ -10,6 +11,27 @@ import { test, expect } from "./fixtures";
  * Tests skipped if seed data not found (e.g. production DB without seed).
  */
 
+/**
+ * Halaman verifikasi memakai `force-dynamic`, sehingga `notFound()` tetap
+ * dibalas HTTP 200 (soft-404) — status saja tidak cukup untuk mendeteksi seed
+ * yang hilang. Deteksi lewat isi halaman yang ter-render.
+ *
+ * `page.goto` selesai saat event `load`, saat itu halaman masih menampilkan
+ * fallback `loading.tsx` ("Memuat…"), jadi pemeriksaan langsung selalu balapan.
+ * Tunggu dulu sampai salah satu hasil akhir muncul, baru putuskan.
+ */
+async function seedTidakAda(page: Page, res: Response | null): Promise<boolean> {
+  if (!res || res.status() === 404) return true;
+
+  const takAda = page.getByText("Halaman tidak ditemukan");
+  const kartuDokumen = page.getByRole("heading", {
+    name: /^Dokumen (Valid|Tidak Berlaku)$/,
+  });
+  await takAda.or(kartuDokumen).first().waitFor();
+
+  return takAda.isVisible();
+}
+
 const VALID_SLUG = "test-certificate-001-a1b2c3";
 const REVOKED_SLUG = "003-revoked-g7h8i9";
 const NONEXISTENT_SLUG = "slug-ini-tidak-ada-samasekali-xyz";
@@ -17,7 +39,7 @@ const NONEXISTENT_SLUG = "slug-ini-tidak-ada-samasekali-xyz";
 test.describe("Verifikasi dokumen", () => {
   test("halaman verifikasi dokumen valid", async ({ page }) => {
     const res = await page.goto(`/verifikasi/${VALID_SLUG}`);
-    if (res?.status() === 404) {
+    if (await seedTidakAda(page, res)) {
       test.skip(true, "Seed document not found — run `pnpm db:seed` first");
       return;
     }
@@ -36,7 +58,7 @@ test.describe("Verifikasi dokumen", () => {
 
   test("halaman verifikasi dokumen dicabut (revoked)", async ({ page }) => {
     const res = await page.goto(`/verifikasi/${REVOKED_SLUG}`);
-    if (res?.status() === 404) {
+    if (await seedTidakAda(page, res)) {
       test.skip(true, "Seed revoked document not found — run `pnpm db:seed` first");
       return;
     }
@@ -95,7 +117,7 @@ test.describe("QR code API", () => {
 test.describe("Verifikasi dengan QR slug edge-cases", () => {
   test("verifikasi page menampilkan metadata lengkap", async ({ page }) => {
     const res = await page.goto(`/verifikasi/${VALID_SLUG}`);
-    if (res?.status() === 404) {
+    if (await seedTidakAda(page, res)) {
       test.skip(true, "Seed document not found");
       return;
     }

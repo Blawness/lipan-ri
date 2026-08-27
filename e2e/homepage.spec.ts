@@ -1,20 +1,19 @@
 import { test, expect } from "./fixtures";
 
 test.describe("Beranda", () => {
-  test("memuat hero, logo, dan tagline", async ({ page }) => {
+  test("memuat hero, logo, dan navigasi", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1, name: /LIPAN\s*RI/ })).toBeVisible();
-    await expect(
-      page.getByText(
-        "Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia",
-        { exact: true }
-      )
-    ).toBeVisible();
+    // Hero kini digerakkan tabel `banners`: judul tiap slide berasal dari data,
+    // jadi yang dijamin hanyalah ada satu slide ber-<h1> yang tampil. Teks
+    // tagline diuji di footer, satu-satunya tempat ia selalu ada.
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
 
     await expect(page.getByRole("banner").getByAltText("Logo LIPAN RI")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Tentang Kami" }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Lihat Berita" })).toBeVisible();
+    // "Tentang Kami" di header adalah trigger dropdown (button), bukan link.
+    const nav = page.getByRole("banner");
+    await expect(nav.getByRole("button", { name: "Tentang Kami" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Berita", exact: true })).toBeVisible();
   });
 
   test("menampilkan berita utama & terbaru beserta gambar", async ({ page }) => {
@@ -46,11 +45,16 @@ test.describe("Beranda", () => {
       "href",
       /youtube\.com/
     );
+    await expect(
+      footer.getByText(
+        /Lembaga Investigasi dan Pengawasan Aset Negara Republik Indonesia/
+      )
+    ).toBeVisible();
   });
 
-  test("CTA Lihat Berita menuju halaman berita", async ({ page }) => {
+  test("CTA Semua berita menuju halaman berita", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "Lihat Berita" }).click();
+    await page.getByRole("link", { name: "Semua berita" }).click();
     await expect(page).toHaveURL(/\/berita$/);
   });
 });
