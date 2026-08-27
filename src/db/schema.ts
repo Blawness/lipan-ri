@@ -108,3 +108,26 @@ export const documentLogs = pgTable("document_logs", {
   metadata: text("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const pengurusStatusEnum = pgEnum("pengurus_status", ["aktif", "nonaktif"]);
+
+export const pengurus = pgTable("pengurus", {
+  id: serial("id").primaryKey(),
+  // id slot di org-flow.ts. Nullable: baris tanpa slot (mis. perwakilan daerah)
+  // sah ada, cuma tidak punya kotak di bagan.
+  slot: text("slot").unique(),
+  slug: text("slug").notNull().unique(),
+  nomorAnggota: text("nomor_anggota").notNull().unique(),
+  nama: text("nama").notNull(),
+  jabatan: text("jabatan").notNull(),
+  foto: text("foto"),
+  deskripsi: text("deskripsi"),
+  // email & telepon hanya tampil di panel bagan, TIDAK di halaman verifikasi.
+  email: text("email"),
+  telepon: text("telepon"),
+  status: pengurusStatusEnum("status").default("aktif"),
+  mulaiMenjabat: timestamp("mulai_menjabat").notNull(),
+  selesaiMenjabat: timestamp("selesai_menjabat"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
