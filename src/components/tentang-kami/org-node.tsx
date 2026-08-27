@@ -49,7 +49,7 @@ export function OrgNode({ id, data }: NodeProps<Node<OrgNodeData>>) {
         className={[
           "org-card flex h-full w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl bg-white px-3 text-center transition hover:shadow-lg focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-500",
           selected
-            ? "shadow-xl ring-[3px] ring-brand-500"
+            ? "shadow-xl ring-4 ring-[hsl(var(--gold))]"
             : highlighted
               ? "shadow-lg ring-2 ring-[hsl(var(--gold))]"
               : "shadow-sm ring-1 ring-navy-100/70",
