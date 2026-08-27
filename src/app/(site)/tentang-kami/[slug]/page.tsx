@@ -8,6 +8,7 @@ import { StrukturOrg } from "@/components/tentang-kami/struktur-org";
 import { Legalitas } from "@/components/tentang-kami/legalitas";
 import { ArtiLambang } from "@/components/tentang-kami/arti-lambang";
 import type { PageContent } from "@/lib/page-content";
+import { getPengurusBySlot } from "@/lib/pengurus";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -56,8 +57,10 @@ export default async function StaticPage({ params }: Props) {
       return <ProfilKetua data={data} />;
     case "visi-misi":
       return <VisiMisi data={data} />;
-    case "struktur":
-      return <StrukturOrg data={data} />;
+    case "struktur": {
+      const members = await getPengurusBySlot();
+      return <StrukturOrg data={data} members={members} />;
+    }
     case "legalitas":
       return <Legalitas data={data} />;
     case "lambang":

@@ -28,6 +28,7 @@ import {
   NODE_W,
   NODE_H,
   ancestors,
+  type OrgMember,
   type OrgNodeData,
 } from "./org-flow";
 
@@ -51,28 +52,20 @@ const BOUNDS = (() => {
   return { w, h };
 })();
 
-// Built once and never rebuilt: highlight is read from OrgPathContext by each
-// node. Rebuilding this array on hover resets React Flow's measured node
-// dimensions, which unmounts every edge for a frame → flicker.
-const NODES: Node<OrgNodeData>[] = Object.entries(POS).map(([id, p]) => ({
-  id,
-  type: "org",
-  position: { x: p.x, y: p.y * VSCALE },
-  data: { member: MEMBERS[id] },
-  draggable: false,
-  selectable: false,
-  connectable: false,
-}));
-
-export function StrukturOrg({}: { data: StrukturContent }) {
+export function StrukturOrg({
+  members,
+}: {
+  data: StrukturContent;
+  members: Record<string, OrgMember>;
+}) {
   return (
     <ReactFlowProvider>
-      <StrukturChart />
+      <StrukturChart members={members} />
     </ReactFlowProvider>
   );
 }
 
-function StrukturChart() {
+function StrukturChart({ members }: { members: Record<string, OrgMember> }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
@@ -86,9 +79,13 @@ function StrukturChart() {
   // A click pins the path; hover only previews it while nothing is pinned.
   const path = useMemo(() => ancestors(selected ?? hovered), [selected, hovered]);
 
-  const select = useCallback((id: string) => {
-    setSelected((prev) => (prev === id ? null : id));
-  }, []);
+  const select = useCallback(
+    (id: string) => {
+      if (members[id]?.kosong) return;
+      setSelected((prev) => (prev === id ? null : id));
+    },
+    [members],
+  );
 
   useEffect(() => {
     const mql = window.matchMedia(DESKTOP_MQ);
@@ -137,6 +134,23 @@ function StrukturChart() {
     panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [selected, isDesktop, fitView]);
 
+  // Dibangun ulang hanya saat `members` berubah — bukan saat hover. Menyusun
+  // ulang array ini per-hover mereset dimensi node yang sudah diukur React Flow,
+  // yang membuat setiap edge ter-unmount satu frame (kedip terlihat).
+  const nodes = useMemo<Node<OrgNodeData>[]>(
+    () =>
+      Object.entries(POS).map(([id, p]) => ({
+        id,
+        type: "org",
+        position: { x: p.x, y: p.y * VSCALE },
+        data: { member: members[id] },
+        draggable: false,
+        selectable: false,
+        connectable: false,
+      })),
+    [members],
+  );
+
   const edges = useMemo<Edge[]>(
     () =>
       EDGES.map((e) => {
@@ -169,7 +183,7 @@ function StrukturChart() {
     [path],
   );
 
-  const member = selected ? MEMBERS[selected] : null;
+  const member = selected ? members[selected] : null;
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -210,7 +224,7 @@ function StrukturChart() {
                 <OrgSelectedContext.Provider value={selected}>
                   <OrgSelectContext.Provider value={select}>
                     <ReactFlow
-                      nodes={NODES}
+                      nodes={nodes}
                       edges={edges}
                       nodeTypes={nodeTypes}
                       edgeTypes={edgeTypes}
@@ -248,8 +262,14 @@ function StrukturChart() {
               <OrgDetailPanel
                 key={member.id}
                 member={member}
-                parent={PARENT[member.id] ? MEMBERS[PARENT[member.id]] : null}
-                bawahan={(CHILDREN[member.id] ?? []).map((id) => MEMBERS[id])}
+                parent={
+                  PARENT[member.id] && !members[PARENT[member.id]].kosong
+                    ? members[PARENT[member.id]]
+                    : null
+                }
+                bawahan={(CHILDREN[member.id] ?? [])
+                  .map((id) => members[id])
+                  .filter((m) => !m.kosong)}
                 onSelect={setSelected}
                 onClose={() => setSelected(null)}
               />
