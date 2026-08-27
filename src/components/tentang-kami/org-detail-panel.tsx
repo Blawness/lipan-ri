@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Mail, Phone, X } from "lucide-react";
+import { SafeImage } from "@/components/safe-image";
 import type { OrgMember } from "./org-flow";
 
 interface OrgDetailPanelProps {
@@ -69,11 +69,9 @@ export function OrgDetailPanel({
       <div className="flex flex-col gap-5 sm:flex-row">
         <div className="shrink-0">
           {member.foto ? (
-            <Image
+            <SafeImage
               src={member.foto}
               alt={member.nama}
-              width={96}
-              height={96}
               className="size-20 rounded-2xl object-cover object-top ring-1 ring-navy-100 sm:size-24"
             />
           ) : (

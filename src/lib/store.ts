@@ -26,6 +26,22 @@ export const useQrPreviewStore = create<QrPreviewStore>((set) => ({
   close: () => set({ slug: null, number: null, title: null }),
 }));
 
+type PengurusQrPreviewStore = {
+  slug: string | null;
+  nama: string | null;
+  jabatan: string | null;
+  open: (slug: string, nama: string, jabatan: string) => void;
+  close: () => void;
+};
+
+export const usePengurusQrPreviewStore = create<PengurusQrPreviewStore>((set) => ({
+  slug: null,
+  nama: null,
+  jabatan: null,
+  open: (slug, nama, jabatan) => set({ slug, nama, jabatan }),
+  close: () => set({ slug: null, nama: null, jabatan: null }),
+}));
+
 type DokumenEditStore = {
   id: number | null;
   open: (id: number) => void;

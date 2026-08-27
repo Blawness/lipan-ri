@@ -15,14 +15,24 @@ export function formatMasaBerlaku(mulai: Date, selesai: Date | null): string {
 /**
  * Seorang pengurus tidak berlaku bila status-nya nonaktif ATAU masa jabatannya
  * sudah lewat. Dihitung saat request sehingga kedaluwarsa tidak butuh cron.
+ *
+ * `selesaiMenjabat` bersifat INKLUSIF: tanggal itu disimpan sebagai tengah
+ * malam UTC dari form, tapi kartu masih harus terbaca "berlaku" sepanjang
+ * hari yang tertera — bukan cuma sampai detik pertama hari itu. Karena itu
+ * batasnya dibandingkan terhadap awal hari BERIKUTNYA, bukan tengah malam
+ * `selesaiMenjabat` sendiri.
  */
 export function isBerlaku(
   p: { status: string | null; selesaiMenjabat: Date | null },
   now: Date = new Date(),
 ): boolean {
   if (p.status !== "aktif") return false;
-  if (p.selesaiMenjabat && p.selesaiMenjabat.getTime() <= now.getTime()) {
-    return false;
+  if (p.selesaiMenjabat) {
+    const akhirHari = new Date(p.selesaiMenjabat);
+    akhirHari.setUTCDate(akhirHari.getUTCDate() + 1);
+    if (now.getTime() >= akhirHari.getTime()) {
+      return false;
+    }
   }
   return true;
 }

@@ -37,7 +37,7 @@ export async function GET() {
 
   for (const row of rows) {
     const png = await generateQrPng(
-      `https://www.lipan-ri.com/verifikasi-pengurus/${row.slug}`,
+      `https://www.lipan-ri.com/verifikasi-pengurus/${encodeURIComponent(row.slug)}`,
     );
     // Nama berkas memuat nomor anggota agar mudah dicocokkan saat menata cetakan.
     // nomorAnggota juga teks bebas ketikan admin (bukan hanya `nama`), jadi

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { ConfirmDelete } from "@blawness/admin-kit/components";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,9 @@ import { Plus, Download, Pencil } from "lucide-react";
 import { getAllPengurus } from "@/lib/pengurus";
 import { isBerlaku } from "@/lib/pengurus-rules";
 import { POS } from "@/components/tentang-kami/org-flow";
+import { SafeImage } from "@/components/safe-image";
+import { QrPreviewButton } from "./qr-preview-button";
+import { QrPreviewModal } from "./qr-preview-modal";
 import { deletePengurusAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -58,11 +60,9 @@ export default async function PengurusPage() {
             className="flex items-center gap-4 rounded-xl border border-navy-100 bg-white px-4 py-3 shadow-sm"
           >
             {p.foto ? (
-              <Image
+              <SafeImage
                 src={p.foto}
                 alt={p.nama}
-                width={40}
-                height={40}
                 className="size-10 shrink-0 rounded-lg object-cover object-top"
               />
             ) : (
@@ -88,6 +88,8 @@ export default async function PengurusPage() {
               {isBerlaku(p) ? "Aktif" : "Tidak berlaku"}
             </span>
 
+            <QrPreviewButton slug={p.slug} nama={p.nama} jabatan={p.jabatan} />
+
             <Button
               size="sm"
               variant="ghost"
@@ -100,17 +102,23 @@ export default async function PengurusPage() {
             <ConfirmDelete
               action={deletePengurusAction}
               id={p.id}
-              title="Hapus pengurus?"
+              title="Hapus data pengurus secara permanen?"
               description={
                 <>
-                  <span className="font-medium text-navy-900">{p.nama}</span>{" "}
-                  akan dihapus, dan QR-nya berhenti berlaku.
+                  Data <span className="font-medium text-navy-900">{p.nama}</span>{" "}
+                  akan dihapus permanen. QR yang sudah tercetak akan mengarah
+                  ke halaman tidak ditemukan, bukan menyatakan &quot;Tidak
+                  Berlaku&quot; secara tegas. Untuk mencabut keanggotaan tanpa
+                  merusak QR, ubah status menjadi &quot;Nonaktif&quot; lewat
+                  tombol Ubah.
                 </>
               }
             />
           </li>
         ))}
       </ul>
+
+      <QrPreviewModal />
     </div>
   );
 }

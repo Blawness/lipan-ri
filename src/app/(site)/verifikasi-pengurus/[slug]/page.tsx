@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CheckCircle, XCircle, BadgeCheck, Calendar, User } from "lucide-react";
 import { getPengurusBySlug } from "@/lib/pengurus";
 import { isBerlaku, formatMasaBerlaku } from "@/lib/pengurus-rules";
+import { SafeImage } from "@/components/safe-image";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +47,9 @@ export default async function VerifikasiPengurusPage({ params }: Props) {
         </p>
 
         {p.foto && (
-          <Image
+          <SafeImage
             src={p.foto}
             alt={p.nama}
-            width={160}
-            height={160}
             className="mx-auto mt-6 size-32 rounded-2xl object-cover object-top ring-1 ring-navy-100 sm:size-40"
           />
         )}

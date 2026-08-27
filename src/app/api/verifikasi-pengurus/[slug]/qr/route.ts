@@ -7,7 +7,7 @@ export async function GET(
 ) {
   const { slug } = await params;
   const png = await generateQrPng(
-    `https://www.lipan-ri.com/verifikasi-pengurus/${slug}`,
+    `https://www.lipan-ri.com/verifikasi-pengurus/${encodeURIComponent(slug)}`,
   );
 
   return new NextResponse(new Uint8Array(png), {

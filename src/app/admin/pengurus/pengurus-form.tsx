@@ -99,7 +99,11 @@ export function PengurusForm({
           <label className={labelClass} htmlFor="slug">
             Slug URL verifikasi
           </label>
-          <Input id="slug" name="slug" defaultValue={initial.slug} required />
+          <Input id="slug" name="slug" defaultValue={initial.slug} />
+          <p className="text-xs text-muted-foreground">
+            Dirapikan otomatis (huruf kecil, tanpa spasi/simbol). Kosongkan
+            untuk menurunkannya dari nama.
+          </p>
         </div>
 
         <div className="space-y-1.5">

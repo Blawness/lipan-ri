@@ -263,13 +263,13 @@ function StrukturChart({ members }: { members: Record<string, OrgMember> }) {
                 key={member.id}
                 member={member}
                 parent={
-                  PARENT[member.id] && !members[PARENT[member.id]].kosong
+                  PARENT[member.id] && !members[PARENT[member.id]]?.kosong
                     ? members[PARENT[member.id]]
                     : null
                 }
                 bawahan={(CHILDREN[member.id] ?? [])
                   .map((id) => members[id])
-                  .filter((m) => !m.kosong)}
+                  .filter((m): m is OrgMember => !!m && !m.kosong)}
                 onSelect={setSelected}
                 onClose={() => setSelected(null)}
               />

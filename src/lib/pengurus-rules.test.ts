@@ -30,6 +30,22 @@ describe("isBerlaku", () => {
   it("tidak berlaku saat status null", () => {
     expect(isBerlaku({ status: null, selesaiMenjabat: null }, NOW)).toBe(false);
   });
+
+  it("masih berlaku pada siang hari di tanggal selesaiMenjabat (inklusif)", () => {
+    const akhir = new Date("2026-08-27T00:00:00Z");
+    const siangHariItu = new Date("2026-08-27T12:00:00Z");
+    expect(
+      isBerlaku({ status: "aktif", selesaiMenjabat: akhir }, siangHariItu),
+    ).toBe(true);
+  });
+
+  it("tidak berlaku lagi pada hari berikutnya setelah selesaiMenjabat", () => {
+    const akhir = new Date("2026-08-27T00:00:00Z");
+    const hariBerikutnya = new Date("2026-08-28T00:00:00Z");
+    expect(
+      isBerlaku({ status: "aktif", selesaiMenjabat: akhir }, hariBerikutnya),
+    ).toBe(false);
+  });
 });
 
 describe("nextNomorAnggota", () => {

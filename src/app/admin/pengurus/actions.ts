@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requirePermission } from "@blawness/admin-kit/auth-helpers";
+import { slugify } from "@/lib/slug";
 import {
   createPengurus,
   updatePengurus,
@@ -13,7 +14,7 @@ import {
 
 const schema = z.object({
   slot: z.string().optional(),
-  slug: z.string().min(1, "Slug wajib diisi"),
+  slug: z.string().optional(),
   nomorAnggota: z.string().min(1, "Nomor anggota wajib diisi"),
   nama: z.string().min(1, "Nama wajib diisi"),
   jabatan: z.string().min(1, "Jabatan wajib diisi"),
@@ -27,6 +28,33 @@ const schema = z.object({
 });
 
 export type PengurusFormState = { error?: string };
+
+/** Error Postgres asli (kode + constraint), tanpa perlu tipe driver spesifik. */
+interface PgError {
+  code?: string;
+  constraint?: string;
+}
+
+function isPgError(e: unknown): e is PgError {
+  return typeof e === "object" && e !== null && "code" in e;
+}
+
+/** Petakan pelanggaran unique index menjadi pesan berbahasa Indonesia. */
+function pesanKesalahanSimpan(e: unknown): string {
+  if (isPgError(e) && e.code === "23505") {
+    const constraint = e.constraint ?? "";
+    if (constraint.includes("pengurus_slot_unique")) {
+      return "Posisi itu sudah diisi pengurus lain.";
+    }
+    if (constraint.includes("pengurus_slug_unique")) {
+      return "Slug itu sudah dipakai.";
+    }
+    if (constraint.includes("pengurus_nomor_anggota_unique")) {
+      return "Nomor anggota itu sudah dipakai.";
+    }
+  }
+  return "Gagal menyimpan data.";
+}
 
 function parse(formData: FormData): PengurusInput {
   const d = schema.parse({
@@ -44,9 +72,12 @@ function parse(formData: FormData): PengurusInput {
     selesaiMenjabat: formData.get("selesaiMenjabat") || undefined,
   });
 
+  const slugMentah = d.slug?.trim();
+  const slug = slugify(slugMentah || d.nama) || slugify(d.nama);
+
   return {
     slot: d.slot?.trim() || null,
-    slug: d.slug.trim(),
+    slug,
     nomorAnggota: d.nomorAnggota.trim(),
     nama: d.nama.trim(),
     jabatan: d.jabatan.trim(),
@@ -65,18 +96,23 @@ export async function createPengurusAction(
   formData: FormData,
 ): Promise<PengurusFormState> {
   await requirePermission("pengurus.manage");
-  let input: PengurusInput;
+  let ok = false;
   try {
-    input = parse(formData);
+    const input = parse(formData);
+    await createPengurus(input);
+    ok = true;
   } catch (e) {
-    return {
-      error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid.",
-    };
+    if (e instanceof z.ZodError) {
+      return { error: e.issues[0].message };
+    }
+    return { error: pesanKesalahanSimpan(e) };
   }
-  await createPengurus(input);
-  revalidatePath("/admin/pengurus");
-  revalidatePath("/tentang-kami/struktur");
-  redirect("/admin/pengurus?saved=created");
+  if (ok) {
+    revalidatePath("/admin/pengurus");
+    revalidatePath("/tentang-kami/struktur");
+    redirect("/admin/pengurus?saved=created");
+  }
+  return {};
 }
 
 export async function updatePengurusAction(
@@ -85,18 +121,23 @@ export async function updatePengurusAction(
   formData: FormData,
 ): Promise<PengurusFormState> {
   await requirePermission("pengurus.manage");
-  let input: PengurusInput;
+  let ok = false;
   try {
-    input = parse(formData);
+    const input = parse(formData);
+    await updatePengurus(id, input);
+    ok = true;
   } catch (e) {
-    return {
-      error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid.",
-    };
+    if (e instanceof z.ZodError) {
+      return { error: e.issues[0].message };
+    }
+    return { error: pesanKesalahanSimpan(e) };
   }
-  await updatePengurus(id, input);
-  revalidatePath("/admin/pengurus");
-  revalidatePath("/tentang-kami/struktur");
-  redirect("/admin/pengurus?saved=updated");
+  if (ok) {
+    revalidatePath("/admin/pengurus");
+    revalidatePath("/tentang-kami/struktur");
+    redirect("/admin/pengurus?saved=updated");
+  }
+  return {};
 }
 
 export async function deletePengurusAction(formData: FormData) {

@@ -81,9 +81,11 @@ test.describe("Struktur — kartu bisa diklik", () => {
 
   test("nama pengurus datang dari database, bukan konstanta", async ({ page }) => {
     await page.goto("/tentang-kami/struktur");
-    // Slot yang terisi selalu punya nama; slot kosong dirender "—" dan bukan button.
+    // Slot yang terisi adalah button yang bisa diklik dan memuat nama pengurus —
+    // bukan sekadar cek ketiadaan "—", yang juga bisa merah saat admin sah
+    // menonaktifkan seorang pengurus (slot itu lalu menampilkan "—").
     const kartu = page.getByRole("button", { name: /^Ketua —/ });
     await expect(kartu).toBeVisible();
-    await expect(page.getByText("—", { exact: true })).toHaveCount(0);
+    await expect(kartu).toContainText("Harun Prayitno");
   });
 });
