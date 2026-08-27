@@ -69,6 +69,17 @@ export const PARENT: Record<string, string> = Object.fromEntries(
   EDGES.map((e) => [e.target, e.source]),
 );
 
+// parent id -> child ids. Derived from PARENT (not EDGES) so every node hangs
+// under exactly one parent: `sdm` has two incoming edges (sekjen & bendahara)
+// but only one chain of command, and the detail panel must not list it twice.
+export const CHILDREN: Record<string, string[]> = (() => {
+  const m: Record<string, string[]> = {};
+  for (const [child, parent] of Object.entries(PARENT)) {
+    (m[parent] ??= []).push(child);
+  }
+  return m;
+})();
+
 // The chain of ancestors of `id` (inclusive), for hover-path highlighting.
 export function ancestors(id: string | null): Set<string> {
   const set = new Set<string>();

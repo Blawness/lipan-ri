@@ -257,13 +257,24 @@
     stroke-dashoffset: 0;
   }
 
+  /* Panel detail pengurus: masuk saat kartu diklik (remount lewat key) */
+  @keyframes org-detail-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .org-detail {
+    animation: org-detail-in 0.28s ease both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .struktur-chart .org-card,
     .struktur-chart .org-connector,
-    .struktur-chart .react-flow__edge-path {
+    .struktur-chart .react-flow__edge-path,
+    .org-detail {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
+      animation: none !important;
       stroke-dashoffset: 0 !important;
     }
   }
