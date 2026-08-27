@@ -29,3 +29,63 @@ export function nextNomorAnggota(existing: string[], year: number): string {
   }
   return `LIPAN-${year}-${String(max + 1).padStart(4, "0")}`;
 }
+
+type SlotLabel = { role: string; variant: "utama" | "divisi" | "staf" };
+
+type BarisPengurus = {
+  slot: string | null;
+  nama: string;
+  jabatan: string;
+  foto: string | null;
+  deskripsi: string | null;
+  email: string | null;
+  telepon: string | null;
+  status: string | null;
+  selesaiMenjabat: Date | null;
+};
+
+type AnggotaBagan = {
+  id: string;
+  role: string;
+  nama: string;
+  variant: "utama" | "divisi" | "staf";
+  foto?: string;
+  deskripsi?: string;
+  email?: string;
+  telepon?: string;
+  kosong?: boolean;
+};
+
+/**
+ * Gabungkan baris DB ke atas daftar slot bagan. Setiap slot selalu dapat entri:
+ * slot tanpa pengurus berlaku menghasilkan kartu "—" yang tidak bisa diklik,
+ * sehingga bagan tetap utuh dan garis tetap tersambung.
+ */
+export function mergeSlots(
+  labels: Record<string, SlotLabel>,
+  rows: BarisPengurus[],
+  now: Date = new Date(),
+): Record<string, AnggotaBagan> {
+  const bySlot = new Map<string, BarisPengurus>();
+  for (const row of rows) {
+    if (row.slot && isBerlaku(row, now)) bySlot.set(row.slot, row);
+  }
+
+  const out: Record<string, AnggotaBagan> = {};
+  for (const [slot, label] of Object.entries(labels)) {
+    const row = bySlot.get(slot);
+    out[slot] = row
+      ? {
+          id: slot,
+          role: row.jabatan,
+          nama: row.nama,
+          variant: label.variant,
+          foto: row.foto ?? undefined,
+          deskripsi: row.deskripsi ?? undefined,
+          email: row.email ?? undefined,
+          telepon: row.telepon ?? undefined,
+        }
+      : { id: slot, role: label.role, nama: "—", variant: label.variant, kosong: true };
+  }
+  return out;
+}

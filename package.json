@@ -12,6 +12,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
+    "db:seed-pengurus": "tsx src/db/seed-pengurus.ts",
     "admin:create": "tsx scripts/create-admin.ts",
     "images:migrate": "tsx scripts/migrate-images-to-r2.ts",
     "posts:scrape": "tsx scripts/scrape-posts.ts",
