@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { isBerlaku, nextNomorAnggota, mergeSlots } from "@/lib/pengurus-rules";
+import {
+  isBerlaku,
+  nextNomorAnggota,
+  mergeSlots,
+  formatMasaBerlaku,
+} from "@/lib/pengurus-rules";
 
 const NOW = new Date("2026-08-27T00:00:00Z");
 
@@ -95,5 +100,18 @@ describe("mergeSlots", () => {
   it("memakai jabatan dari DB, bukan label, saat baris ada", () => {
     const out = mergeSlots(labels, [{ ...baris, jabatan: "Ketua Umum" }], NOW);
     expect(out.ketua.role).toBe("Ketua Umum");
+  });
+});
+
+describe("formatMasaBerlaku", () => {
+  const mulai = new Date("2026-01-01T00:00:00Z");
+
+  it("menulis 's.d. sekarang' bila belum ada tanggal selesai", () => {
+    expect(formatMasaBerlaku(mulai, null)).toBe("1 Januari 2026 s.d. sekarang");
+  });
+
+  it("menulis rentang bila ada tanggal selesai", () => {
+    const selesai = new Date("2027-03-15T00:00:00Z");
+    expect(formatMasaBerlaku(mulai, selesai)).toBe("1 Januari 2026 — 15 Maret 2027");
   });
 });

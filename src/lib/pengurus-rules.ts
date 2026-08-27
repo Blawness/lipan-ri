@@ -1,6 +1,17 @@
 /** Format nomor anggota otomatis: LIPAN-{tahun}-{urut 4 digit}. */
 const NOMOR_RE = /^LIPAN-(\d{4})-(\d{4})$/;
 
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "long",
+  timeZone: "UTC",
+});
+
+/** Rentang masa jabatan yang dibaca manusia, untuk halaman verifikasi publik. */
+export function formatMasaBerlaku(mulai: Date, selesai: Date | null): string {
+  const awal = dateFmt.format(mulai);
+  return selesai ? `${awal} — ${dateFmt.format(selesai)}` : `${awal} s.d. sekarang`;
+}
+
 /**
  * Seorang pengurus tidak berlaku bila status-nya nonaktif ATAU masa jabatannya
  * sudah lewat. Dihitung saat request sehingga kedaluwarsa tidak butuh cron.
