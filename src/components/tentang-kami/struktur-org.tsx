@@ -19,7 +19,7 @@ import {
   OrgSelectedContext,
 } from "./org-node";
 import { OrgEdge } from "./org-edge";
-import { OrgDetailPanel } from "./org-detail-panel";
+import { OrgDetailDialog } from "./org-detail-dialog";
 import {
   POS,
   EDGES,
@@ -67,7 +67,6 @@ export function StrukturOrg({
 
 function StrukturChart({ members }: { members: Record<string, OrgMember> }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -117,21 +116,12 @@ function StrukturChart({ members }: { members: Record<string, OrgMember> }) {
     fitView({ padding: isDesktop ? 0.05 : 0.1 });
   }, [isDesktop, fitView]);
 
-  useEffect(() => {
-    if (!selected) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelected(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [selected]);
-
-  // On small screens the selected card and the panel are rarely both on screen:
-  // centre the card in the chart, then bring the panel into view.
+  // Detailnya tampil sebagai modal, jadi Escape sudah ditangani Dialog.
+  // Di layar kecil kartu yang dipilih ditengahkan supaya tetap terlihat
+  // begitu modal ditutup.
   useEffect(() => {
     if (!selected || isDesktop) return;
     fitView({ nodes: [{ id: selected }], maxZoom: 1, duration: 400 });
-    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [selected, isDesktop, fitView]);
 
   // Dibangun ulang hanya saat `members` berubah — bukan saat hover. Menyusun
@@ -256,27 +246,26 @@ function StrukturChart({ members }: { members: Record<string, OrgMember> }) {
               </OrgPathContext.Provider>
             </div>
           </div>
-
-          <div ref={panelRef}>
-            {member && (
-              <OrgDetailPanel
-                key={member.id}
-                member={member}
-                parent={
-                  PARENT[member.id] && !members[PARENT[member.id]]?.kosong
-                    ? members[PARENT[member.id]]
-                    : null
-                }
-                bawahan={(CHILDREN[member.id] ?? [])
-                  .map((id) => members[id])
-                  .filter((m): m is OrgMember => !!m && !m.kosong)}
-                onSelect={setSelected}
-                onClose={() => setSelected(null)}
-              />
-            )}
-          </div>
         </CardContent>
       </Card>
+
+      <OrgDetailDialog
+        member={member}
+        parent={
+          member && PARENT[member.id] && !members[PARENT[member.id]]?.kosong
+            ? members[PARENT[member.id]]
+            : null
+        }
+        bawahan={
+          member
+            ? (CHILDREN[member.id] ?? [])
+                .map((id) => members[id])
+                .filter((m): m is OrgMember => !!m && !m.kosong)
+            : []
+        }
+        onSelect={setSelected}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }

@@ -8,6 +8,12 @@
 
 export const HUT_RI = {
   ke: 81,
+  /**
+   * Pop-up ucapan saat halaman beranda dibuka. Section di beranda tetap
+   * tampil selama periode Agustus; ini khusus modal-nya saja.
+   * Set `true` untuk menyalakannya lagi.
+   */
+  tampilkanModal: false,
   tahun: 2026,
   tema: "Indonesia Berdaulat, Adil, dan Makmur",
   gambar: "/hut-ri-81-lipanri.jpeg",

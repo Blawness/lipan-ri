@@ -11,7 +11,7 @@ import { BeritaGaleri } from "@/components/home/berita-galeri";
 import { CtaKontak } from "@/components/home/cta-kontak";
 import { UcapanHutRi } from "@/components/home/ucapan-hut-ri";
 import { UcapanHutRiModal } from "@/components/home/ucapan-hut-ri-modal";
-import { isPeriodeHutRi } from "@/lib/hut-ri";
+import { HUT_RI, isPeriodeHutRi } from "@/lib/hut-ri";
 
 const FOUNDED_YEAR = 2017;
 
@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {hutRi && <UcapanHutRiModal />}
+      {hutRi && HUT_RI.tampilkanModal && <UcapanHutRiModal />}
       <Hero />
       {hutRi && (
         <Reveal>
