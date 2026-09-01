@@ -7,10 +7,21 @@ test.describe("Verifikasi pengurus", () => {
     await expect(
       page.getByRole("heading", { name: "Pengurus Aktif" }),
     ).toBeVisible();
-    await expect(page.getByText("Cahya Puspita Rini, S.E.")).toBeVisible();
-    await expect(page.getByText("Sekretaris Jenderal")).toBeVisible();
-    await expect(page.getByText(/LIPAN-2026-\d{4}/)).toBeVisible();
-    await expect(page.getByText("1 Januari 2026 s.d. sekarang")).toBeVisible();
+    await expect(page.getByText(/Cahya Puspita Rini/)).toBeVisible();
+
+    // Nilai tiap baris datang dari DB (nama bergelar, nomor anggota lama yang
+    // diketik manual, tanggal menjabat) — yang dijamin halaman ini adalah
+    // keempat baris itu ada dan terisi, bukan isinya persis.
+    for (const label of ["Nama", "Jabatan", "Nomor Anggota", "Masa Berlaku"]) {
+      const nilai = page
+        .getByText(label, { exact: true })
+        .locator("xpath=following-sibling::p");
+      await expect(nilai).toBeVisible();
+      await expect(nilai).not.toBeEmpty();
+    }
+    await expect(
+      page.getByText("Masa Berlaku").locator("xpath=following-sibling::p"),
+    ).toContainText(/\d{4}/);
   });
 
   test("kontak tidak dibocorkan di halaman publik", async ({ page }) => {

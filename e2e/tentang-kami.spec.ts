@@ -41,31 +41,47 @@ test.describe("Tentang Kami", () => {
 });
 
 test.describe("Struktur — kartu bisa diklik", () => {
-  test("klik kartu membuka panel detail, chip relasi memindah seleksi", async ({ page }) => {
+  // Nama & jabatan pengurus datang dari DB dan bisa berubah, jadi ekspektasi
+  // diambil dari kartu yang diklik (aria-label = "Jabatan — Nama") alih-alih
+  // ditulis ulang sebagai konstanta di test.
+  const namaDari = (label: string) => label.split(" — ")[1];
+
+  test("klik kartu membuka modal detail, chip relasi memindah seleksi", async ({
+    page,
+  }) => {
     await page.goto("/tentang-kami/struktur");
 
-    // Belum ada yang dipilih → panel belum muncul.
-    await expect(page.getByRole("region", { name: /^Detail / })).toHaveCount(0);
+    // Belum ada yang dipilih → modal belum muncul.
+    await expect(page.getByRole("dialog")).toHaveCount(0);
 
-    await page.getByRole("button", { name: /^Sekretaris Jenderal/ }).click();
+    const kartu = page.getByRole("button", { name: /^Sekretaris Jenderal —/ });
+    const label = (await kartu.getAttribute("aria-label")) ?? "";
+    // Baris terakhir kartu adalah nomor anggota.
+    const baris = (await kartu.innerText()).trim().split("\n");
+    const nomor = baris[baris.length - 1].trim();
+    await kartu.click();
 
-    const panel = page.getByRole("region", { name: "Detail Sekretaris Jenderal" });
-    await expect(panel).toBeVisible();
-    await expect(panel).toContainText("Cahya Puspita Rini");
-    await expect(panel).toContainText(/administrasi dan kesekretariatan/i);
+    const modal = page.getByRole("dialog");
+    await expect(modal).toBeVisible();
+    await expect(modal).toHaveAccessibleName(label);
+    await expect(modal).toContainText(namaDari(label));
+    await expect(modal).toContainText(nomor);
 
     // Atasan langsung dan bawahan langsung ikut tampil.
-    await expect(panel.getByText("Bertanggung jawab ke")).toBeVisible();
-    await expect(panel.getByRole("button", { name: /Ketua/ })).toBeVisible();
+    await expect(modal.getByText("Bertanggung jawab ke")).toBeVisible();
+    await expect(modal.getByText("Membawahi")).toBeVisible();
 
-    // Chip bawahan memindahkan seleksi ke pengurus itu.
-    await panel.getByRole("button", { name: /SDM dan Umum/ }).click();
-    await expect(page.getByRole("region", { name: "Detail SDM dan Umum" })).toContainText(
-      "Ruswondo Awidjan",
-    );
+    // Chip relasi memakai pemisah "·"; yang terakhir adalah bawahan langsung.
+    const chip = modal.getByRole("button", { name: /·/ }).last();
+    const [chipJabatan, chipNama] = (await chip.innerText())
+      .split("·")
+      .map((t) => t.replace(/\s+/g, " ").trim());
+    await chip.click();
+    // Judul modal (sr-only) ikut berganti → seleksi benar-benar berpindah.
+    await expect(modal).toHaveAccessibleName(`${chipJabatan} — ${chipNama}`);
 
-    await page.getByRole("button", { name: "Tutup detail" }).click();
-    await expect(page.getByRole("region", { name: /^Detail / })).toHaveCount(0);
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
   test("di layar kecil kartu tetap bisa diketuk", async ({ page }) => {
@@ -73,10 +89,10 @@ test.describe("Struktur — kartu bisa diklik", () => {
     await page.goto("/tentang-kami/struktur");
 
     await expect(page.getByText(/Geser & cubit untuk menjelajah/)).toBeVisible();
-    await page.getByRole("button", { name: /^Bendahara Umum/ }).click();
-    await expect(page.getByRole("region", { name: "Detail Bendahara Umum" })).toContainText(
-      "Velia Dwi Yulianti",
-    );
+    const kartu = page.getByRole("button", { name: /^Bendahara Umum —/ });
+    const label = (await kartu.getAttribute("aria-label")) ?? "";
+    await kartu.click();
+    await expect(page.getByRole("dialog")).toContainText(namaDari(label));
   });
 
   test("nama pengurus datang dari database, bukan konstanta", async ({ page }) => {
@@ -84,8 +100,8 @@ test.describe("Struktur — kartu bisa diklik", () => {
     // Slot yang terisi adalah button yang bisa diklik dan memuat nama pengurus —
     // bukan sekadar cek ketiadaan "—", yang juga bisa merah saat admin sah
     // menonaktifkan seorang pengurus (slot itu lalu menampilkan "—").
-    const kartu = page.getByRole("button", { name: /^Ketua —/ });
+    const kartu = page.getByRole("button", { name: /Harun Prayitno/ });
     await expect(kartu).toBeVisible();
-    await expect(kartu).toContainText("Harun Prayitno");
+    await expect(kartu).toContainText(/^Ketua/);
   });
 });
