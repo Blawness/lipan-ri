@@ -67,6 +67,7 @@
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/archiver": "^8.0.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
