@@ -55,6 +55,7 @@ type SlotLabel = { role: string; variant: "utama" | "divisi" | "staf" };
 
 type BarisPengurus = {
   slot: string | null;
+  nomorAnggota: string;
   nama: string;
   jabatan: string;
   foto: string | null;
@@ -70,6 +71,7 @@ type AnggotaBagan = {
   role: string;
   nama: string;
   variant: "utama" | "divisi" | "staf";
+  nomorAnggota?: string;
   foto?: string;
   deskripsi?: string;
   email?: string;
@@ -101,6 +103,7 @@ export function mergeSlots(
           role: row.jabatan,
           nama: row.nama,
           variant: label.variant,
+          nomorAnggota: row.nomorAnggota,
           foto: row.foto ?? undefined,
           deskripsi: row.deskripsi ?? undefined,
           email: row.email ?? undefined,

@@ -92,6 +92,12 @@ describe("mergeSlots", () => {
     expect(out.ketua.nama).toBe("Harun Prayitno, S.E., S.H., M.H.");
     expect(out.ketua.deskripsi).toBe("Memimpin organisasi.");
     expect(out.ketua.kosong).toBeUndefined();
+    expect(out.ketua.nomorAnggota).toBe("LIPAN-2026-0001");
+  });
+
+  it("tidak memberi nomor anggota pada slot kosong", () => {
+    const out = mergeSlots(labels, [baris], NOW);
+    expect(out.sekjen.nomorAnggota).toBeUndefined();
   });
 
   it("menandai slot tanpa baris sebagai kosong, bukan menghilangkannya", () => {

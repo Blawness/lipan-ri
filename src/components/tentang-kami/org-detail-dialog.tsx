@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Phone } from "lucide-react";
+import { IdCard, Mail, Phone } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
 import {
   Dialog,
@@ -99,6 +99,13 @@ export function OrgDetailDialog({
                 <p className="mt-0.5 pr-8 text-lg font-bold leading-tight text-navy-800 sm:text-xl">
                   {member.nama}
                 </p>
+
+                {member.nomorAnggota && (
+                  <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-navy-50 px-2.5 py-1 text-[11px] font-medium text-navy-600 ring-1 ring-navy-100">
+                    <IdCard className="size-3.5 text-navy-400" />
+                    <span className="font-mono tracking-wide">{member.nomorAnggota}</span>
+                  </p>
+                )}
 
                 {member.deskripsi && (
                   <p className="mt-2 text-sm leading-relaxed text-navy-600">

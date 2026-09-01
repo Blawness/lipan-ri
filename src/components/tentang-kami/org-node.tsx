@@ -72,6 +72,11 @@ export function OrgNode({ id, data }: NodeProps<Node<OrgNodeData>>) {
           <p className="mt-0.5 text-[10px] leading-[1.15] text-navy-500">
             {member.nama}
           </p>
+          {member.nomorAnggota && (
+            <p className="mt-1 font-mono text-[9px] leading-none tracking-wide text-navy-400">
+              {member.nomorAnggota}
+            </p>
+          )}
         </button>
       )}
     </div>

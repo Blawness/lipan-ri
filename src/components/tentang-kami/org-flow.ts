@@ -6,6 +6,8 @@ export interface OrgMember {
   role: string;
   nama: string;
   variant: OrgVariant;
+  /** Nomor anggota (KTA) — hanya ada bila slot terisi. */
+  nomorAnggota?: string;
   foto?: string;
   deskripsi?: string;
   email?: string;
@@ -39,8 +41,11 @@ export const SLOT_LABELS: Record<string, { role: string; variant: OrgVariant }> 
 };
 
 // Uniform node size — every card is identical width & height for consistency.
+// Tinggi kartu dibatasi jarak vertikal terdekat antar-baris di POS (59 satuan,
+// mis. media-1 → media-2) setelah dikalikan VSCALE 1.32 ≈ 78px; 68 menyisakan
+// ~10px sela sehingga baris nomor anggota muat tanpa kartu saling menempel.
 export const NODE_W = 210;
-export const NODE_H = 56;
+export const NODE_H = 68;
 
 // Exact top-left card positions lifted from the source SVG (viewBox 1440x810).
 export const POS: Record<string, { x: number; y: number }> = {
