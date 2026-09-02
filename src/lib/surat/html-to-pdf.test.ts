@@ -83,4 +83,35 @@ describe("parseSuratHtml", () => {
   it("mengabaikan teks kosong antar-tag", () => {
     expect(parseSuratHtml("<p>a</p>\n  \n<p>b</p>")).toHaveLength(2);
   });
+
+  it("meratakan daftar tak berurut bersarang menjadi satu daftar", () => {
+    const blocks = parseSuratHtml("<ul><li>a<ul><li>b</li></ul></li></ul>");
+    expect(blocks).toEqual([
+      { kind: "list", ordered: false, items: [[plain("a")], [plain("b")]] },
+    ]);
+  });
+
+  it("daftar bersarang tidak menghasilkan paragraf nyasar", () => {
+    const blocks = parseSuratHtml("<ul><li>a<ul><li>b</li></ul></li></ul>");
+    expect(blocks.some((b) => b.kind === "paragraph")).toBe(false);
+  });
+
+  it("daftar berurut dengan anak tak berurut tetap ordered: true", () => {
+    const [block] = parseSuratHtml(
+      "<ol><li>a<ul><li>b</li></ul></li></ol>"
+    );
+    expect(block).toMatchObject({ kind: "list", ordered: true });
+  });
+
+  it("daftar setelah daftar bersarang tetap terurai dengan benar", () => {
+    const blocks = parseSuratHtml(
+      "<ul><li>a<ul><li>b</li></ul></li></ul><ol><li>c</li></ol>"
+    );
+    expect(blocks).toHaveLength(2);
+    expect(blocks[1]).toMatchObject({
+      kind: "list",
+      ordered: true,
+      items: [[plain("c")]],
+    });
+  });
 });

@@ -39,6 +39,7 @@ export function parseSuratHtml(html: string): SuratBlock[] {
   // Buffer paragraf berjalan; list punya buffer sendiri saat aktif.
   let inlines: SuratInline[] = [];
   let list: SuratList | null = null;
+  let listDepth = 0;
   let inListItem = false;
 
   function flushParagraph() {
@@ -95,8 +96,19 @@ export function parseSuratHtml(html: string): SuratBlock[] {
             break;
           case "ul":
           case "ol":
-            flushParagraph();
-            list = { ordered: name === "ol", items: [] };
+            if (list) {
+              // Daftar bersarang: item induk yang sedang berjalan jadi item
+              // list terluar, bukan paragraf lepas — list terluar tetap
+              // terbuka (lihat onclosetag) supaya tidak hilang.
+              if (inlines.length > 0) {
+                list.items.push(inlines);
+                inlines = [];
+              }
+            } else {
+              flushParagraph();
+              list = { ordered: name === "ol", items: [] };
+            }
+            listDepth++;
             break;
           case "li":
             inlines = [];
@@ -146,10 +158,13 @@ export function parseSuratHtml(html: string): SuratBlock[] {
             break;
           case "ul":
           case "ol":
-            if (list && list.items.length > 0) {
-              blocks.push({ kind: "list", ...list });
+            listDepth = Math.max(0, listDepth - 1);
+            if (listDepth === 0) {
+              if (list && list.items.length > 0) {
+                blocks.push({ kind: "list", ...list });
+              }
+              list = null;
             }
-            list = null;
             break;
           default:
             break;
