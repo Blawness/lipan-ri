@@ -3,7 +3,7 @@ import { documents, documentLogs } from "@/db/schema";
 import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
-function documentSlug(number: string): string {
+export function documentSlug(number: string): string {
   const base = number
     .toLowerCase()
     .normalize("NFKD")
