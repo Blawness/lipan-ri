@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getLetterDetail } from "@/lib/admin/letters";
-import { listActiveTemplates } from "@/lib/admin/letter-templates";
+import { listActiveTemplates, getTemplateById } from "@/lib/admin/letter-templates";
 import { getSignatories } from "@/lib/signatories";
 import { canEdit } from "@/lib/surat/status";
 import { SuratForm } from "../../surat-form";
@@ -22,7 +22,20 @@ export default async function SuratEditPage({
   if (!letter) notFound();
   if (!canEdit(letter.status)) redirect(`/admin/surat/${letter.id}`);
 
-  const [templates, sigs] = await Promise.all([listActiveTemplates(), getSignatories()]);
+  const [templates, sigs, ownTemplate] = await Promise.all([
+    listActiveTemplates(),
+    getSignatories(),
+    getTemplateById(letter.templateId),
+  ]);
+  // Template surat ini mungkin sudah dinonaktifkan setelah surat dibuat —
+  // kalau tidak lagi muncul di daftar aktif, tetap sisipkan supaya select
+  // "Jenis Surat" (terkunci) dan blok field dinamis tidak kosong, sementara
+  // server tetap menuntut field itu terisi saat submit.
+  const templateOptions = templates.some((t) => t.id === letter.templateId)
+    ? templates
+    : ownTemplate
+      ? [...templates, ownTemplate]
+      : templates;
   const action = updateLetterAction.bind(null, letter.id);
 
   return (
@@ -35,7 +48,7 @@ export default async function SuratEditPage({
       ) : null}
       <SuratForm
         action={action}
-        templates={templates.map((t) => ({ id: t.id, name: t.name, bodyDefault: t.bodyDefault, fields: t.fields }))}
+        templates={templateOptions.map((t) => ({ id: t.id, name: t.name, bodyDefault: t.bodyDefault, fields: t.fields }))}
         signatories={sigs}
         canSubmit
         lockTemplate
