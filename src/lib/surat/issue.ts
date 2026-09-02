@@ -27,6 +27,16 @@ function verifyUrl(slug: string): string {
   return `${base.replace(/\/$/, "")}/verifikasi/${slug}`;
 }
 
+/** Kode error unique-violation Postgres, apa adanya dari driver `pg`. */
+function isUniqueViolation(e: unknown): e is { code: "23505" } {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "code" in e &&
+    (e as { code?: unknown }).code === "23505"
+  );
+}
+
 /**
  * Satu-satunya jalan menuju status `issued`.
  *
@@ -34,6 +44,12 @@ function verifyUrl(slug: string): string {
  * transaksi. Render PDF sengaja ditaruh setelah commit: memakan ratusan
  * milidetik dan tidak boleh menahan koneksi Neon. Kalau render gagal, surat
  * tetap sah dan terverifikasi — hanya berkasnya yang belum ada.
+ *
+ * `numberOverride`, kalau diisi, HARUS sudah dibedakan oleh pemanggil dari
+ * calon nomor yang dirender halaman — lihat `issueLetterAction`. Kalau
+ * dikirim mentah-mentah tiap submit (mis. langsung dari nilai terisi form),
+ * "override" jadi jalur normal dan nomor yang tercetak lepas dari kunci
+ * `numberSeq` yang sebenarnya dipakai transaksi ini.
  */
 export async function issueLetter(
   letterId: number,
@@ -52,6 +68,21 @@ export async function issueLetter(
   if (!check.ok) return { ok: false, error: check.reason };
   if (letter.documentId) return { ok: false, error: "Surat ini sudah punya dokumen." };
 
+  const override = numberOverride?.trim() || undefined;
+
+  if (override) {
+    // Nomor manual bisa dipakai lintas template/tahun, jadi tidak tertangkap
+    // oleh unique constraint (templateId, numberYear, numberSeq). Dicek
+    // sendiri di sini — celah TOCTOU-nya sempit dan tak berbahaya: paling
+    // buruk transaksi di bawah gagal dan pemanggil diminta coba lagi.
+    const [existing] = await db
+      .select({ id: documents.id })
+      .from(documents)
+      .where(eq(documents.number, override))
+      .limit(1);
+    if (existing) return { ok: false, error: "Nomor itu sudah dipakai dokumen lain." };
+  }
+
   const issuedAt = new Date();
   const year = issuedAt.getFullYear();
 
@@ -59,12 +90,16 @@ export async function issueLetter(
   let number = "";
   let documentId = 0;
 
-  // Satu retry: unique constraint (templateId, numberYear, numberSeq) menangkap
-  // dua pengesahan bersamaan, dan urutannya sudah bergeser saat percobaan kedua.
-  for (let attempt = 0; attempt < 2; attempt++) {
+  // Retry hanya masuk akal saat nomor dihitung otomatis: unique constraint
+  // (templateId, numberYear, numberSeq) menangkap dua pengesahan bersamaan,
+  // dan urutannya bergeser di percobaan kedua. Nomor manual tidak diulang —
+  // mengulang dengan nilai yang sama hanya akan bentrok lagi.
+  const maxAttempts = override ? 1 : 2;
+  let committed = false;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const seq = await nextSeq(letter.templateId, year);
     number =
-      numberOverride?.trim() ||
+      override ??
       renderNumberPattern(letter.numberPattern, {
         seq,
         date: issuedAt,
@@ -107,28 +142,49 @@ export async function issueLetter(
         documentId = doc.id;
       });
 
-      await createLetterLog(
-        letterId,
-        actor.userId,
-        "issued",
-        actor.role === "admin" ? "Disahkan oleh admin" : undefined
-      );
-      await createDocumentLog(
-        documentId,
-        actor.userId,
-        "created",
-        `Terbit dari surat #${letterId}`
-      );
+      committed = true;
       break;
     } catch (e) {
       if (e instanceof Error && e.message === "STATUS_BERUBAH") {
         return { ok: false, error: "Surat sudah diproses orang lain." };
       }
-      if (attempt === 1) {
-        return { ok: false, error: "Nomor surat bentrok. Coba lagi." };
+      if (isUniqueViolation(e)) {
+        if (attempt < maxAttempts - 1) continue;
+        return {
+          ok: false,
+          error: override
+            ? "Nomor itu sudah dipakai dokumen lain."
+            : "Nomor surat bentrok. Coba lagi.",
+        };
       }
+      console.error("[issueLetter] gagal menyimpan pengesahan surat", letterId, e);
+      return { ok: false, error: "Terjadi kesalahan saat menyimpan. Coba lagi." };
     }
   }
+
+  if (!committed) {
+    // Tak tercapai dalam praktik: tiap iterasi di atas selalu return atau
+    // continue. Dijaga di sini murni supaya TypeScript yakin `documentId`
+    // sudah terisi di bawah.
+    return { ok: false, error: "Nomor surat bentrok. Coba lagi." };
+  }
+
+  // Sengaja di luar blok try/catch transaksi: kalau salah satu insert log ini
+  // gagal setelah commit, ia TIDAK boleh terbaca sebagai tabrakan nomor oleh
+  // catch di atas dan memicu percobaan ulang yang membuat baris `documents`
+  // kedua — padahal surat sudah sah terbit lewat percobaan pertama.
+  await createLetterLog(
+    letterId,
+    actor.userId,
+    "issued",
+    actor.role === "admin" ? "Disahkan oleh admin" : undefined
+  );
+  await createDocumentLog(
+    documentId,
+    actor.userId,
+    "created",
+    `Terbit dari surat #${letterId}`
+  );
 
   const pdfFailed = !(await renderAndAttachPdf(letterId));
   return { ok: true, documentSlug: slug, number, pdfFailed };
@@ -161,8 +217,10 @@ export async function renderAndAttachPdf(letterId: number): Promise<boolean> {
       .set({ fileUrl: url, updatedAt: new Date() })
       .where(eq(documents.id, letter.documentId));
     return true;
-  } catch {
-    // Keabsahan surat tidak digantungkan pada ketersediaan R2.
+  } catch (e) {
+    // Keabsahan surat tidak digantungkan pada ketersediaan R2 — tapi kalau
+    // ini gagal terus di production, harus ada jejaknya di suatu tempat.
+    console.error("[renderAndAttachPdf] gagal merender/mengunggah PDF surat", letterId, e);
     return false;
   }
 }

@@ -179,11 +179,18 @@ export async function issueLetterAction(
 ): Promise<IssueFormState> {
   const session = await requirePermission("letters.issue");
   const user = session.user as AdminSessionUser;
-  const result = await issueLetter(
-    id,
-    { userId: Number(user.id), role: user.role },
-    String(formData.get("number") ?? "")
-  );
+
+  // `number` adalah isi field yang mungkin sudah diedit approver; `calon`
+  // adalah nilai yang dirender halaman saat load (hidden input). Keduanya
+  // dikirim terpisah supaya kita bisa membedakan "approver sengaja mengubah
+  // nomor" dari "field masih berisi apa yang halaman render-kan tadi" — kalau
+  // tidak, override selalu terkirim dan nomor tercetak lepas dari kunci
+  // `numberSeq` yang sesungguhnya dipakai transaksi (lihat catatan di issue.ts).
+  const typed = String(formData.get("number") ?? "").trim();
+  const calon = String(formData.get("calon") ?? "").trim();
+  const override = typed && typed !== calon ? typed : undefined;
+
+  const result = await issueLetter(id, { userId: Number(user.id), role: user.role }, override);
   if (!result.ok) return { error: result.error };
 
   revalidatePath("/admin/surat");
@@ -200,12 +207,12 @@ export async function rejectLetterAction(
   const note = String(formData.get("note") ?? "").trim();
   if (note.length === 0) return { error: "Catatan penolakan wajib diisi." };
 
-  const current = await getLetterDetail(id);
-  if (!current || current.status !== "submitted") {
-    return { error: "Surat ini tidak sedang menunggu pengesahan." };
-  }
   const actorId = await requireUserId();
-  await rejectLetter(id, note);
+  // `rejectLetter` sendiri menjaga `status = "submitted"` di dalam WHERE-nya —
+  // itulah pemeriksaan yang berlaku, bukan pembacaan status terpisah sebelum
+  // ini, yang bisa saja sudah basi kalau surat disahkan orang lain di antaranya.
+  const rejected = await rejectLetter(id, note);
+  if (!rejected) return { error: "Surat ini sudah diproses orang lain." };
   await createLetterLog(id, actorId, "rejected", note);
   revalidatePath(`/admin/surat/${id}`);
   redirect(`/admin/surat/${id}?saved=rejected`);
@@ -213,6 +220,7 @@ export async function rejectLetterAction(
 
 export async function renderPdfAction(id: number): Promise<void> {
   await requirePermission("letters.issue");
-  await renderAndAttachPdf(id);
+  const ok = await renderAndAttachPdf(id);
   revalidatePath(`/admin/surat/${id}`);
+  redirect(`/admin/surat/${id}?saved=${ok ? "pdf-rendered" : "pdf-gagal"}`);
 }

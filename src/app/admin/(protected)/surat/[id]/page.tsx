@@ -46,7 +46,10 @@ export default async function SuratDetailPage({
     actorRole: user.role,
     signatoryUserId: letter.signatoryUserId,
   });
-  const bolehSahkan = issueCheck.ok && rbac.can(user.role, "letters.issue");
+  const bolehIssue = rbac.can(user.role, "letters.issue");
+  const bolehSahkan = issueCheck.ok && bolehIssue;
+  const bolehSunting = canEdit(letter.status) && rbac.can(user.role, "letters.write");
+  const bolehAjukan = canEdit(letter.status) && rbac.can(user.role, "letters.submit");
 
   const year = new Date().getFullYear();
   const calonNomor =
@@ -72,6 +75,8 @@ export default async function SuratDetailPage({
           issued: "Surat berhasil disahkan dan diterbitkan.",
           "issued-nopdf": "Surat berhasil disahkan, tetapi PDF gagal dibuat. Coba render ulang.",
           rejected: "Surat ditolak dan dikembalikan sebagai draft.",
+          "pdf-rendered": "PDF berhasil dibuat ulang.",
+          "pdf-gagal": "Render ulang PDF gagal. Coba lagi beberapa saat lagi.",
         }}
       />
 
@@ -94,11 +99,13 @@ export default async function SuratDetailPage({
       {letter.status === "issued" && !letter.documentFileUrl ? (
         <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           <span>Surat sudah sah dan bisa diverifikasi, tetapi berkas PDF-nya gagal dibuat.</span>
-          <form action={renderAction}>
-            <Button type="submit" size="sm" variant="outline">
-              <RefreshCw className="h-4 w-4" /> Render Ulang PDF
-            </Button>
-          </form>
+          {bolehIssue ? (
+            <form action={renderAction}>
+              <Button type="submit" size="sm" variant="outline">
+                <RefreshCw className="h-4 w-4" /> Render Ulang PDF
+              </Button>
+            </form>
+          ) : null}
         </div>
       ) : null}
 
@@ -147,14 +154,14 @@ export default async function SuratDetailPage({
 
           <div className="space-y-3 rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
             <h2 className="font-heading text-sm font-semibold text-navy-900">Tindakan</h2>
-            {canEdit(letter.status) ? (
-              <>
-                <Button variant="outline" className="w-full"
-                  render={<Link href={`/admin/surat/${letter.id}/edit`}><Pencil className="h-4 w-4" /> Sunting</Link>} />
-                <form action={submitAction}>
-                  <Button type="submit" className="w-full"><Send className="h-4 w-4" /> Ajukan untuk Pengesahan</Button>
-                </form>
-              </>
+            {bolehSunting ? (
+              <Button variant="outline" className="w-full"
+                render={<Link href={`/admin/surat/${letter.id}/edit`}><Pencil className="h-4 w-4" /> Sunting</Link>} />
+            ) : null}
+            {bolehAjukan ? (
+              <form action={submitAction}>
+                <Button type="submit" className="w-full"><Send className="h-4 w-4" /> Ajukan untuk Pengesahan</Button>
+              </form>
             ) : null}
             {letter.documentFileUrl ? (
               <Button variant="outline" className="w-full"

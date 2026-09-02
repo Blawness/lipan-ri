@@ -125,11 +125,19 @@ export async function submitLetter(id: number): Promise<void> {
     .where(eq(letters.id, id));
 }
 
-export async function rejectLetter(id: number, note: string): Promise<void> {
-  await db
+/**
+ * Menolak surat kembali ke draft. Dijaga dengan `status = "submitted"` supaya
+ * surat yang sudah disahkan orang lain di antara pembacaan dan penulisan ini
+ * tidak ikut ditarik balik ke draft — nomor, `numberSeq`, dan `documentId`-nya
+ * sudah terlanjur dipakai dokumen publik yang aktif.
+ */
+export async function rejectLetter(id: number, note: string): Promise<boolean> {
+  const updated = await db
     .update(letters)
     .set({ status: "draft", rejectionNote: note, updatedAt: new Date() })
-    .where(eq(letters.id, id));
+    .where(and(eq(letters.id, id), eq(letters.status, "submitted")))
+    .returning({ id: letters.id });
+  return updated.length > 0;
 }
 
 export async function getLetterLogs(letterId: number) {

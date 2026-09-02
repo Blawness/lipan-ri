@@ -24,6 +24,9 @@ export function PengesahanPanel({
       <h2 className="font-heading text-sm font-semibold text-amber-900">Menunggu Pengesahan Anda</h2>
 
       <form action={issueForm} className="space-y-3">
+        {/* Nilai yang dirender halaman saat load — dibandingkan di server dengan
+            "number" untuk menentukan apakah approver benar-benar mengubahnya. */}
+        <input type="hidden" name="calon" value={calonNomor} />
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-navy-800" htmlFor="number">Nomor Surat</label>
           <Input id="number" name="number" defaultValue={calonNomor} />
