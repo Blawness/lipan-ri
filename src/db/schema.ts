@@ -6,6 +6,8 @@ import {
   timestamp,
   boolean,
   pgEnum,
+  jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 import {
   users,
@@ -88,7 +90,12 @@ export const documents = pgTable("documents", {
 export const signatories = pgTable("signatories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
+  // `title` adalah GELAR ("SE, SH, MH") — bukan jabatan. Jangan tertukar.
   title: text("title"),
+  // Jabatan yang tercetak di blok tanda tangan PDF ("Ketua Umum").
+  position: text("position"),
+  // Akun yang berhak mengesahkan surat atas nama penandatangan ini.
+  userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -130,4 +137,86 @@ export const pengurus = pgTable("pengurus", {
   selesaiMenjabat: timestamp("selesai_menjabat"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const letterStatusEnum = pgEnum("letter_status", [
+  "draft",
+  "submitted",
+  "issued",
+]);
+
+export const letterLogActionEnum = pgEnum("letter_log_action", [
+  "created",
+  "updated",
+  "submitted",
+  "rejected",
+  "issued",
+]);
+
+/** Satu field tambahan yang diisi saat membuat surat dari template ini. */
+export type LetterTemplateField = {
+  key: string;
+  label: string;
+  type: "text" | "textarea" | "date" | "number";
+  required: boolean;
+};
+
+export const letterTemplates = pgTable("letter_templates", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  name: text("name").notNull(),
+  // Token yang dikenali: {seq} {tahun} {bulan} {bulanRomawi} {kode}
+  numberPattern: text("number_pattern").notNull(),
+  // HTML tersanitasi (sanitizeSuratHtml), bukan Tiptap JSON.
+  bodyDefault: text("body_default").notNull().default(""),
+  fields: jsonb("fields").$type<LetterTemplateField[]>().notNull().default([]),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const letters = pgTable(
+  "letters",
+  {
+    id: serial("id").primaryKey(),
+    templateId: integer("template_id")
+      .notNull()
+      .references(() => letterTemplates.id, { onDelete: "restrict" }),
+    subject: text("subject").notNull(),
+    bodyHtml: text("body_html").notNull().default(""),
+    fieldValues: jsonb("field_values")
+      .$type<Record<string, string>>()
+      .notNull()
+      .default({}),
+    signatoryId: integer("signatory_id")
+      .notNull()
+      .references(() => signatories.id, { onDelete: "restrict" }),
+    status: letterStatusEnum("status").notNull().default("draft"),
+    // Ketiganya null selama surat belum disahkan.
+    numberSeq: integer("number_seq"),
+    numberYear: integer("number_year"),
+    number: text("number"),
+    documentId: integer("document_id").references(() => documents.id, {
+      onDelete: "set null",
+    }),
+    rejectionNote: text("rejection_note"),
+    createdBy: integer("created_by").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [
+    // Inilah yang mencegah dua pengesahan bersamaan merebut nomor yang sama.
+    unique("letters_seq_unique").on(t.templateId, t.numberYear, t.numberSeq),
+  ]
+);
+
+export const letterLogs = pgTable("letter_logs", {
+  id: serial("id").primaryKey(),
+  letterId: integer("letter_id")
+    .notNull()
+    .references(() => letters.id, { onDelete: "cascade" }),
+  actorId: integer("actor_id").notNull(),
+  action: letterLogActionEnum("action").notNull(),
+  note: text("note"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
