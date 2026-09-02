@@ -27,14 +27,29 @@ function verifyUrl(slug: string): string {
   return `${base.replace(/\/$/, "")}/verifikasi/${slug}`;
 }
 
-/** Kode error unique-violation Postgres, apa adanya dari driver `pg`. */
-function isUniqueViolation(e: unknown): e is { code: "23505" } {
-  return (
-    typeof e === "object" &&
-    e !== null &&
-    "code" in e &&
-    (e as { code?: unknown }).code === "23505"
-  );
+/**
+ * Kode error unique-violation Postgres. `drizzle-orm/node-postgres` (0.45.x)
+ * membungkus setiap error query jadi `DrizzleQueryError`, yang hanya punya
+ * `message`/`query`/`params`/`cause` — `.code` milik `pg`'s `DatabaseError`
+ * ada di `.cause` (kadang berlapis lagi kalau ada wrapper lain di antaranya).
+ * Jadi predikat ini menyusuri rantai `cause`, bukan cuma objek teratas.
+ */
+function isUniqueViolation(e: unknown): boolean {
+  let current: unknown = e;
+  for (let depth = 0; depth < 5 && current != null; depth++) {
+    if (
+      typeof current === "object" &&
+      "code" in current &&
+      (current as { code?: unknown }).code === "23505"
+    ) {
+      return true;
+    }
+    current =
+      typeof current === "object" && current !== null && "cause" in current
+        ? (current as { cause?: unknown }).cause
+        : undefined;
+  }
+  return false;
 }
 
 /**
@@ -72,9 +87,13 @@ export async function issueLetter(
 
   if (override) {
     // Nomor manual bisa dipakai lintas template/tahun, jadi tidak tertangkap
-    // oleh unique constraint (templateId, numberYear, numberSeq). Dicek
-    // sendiri di sini — celah TOCTOU-nya sempit dan tak berbahaya: paling
-    // buruk transaksi di bawah gagal dan pemanggil diminta coba lagi.
+    // oleh unique constraint (templateId, numberYear, numberSeq) — dan
+    // `documents.number` sendiri TIDAK punya unique index (di luar cakupan
+    // plan ini untuk menambahkannya). Pengecekan ini best-effort semata,
+    // hanya menutup celah untuk pemakaian normal satu approver: dua approver
+    // yang mengetik nomor manual yang sama persis dalam jendela waktu yang
+    // sama bisa saja lolos berdua — tidak ada apa pun di database yang
+    // menahannya.
     const [existing] = await db
       .select({ id: documents.id })
       .from(documents)
@@ -90,11 +109,12 @@ export async function issueLetter(
   let number = "";
   let documentId = 0;
 
-  // Retry hanya masuk akal saat nomor dihitung otomatis: unique constraint
-  // (templateId, numberYear, numberSeq) menangkap dua pengesahan bersamaan,
-  // dan urutannya bergeser di percobaan kedua. Nomor manual tidak diulang —
-  // mengulang dengan nilai yang sama hanya akan bentrok lagi.
-  const maxAttempts = override ? 1 : 2;
+  // Dua percobaan untuk kedua jalur: unique constraint (templateId,
+  // numberYear, numberSeq) bisa bentrok baik nomornya dihitung otomatis
+  // maupun diketik manual — `seq` dihitung ulang tiap percobaan lewat
+  // `nextSeq()` di bawah, sementara nomor manual (kalau ada) tetap sama;
+  // yang bergeser di percobaan kedua hanyalah `seq`-nya.
+  const maxAttempts = 2;
   let committed = false;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const seq = await nextSeq(letter.templateId, year);
