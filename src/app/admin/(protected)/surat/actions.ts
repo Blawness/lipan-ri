@@ -15,6 +15,7 @@ import {
   getLetterDetail,
   type LetterInput,
 } from "@/lib/admin/letters";
+import { getTemplateById } from "@/lib/admin/letter-templates";
 
 const schema = z.object({
   templateId: z.coerce.number().int().positive(),
@@ -45,6 +46,37 @@ function parse(formData: FormData): LetterInput {
   return { ...data, bodyHtml: sanitizeSuratHtml(data.bodyHtml) };
 }
 
+/**
+ * Menyesuaikan `fieldValues` dengan definisi field jenis surat saat ini:
+ * kunci yang tidak lagi dikenal template dibuang (mis. field yang sudah
+ * dihapus/diganti nama pada template), dan saat `enforceRequired` field
+ * wajib yang kosong digagalkan di server — bukan hanya mengandalkan atribut
+ * `required` di browser, yang bisa dilewati dengan POST langsung ke action.
+ */
+async function reconcileFieldValues(
+  templateId: number,
+  values: Record<string, string>,
+  { enforceRequired }: { enforceRequired: boolean }
+): Promise<{ fieldValues: Record<string, string> } | { error: string }> {
+  const template = await getTemplateById(templateId);
+  if (!template) return { error: "Jenis surat tidak ditemukan." };
+
+  const filtered: Record<string, string> = {};
+  for (const field of template.fields) {
+    if (field.key in values) filtered[field.key] = values[field.key];
+  }
+
+  if (enforceRequired) {
+    for (const field of template.fields) {
+      if (field.required && !(filtered[field.key] ?? "").trim()) {
+        return { error: `Field "${field.label}" wajib diisi.` };
+      }
+    }
+  }
+
+  return { fieldValues: filtered };
+}
+
 export async function createLetterAction(
   _prev: LetterFormState,
   formData: FormData
@@ -56,11 +88,18 @@ export async function createLetterAction(
   } catch (e) {
     return { error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid." };
   }
+  const intent = formData.get("intent");
+  const reconciled = await reconcileFieldValues(input.templateId, input.fieldValues, {
+    enforceRequired: intent === "submit",
+  });
+  if ("error" in reconciled) return { error: reconciled.error };
+  input.fieldValues = reconciled.fieldValues;
+
   const actorId = await requireUserId();
   const id = await createLetter(input, actorId);
   await createLetterLog(id, actorId, "created");
 
-  if (formData.get("intent") === "submit") {
+  if (intent === "submit") {
     await requirePermission("letters.submit");
     await submitLetter(id);
     await createLetterLog(id, actorId, "submitted");
@@ -85,11 +124,18 @@ export async function updateLetterAction(
   } catch (e) {
     return { error: e instanceof z.ZodError ? e.issues[0].message : "Data tidak valid." };
   }
+  const intent = formData.get("intent");
+  const reconciled = await reconcileFieldValues(input.templateId, input.fieldValues, {
+    enforceRequired: intent === "submit",
+  });
+  if ("error" in reconciled) return { error: reconciled.error };
+  input.fieldValues = reconciled.fieldValues;
+
   const actorId = await requireUserId();
   await updateLetter(id, input);
   await createLetterLog(id, actorId, "updated");
 
-  if (formData.get("intent") === "submit") {
+  if (intent === "submit") {
     await requirePermission("letters.submit");
     if (!canSubmit(current.status)) return { error: "Surat ini sudah diajukan." };
     await submitLetter(id);
