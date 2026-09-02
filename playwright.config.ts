@@ -40,12 +40,12 @@ export default defineConfig({
     { name: "setup", testMatch: /admin\.setup\.ts/ },
     {
       name: "chromium",
-      testIgnore: [/admin\.setup\.ts/, /admin-auth\.spec\.ts/],
+      testIgnore: [/admin\.setup\.ts/, /admin-auth\.spec\.ts/, /surat\.spec\.ts/],
       use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "admin",
-      testMatch: /admin-auth\.spec\.ts/,
+      testMatch: [/admin-auth\.spec\.ts/, /surat\.spec\.ts/],
       dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"], storageState: adminAuthFile },
     },
