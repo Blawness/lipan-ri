@@ -13,7 +13,9 @@ export default async function TemplateEditPage({
 }) {
   await requirePermission("letterTemplates.manage");
   const { id } = await params;
-  const template = await getTemplateById(Number(id));
+  const templateId = Number(id);
+  if (!Number.isInteger(templateId) || templateId <= 0) notFound();
+  const template = await getTemplateById(templateId);
   if (!template) notFound();
 
   const action = updateTemplateAction.bind(null, template.id);

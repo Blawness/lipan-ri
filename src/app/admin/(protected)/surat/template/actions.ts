@@ -8,7 +8,6 @@ import { sanitizeSuratHtml } from "@/lib/sanitize";
 import {
   createTemplate,
   updateTemplate,
-  deactivateTemplate,
   type TemplateInput,
 } from "@/lib/admin/letter-templates";
 
@@ -24,7 +23,12 @@ const schema = z.object({
   name: z.string().min(1, "Nama jenis surat wajib diisi"),
   numberPattern: z.string().min(1, "Pola nomor wajib diisi"),
   bodyDefault: z.string().default(""),
-  fields: z.array(fieldSchema).max(20),
+  fields: z
+    .array(fieldSchema)
+    .max(20)
+    .refine((fields) => new Set(fields.map((f) => f.key)).size === fields.length, {
+      message: "Key field tidak boleh sama",
+    }),
   isActive: z.boolean(),
 });
 
@@ -83,8 +87,3 @@ export async function updateTemplateAction(
   redirect("/admin/surat/template?saved=updated");
 }
 
-export async function deactivateTemplateAction(id: number): Promise<void> {
-  await requirePermission("letterTemplates.manage");
-  await deactivateTemplate(id);
-  revalidatePath("/admin/surat/template");
-}

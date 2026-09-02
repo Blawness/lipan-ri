@@ -64,15 +64,3 @@ export async function updateTemplate(id: number, input: TemplateInput): Promise<
     .set({ ...input, updatedAt: new Date() })
     .where(eq(letterTemplates.id, id));
 }
-
-/**
- * Template tidak pernah dihapus — surat terbit yang merujuknya harus tetap
- * bisa dijelaskan jenisnya. Menonaktifkan cukup untuk menyembunyikannya dari
- * layar pembuatan surat.
- */
-export async function deactivateTemplate(id: number): Promise<void> {
-  await db
-    .update(letterTemplates)
-    .set({ isActive: false, updatedAt: new Date() })
-    .where(eq(letterTemplates.id, id));
-}
