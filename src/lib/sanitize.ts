@@ -27,3 +27,27 @@ export function sanitizeHtml(dirty: string): string {
     allowProtocolRelative: false,
   });
 }
+
+/**
+ * Tag yang boleh ada di badan surat. Daftar ini adalah kontrak tunggal antara
+ * editor admin dan pemeta HTML→PDF (`src/lib/surat/html-to-pdf.ts`): apa pun
+ * yang lolos ke sini harus punya padanan node react-pdf.
+ */
+export const SURAT_ALLOWED_TAGS = [
+  "p", "br", "strong", "em", "u",
+  "h2", "h3", "h4",
+  "ul", "ol", "li", "blockquote",
+];
+
+/**
+ * Sanitasi badan surat. Lebih sempit dari `sanitizeHtml`: tautan, gambar, dan
+ * figure dibuang karena mesin PDF tidak merendernya — lebih baik hilang saat
+ * disimpan (kelihatan di editor) daripada hilang diam-diam di PDF final.
+ */
+export function sanitizeSuratHtml(dirty: string): string {
+  return sanitizeHtmlLib(dirty, {
+    allowedTags: SURAT_ALLOWED_TAGS,
+    allowedAttributes: {},
+    allowProtocolRelative: false,
+  });
+}

@@ -1,19 +1,31 @@
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getSignatories } from "@/lib/signatories";
-import { createSignatoryAction, deleteSignatoryAction } from "./actions";
+import { createSignatoryAction, deleteSignatoryAction, updateSignatoryAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ConfirmDelete } from "@blawness/admin-kit/components";
+import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
 import { Plus } from "lucide-react";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { asc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
 export default async function PenandatanganPage() {
-  await requireUser();
-  const sigs = await getSignatories();
+  await requirePermission("signatories.manage");
+  const [sigs, userOptions] = await Promise.all([
+    getSignatories(),
+    db.select({ id: users.id, name: users.name, email: users.email }).from(users).orderBy(asc(users.email)),
+  ]);
 
   return (
-    <div className="max-w-lg">
+    <div className="max-w-3xl">
+      <ToastOnParam
+        param="saved"
+        messages={{
+          "delete-blocked": "Penandatangan ini masih dipakai surat, tidak bisa dihapus.",
+        }}
+      />
       <h1 className="font-heading text-2xl font-bold text-navy-900">
         Penandatangan
       </h1>
@@ -42,6 +54,28 @@ export default async function PenandatanganPage() {
           </label>
           <Input id="title" name="title" placeholder="SE, SH, MH" />
         </div>
+        <div className="w-40 space-y-1.5">
+          <label htmlFor="position" className="text-sm font-medium text-navy-800">
+            Jabatan
+          </label>
+          <Input id="position" name="position" placeholder="Ketua Umum" />
+        </div>
+        <div className="w-48 space-y-1.5">
+          <label htmlFor="userId" className="text-sm font-medium text-navy-800">
+            Akun Pengesah
+          </label>
+          <select
+            id="userId"
+            name="userId"
+            defaultValue=""
+            className="h-9 w-full rounded-md border border-navy-200 bg-white px-2 text-sm"
+          >
+            <option value="">— belum ditautkan —</option>
+            {userOptions.map((u) => (
+              <option key={u.id} value={u.id}>{u.name ?? u.email}</option>
+            ))}
+          </select>
+        </div>
         <Button type="submit" size="sm">
           <Plus className="h-4 w-4" />
           Tambah
@@ -62,6 +96,26 @@ export default async function PenandatanganPage() {
                 </span>
               )}
             </span>
+            <form action={updateSignatoryAction} className="flex items-center gap-2">
+              <input type="hidden" name="id" value={s.id} />
+              <Input
+                name="position"
+                defaultValue={s.position ?? ""}
+                placeholder="Jabatan"
+                className="h-8 w-40"
+              />
+              <select
+                name="userId"
+                defaultValue={s.userId ?? ""}
+                className="h-8 w-44 rounded-md border border-navy-200 bg-white px-2 text-sm"
+              >
+                <option value="">— belum ditautkan —</option>
+                {userOptions.map((u) => (
+                  <option key={u.id} value={u.id}>{u.name ?? u.email}</option>
+                ))}
+              </select>
+              <Button type="submit" size="sm" variant="outline">Simpan</Button>
+            </form>
             <ConfirmDelete
               action={deleteSignatoryAction}
               id={s.id}
