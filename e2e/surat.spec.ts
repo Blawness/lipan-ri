@@ -81,9 +81,29 @@ test.describe("Alur penuh surat (menulis data)", () => {
     //      documents.id. Menghapus baris documents men-cascade document_logs.
     //   3. letter_templates — aman dihapus sekarang karena baris letters yang
     //      menunjuknya sudah tidak ada.
+    //
+    // documentSlug (dibaca dari href link "Halaman Verifikasi" di halaman)
+    // hanya terisi kalau test sempat sampai ke langkah itu. Kalau test gagal
+    // tepat setelah pengesahan tapi sebelum sempat membaca link itu, baris
+    // documents sudah terlanjur dibuat tapi documentSlug masih kosong — jadi
+    // sebelum menghapus letters, kita query letters.document_id langsung dari
+    // DB (bukan dari UI) supaya id itu tidak pernah "hilang" oleh kegagalan
+    // di tengah alur. documentSlug tetap dipakai sebagai fallback.
     // Tiap langkah dibungkus try/catch sendiri: gagal di satu langkah (mis.
     // baris memang belum sempat dibuat) tidak boleh menggagalkan langkah lain.
     if (!pool) return;
+    let documentIdFromLetter: number | null = null;
+    try {
+      if (letterId) {
+        const { rows } = await pool.query<{ document_id: number | null }>(
+          "SELECT document_id FROM letters WHERE id = $1",
+          [letterId],
+        );
+        documentIdFromLetter = rows[0]?.document_id ?? null;
+      }
+    } catch (e) {
+      console.error(`[cleanup] gagal baca document_id dari letters id=${letterId}:`, e);
+    }
     try {
       if (letterId) {
         const res = await pool.query("DELETE FROM letters WHERE id = $1", [letterId]);
@@ -93,12 +113,18 @@ test.describe("Alur penuh surat (menulis data)", () => {
       console.error(`[cleanup] gagal hapus letters id=${letterId}:`, e);
     }
     try {
-      if (documentSlug) {
+      if (documentIdFromLetter) {
+        const res = await pool.query("DELETE FROM documents WHERE id = $1", [documentIdFromLetter]);
+        console.log(`[cleanup] documents id=${documentIdFromLetter}: ${res.rowCount} baris dihapus`);
+      } else if (documentSlug) {
         const res = await pool.query("DELETE FROM documents WHERE slug = $1", [documentSlug]);
         console.log(`[cleanup] documents slug=${documentSlug}: ${res.rowCount} baris dihapus`);
       }
     } catch (e) {
-      console.error(`[cleanup] gagal hapus documents slug=${documentSlug}:`, e);
+      console.error(
+        `[cleanup] gagal hapus documents id=${documentIdFromLetter} slug=${documentSlug}:`,
+        e,
+      );
     }
     try {
       const res = await pool.query("DELETE FROM letter_templates WHERE code = $1", [templateCode]);
