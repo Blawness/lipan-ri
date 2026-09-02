@@ -45,7 +45,7 @@ Jenis surat, dikelola penuh dari admin.
 | `code` | text unique | mis. `SK`, `ST` — dipakai di pola nomor |
 | `name` | text | mis. "Surat Keputusan" |
 | `numberPattern` | text | mis. `{seq}/SK/LIPAN-RI/{bulanRomawi}/{tahun}` |
-| `bodyDefault` | jsonb | Tiptap JSON, isi badan awal |
+| `bodyDefault` | text | HTML tersanitasi, isi badan awal |
 | `fields` | jsonb | array `{key,label,type,required}`; `type` ∈ `text \| textarea \| date \| number` |
 | `isActive` | boolean default true | template nonaktif tidak muncul saat membuat surat baru |
 | `createdAt` / `updatedAt` | timestamp | |
@@ -60,7 +60,7 @@ dinonaktifkan. Menghapusnya akan memutus jejak jenis surat yang sudah sah.
 | `id` | serial PK | |
 | `templateId` | int → `letter_templates.id` | restrict on delete |
 | `subject` | text | perihal |
-| `bodyJson` | jsonb | Tiptap JSON hasil edit |
+| `bodyHtml` | text | HTML tersanitasi hasil edit |
 | `fieldValues` | jsonb | nilai field dinamis, keyed by `fields[].key` |
 | `signatoryId` | int → `signatories.id` | penandatangan yang dituju |
 | `status` | enum `letter_status` | `draft \| submitted \| issued` |
@@ -93,8 +93,10 @@ sudah ada — tidak diduplikasi ke sini.
 
 ### Perubahan tabel lama
 
-`signatories` mendapat kolom `userId` (int nullable) agar penandatangan dapat
-memiliki akun dan mengesahkan surat sendiri.
+`signatories` mendapat dua kolom nullable: `userId` (int) agar penandatangan
+dapat memiliki akun dan mengesahkan surat sendiri, dan `position` (text) untuk
+jabatan yang tercetak di blok tanda tangan. Kolom `title` yang sudah ada adalah
+**gelar** ("SE, SH, MH"), bukan jabatan — keduanya sengaja dipisah.
 
 Tabel `documents` **tidak diubah**. Modul verifikasi, QR, dan pencabutan yang
 sudah berjalan tidak disentuh — hanya dipakai.
@@ -177,7 +179,7 @@ pemegang `letters.issue`, tab "Menunggu Pengesahan" menjadi tampilan default.
 ### `/admin/surat/baru`
 
 Pilih jenis surat lebih dulu, lalu form: field dinamis dari `template.fields`,
-editor Tiptap terisi `bodyDefault`, pilihan penandatangan. Tombol **Simpan
+editor terisi `bodyDefault`, pilihan penandatangan. Tombol **Simpan
 Draft** dan **Ajukan**.
 
 ### `/admin/surat/[id]`
@@ -215,7 +217,8 @@ Dalam satu transaksi DB:
 Setelah commit, **di luar transaksi**:
 
 6. Render PDF, lalu `uploadFile(buffer, "surat/<slug>", { contentType:
-   "application/pdf" })` dari `@blawness/admin-kit/lib/r2`.
+   "application/pdf", skipProcessing: true })` — di-reexport dari root
+   `@blawness/admin-kit`.
 7. Update `documents.fileUrl`.
 
 Render dikeluarkan dari transaksi karena memakan ratusan milidetik dan tidak
@@ -232,20 +235,27 @@ storage.
 
 - **`surat-document.tsx`** — komponen `@react-pdf/renderer`: kop surat (logo +
   identitas organisasi, konstanta di `src/lib/surat/kop.ts`), nomor dan
-  perihal, badan surat, blok TTD kanan bawah berisi kota + tanggal, jabatan, QR
+  perihal, badan surat, blok TTD kanan bawah berisi kota + tanggal, jabatan
+  (`signatories.position`), QR
   hasil `generateQrPng()` yang sudah ada, nama penandatangan, dan baris
   "Ditandatangani secara elektronik — keaslian dapat diperiksa di
   lipan-ri…/verifikasi/`<slug>`".
-- **`tiptap-to-pdf.ts`** — fungsi murni pemeta Tiptap JSON ke node react-pdf.
-  Node yang didukung dibatasi eksplisit: `paragraph`, `heading`, mark
-  `bold`/`italic`/`underline`, `bulletList`, `orderedList`, `hardBreak`. Node di
-  luar daftar dirender sebagai teks polos, tidak dibuang diam-diam.
+- **`html-to-pdf.ts`** — fungsi murni pemeta HTML badan surat ke node
+  react-pdf, memakai `htmlparser2` (sudah masuk lewat `sanitize-html`, tetapi
+  dideklarasikan eksplisit di `package.json`). Tag yang didukung dibatasi
+  eksplisit: `p`, `br`, `strong`, `em`, `u`, `h2`, `h3`, `h4`, `ul`, `ol`,
+  `li`, `blockquote`. Tag di luar daftar dirender sebagai teks polos, tidak
+  dibuang diam-diam.
 
 Parameter QR tidak diduplikasi: `src/lib/qr.ts` tetap satu-satunya tempat
 parameter QR ditentukan.
 
-Editor Tiptap pada form surat dibatasi ke ekstensi yang sama dengan daftar node
-di atas, sehingga admin tidak dapat menyisipkan sesuatu yang tidak terrender.
+Badan surat disimpan sebagai HTML, bukan Tiptap JSON, agar komponen `Editor`
+milik admin-kit dapat dipakai apa adanya seperti di `/admin/posts`. Sebelum
+disimpan, HTML dilewatkan `sanitizeSuratHtml()` — turunan `sanitizeHtml` yang
+ada, dengan allowlist dipersempit tepat ke daftar tag di atas (`a`, `img`,
+`figure`, `figcaption` dibuang karena tidak dirender ke PDF). Allowlist itulah
+kontrak tunggal antara editor dan mesin PDF.
 
 ## Pengujian
 
@@ -254,7 +264,8 @@ Unit (vitest, sudah terpasang):
 - Render pola nomor: tiap token, padding, dan pola tanpa token.
 - Reset urutan saat pergantian tahun.
 - Mesin status: transisi sah dan tidak sah untuk tiap peran.
-- `tiptap-to-pdf`: tiap jenis node yang didukung, dan node tak dikenal.
+- `html-to-pdf`: tiap tag yang didukung, tag tak dikenal, dan HTML rusak
+  (tag tidak tertutup).
 
 E2E (playwright, sudah terpasang):
 
@@ -268,7 +279,8 @@ E2E (playwright, sudah terpasang):
 - `src/lib/surat/*` (baru)
 - `src/app/admin/(protected)/surat/*` (baru)
 - Nav sidebar admin
-- `package.json`: satu dependensi baru, `@react-pdf/renderer`
+- `src/lib/sanitize.ts` (tambah `sanitizeSuratHtml`)
+- `package.json`: dua dependensi baru, `@react-pdf/renderer` dan `htmlparser2`
 
 Tidak diubah: `src/lib/qr.ts`, `src/lib/documents.ts`, modul `/admin/dokumen`,
 dan halaman `/verifikasi`.
