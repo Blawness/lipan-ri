@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requirePermission, requireUserId } from "@blawness/admin-kit/auth-helpers";
+import type { AdminSessionUser } from "@blawness/admin-kit";
 import { sanitizeSuratHtml } from "@/lib/sanitize";
 import { canEdit, canSubmit } from "@/lib/surat/status";
 import {
@@ -13,9 +14,11 @@ import {
   submitLetter,
   createLetterLog,
   getLetterDetail,
+  rejectLetter,
   type LetterInput,
 } from "@/lib/admin/letters";
 import { getTemplateById } from "@/lib/admin/letter-templates";
+import { issueLetter, renderAndAttachPdf } from "@/lib/surat/issue";
 
 const schema = z.object({
   templateId: z.coerce.number().int().positive(),
@@ -165,4 +168,51 @@ export async function deleteLetterAction(id: number): Promise<void> {
   await deleteLetter(id);
   revalidatePath("/admin/surat");
   redirect("/admin/surat?saved=deleted");
+}
+
+export type IssueFormState = { error?: string };
+
+export async function issueLetterAction(
+  id: number,
+  _prev: IssueFormState,
+  formData: FormData
+): Promise<IssueFormState> {
+  const session = await requirePermission("letters.issue");
+  const user = session.user as AdminSessionUser;
+  const result = await issueLetter(
+    id,
+    { userId: Number(user.id), role: user.role },
+    String(formData.get("number") ?? "")
+  );
+  if (!result.ok) return { error: result.error };
+
+  revalidatePath("/admin/surat");
+  revalidatePath("/admin/dokumen");
+  redirect(`/admin/surat/${id}?saved=${result.pdfFailed ? "issued-nopdf" : "issued"}`);
+}
+
+export async function rejectLetterAction(
+  id: number,
+  _prev: IssueFormState,
+  formData: FormData
+): Promise<IssueFormState> {
+  await requirePermission("letters.issue");
+  const note = String(formData.get("note") ?? "").trim();
+  if (note.length === 0) return { error: "Catatan penolakan wajib diisi." };
+
+  const current = await getLetterDetail(id);
+  if (!current || current.status !== "submitted") {
+    return { error: "Surat ini tidak sedang menunggu pengesahan." };
+  }
+  const actorId = await requireUserId();
+  await rejectLetter(id, note);
+  await createLetterLog(id, actorId, "rejected", note);
+  revalidatePath(`/admin/surat/${id}`);
+  redirect(`/admin/surat/${id}?saved=rejected`);
+}
+
+export async function renderPdfAction(id: number): Promise<void> {
+  await requirePermission("letters.issue");
+  await renderAndAttachPdf(id);
+  revalidatePath(`/admin/surat/${id}`);
 }
