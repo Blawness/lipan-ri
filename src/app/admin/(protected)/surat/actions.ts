@@ -6,7 +6,7 @@ import { z } from "zod";
 import { requirePermission, requireUserId } from "@blawness/admin-kit/auth-helpers";
 import type { AdminSessionUser } from "@blawness/admin-kit";
 import { sanitizeSuratHtml } from "@/lib/sanitize";
-import { canEdit, canSubmit } from "@/lib/surat/status";
+import { canEdit, canSubmit, canIssue, canManageLetterDocument } from "@/lib/surat/status";
 import {
   createLetter,
   updateLetter,
@@ -203,9 +203,24 @@ export async function rejectLetterAction(
   _prev: IssueFormState,
   formData: FormData
 ): Promise<IssueFormState> {
-  await requirePermission("letters.issue");
+  const session = await requirePermission("letters.issue");
+  const user = session.user as AdminSessionUser;
   const note = String(formData.get("note") ?? "").trim();
   if (note.length === 0) return { error: "Catatan penolakan wajib diisi." };
+
+  // Lapis kedua yang sama dengan pengesahan: penolakan pun hanya boleh oleh
+  // penandatangan yang dituju (atau admin) — tanpa ini, sembarang pemegang
+  // `letters.issue` bisa menolak surat orang lain dan mengembalikannya ke
+  // draft atas nama dirinya sendiri.
+  const current = await getLetterDetail(id);
+  if (!current) return { error: "Surat tidak ditemukan." };
+  const check = canIssue({
+    status: current.status,
+    actorUserId: Number(user.id),
+    actorRole: user.role,
+    signatoryUserId: current.signatoryUserId,
+  });
+  if (!check.ok) return { error: check.reason };
 
   const actorId = await requireUserId();
   // `rejectLetter` sendiri menjaga `status = "submitted"` di dalam WHERE-nya —
@@ -219,7 +234,21 @@ export async function rejectLetterAction(
 }
 
 export async function renderPdfAction(id: number): Promise<void> {
-  await requirePermission("letters.issue");
+  const session = await requirePermission("letters.issue");
+  const user = session.user as AdminSessionUser;
+
+  const current = await getLetterDetail(id);
+  if (!current) redirect(`/admin/surat/${id}?saved=pdf-gagal`);
+
+  // Sama seperti pengesahan: hanya penandatangan yang dituju (atau admin)
+  // yang boleh merender ulang dan menimpa `documents.fileUrl` surat ini.
+  const check = canManageLetterDocument({
+    actorUserId: Number(user.id),
+    actorRole: user.role,
+    signatoryUserId: current.signatoryUserId,
+  });
+  if (!check.ok) redirect(`/admin/surat/${id}?saved=pdf-forbidden`);
+
   const ok = await renderAndAttachPdf(id);
   revalidatePath(`/admin/surat/${id}`);
   redirect(`/admin/surat/${id}?saved=${ok ? "pdf-rendered" : "pdf-gagal"}`);
