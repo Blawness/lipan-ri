@@ -16,6 +16,8 @@ export type SuratPdfInput = {
   number: string;
   subject: string;
   bodyHtml: string;
+  /** Baris isian field dinamis template, urut sesuai definisi template. */
+  fields: { label: string; value: string }[];
   /** Nama lengkap berikut gelar, mis. "Harun Prayitno, SH". */
   signatoryName: string;
   /** Jabatan yang tercetak di atas QR, mis. "Ketua Umum". */
@@ -35,6 +37,10 @@ const s = StyleSheet.create({
   kopAlamat: { fontSize: 9, color: "#5b6b7c" },
   judul: { marginTop: 22, textAlign: "center", fontFamily: "Helvetica-Bold", fontSize: 12, textTransform: "uppercase" },
   nomor: { marginTop: 4, textAlign: "center", fontSize: 11 },
+  fieldsWrap: { marginTop: 16 },
+  fieldRow: { flexDirection: "row", marginBottom: 3 },
+  fieldLabel: { width: 150 },
+  fieldValue: { flex: 1 },
   body: { marginTop: 20, lineHeight: 1.5 },
   paragraph: { marginBottom: 8, textAlign: "justify" },
   heading: { marginTop: 10, marginBottom: 6, fontFamily: "Helvetica-Bold" },
@@ -56,7 +62,13 @@ function Inlines({ inlines }: { inlines: SuratInline[] }) {
         <Text
           key={i}
           style={{
-            fontFamily: run.bold ? "Helvetica-Bold" : run.italic ? "Helvetica-Oblique" : "Helvetica",
+            fontFamily: run.bold
+              ? run.italic
+                ? "Helvetica-BoldOblique"
+                : "Helvetica-Bold"
+              : run.italic
+                ? "Helvetica-Oblique"
+                : "Helvetica",
             textDecoration: run.underline ? "underline" : "none",
           }}
         >
@@ -64,6 +76,21 @@ function Inlines({ inlines }: { inlines: SuratInline[] }) {
         </Text>
       ))}
     </>
+  );
+}
+
+function FieldRows({ fields }: { fields: { label: string; value: string }[] }) {
+  const rows = fields.filter((f) => f.value.trim() !== "");
+  if (rows.length === 0) return null;
+  return (
+    <View style={s.fieldsWrap}>
+      {rows.map((f, i) => (
+        <View key={i} style={s.fieldRow}>
+          <Text style={s.fieldLabel}>{f.label}</Text>
+          <Text style={s.fieldValue}>: {f.value}</Text>
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -129,6 +156,8 @@ function SuratDocument({
 
         <Text style={s.judul}>{input.subject}</Text>
         <Text style={s.nomor}>Nomor: {input.number}</Text>
+
+        <FieldRows fields={input.fields} />
 
         <Body html={input.bodyHtml} />
 

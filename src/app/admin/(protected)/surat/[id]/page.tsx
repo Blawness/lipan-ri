@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePermission } from "@blawness/admin-kit/auth-helpers";
-import { ToastOnParam } from "@blawness/admin-kit/components";
+import { ToastOnParam, ConfirmDelete } from "@blawness/admin-kit/components";
 import type { AdminSessionUser } from "@blawness/admin-kit";
 import { Button } from "@/components/ui/button";
 import { getLetterDetail, getLetterLogs, nextSeq } from "@/lib/admin/letters";
@@ -10,8 +10,14 @@ import { canIssue, canEdit } from "@/lib/surat/status";
 import { rbac } from "@/rbac";
 import { StatusBadge } from "../status-badge";
 import { PengesahanPanel } from "./pengesahan-panel";
-import { issueLetterAction, rejectLetterAction, renderPdfAction, submitLetterAction } from "../actions";
-import { Pencil, Send, FileDown, RefreshCw, ExternalLink } from "lucide-react";
+import {
+  issueLetterAction,
+  rejectLetterAction,
+  renderPdfAction,
+  submitLetterAction,
+  deleteLetterAction,
+} from "../actions";
+import { Pencil, Send, FileDown, RefreshCw, ExternalLink, Trash2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +56,11 @@ export default async function SuratDetailPage({
   const bolehSahkan = issueCheck.ok && bolehIssue;
   const bolehSunting = canEdit(letter.status) && rbac.can(user.role, "letters.write");
   const bolehAjukan = canEdit(letter.status) && rbac.can(user.role, "letters.submit");
+  const bolehHapus = canEdit(letter.status) && rbac.can(user.role, "letters.write");
+
+  const fieldRows = letter.templateFields
+    .map((f) => ({ key: f.key, label: f.label, value: letter.fieldValues[f.key] ?? "" }))
+    .filter((f) => f.value.trim() !== "");
 
   const year = new Date().getFullYear();
   const calonNomor =
@@ -64,6 +75,7 @@ export default async function SuratDetailPage({
   const rejectAction = rejectLetterAction.bind(null, letter.id);
   const submitAction = submitLetterAction.bind(null, letter.id);
   const renderAction = renderPdfAction.bind(null, letter.id);
+  const deleteAction = deleteLetterAction.bind(null, letter.id);
 
   return (
     <div className="space-y-6">
@@ -77,6 +89,7 @@ export default async function SuratDetailPage({
           rejected: "Surat ditolak dan dikembalikan sebagai draft.",
           "pdf-rendered": "PDF berhasil dibuat ulang.",
           "pdf-gagal": "Render ulang PDF gagal. Coba lagi beberapa saat lagi.",
+          "pdf-forbidden": "Anda tidak berwenang merender ulang PDF surat ini.",
         }}
       />
 
@@ -116,6 +129,18 @@ export default async function SuratDetailPage({
               {letter.subject}
             </p>
             <p className="mt-1 text-center text-sm">Nomor: {letter.number ?? calonNomor}</p>
+
+            {fieldRows.length > 0 ? (
+              <dl className="mt-4 space-y-1 text-sm">
+                {fieldRows.map((f) => (
+                  <div key={f.key} className="flex gap-3">
+                    <dt className="w-40 shrink-0 text-navy-700">{f.label}</dt>
+                    <dd className="text-navy-900">: {f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
             <div
               className="prose prose-sm mt-6 max-w-none text-navy-900"
               dangerouslySetInnerHTML={{ __html: letter.bodyHtml }}
@@ -127,20 +152,6 @@ export default async function SuratDetailPage({
               </p>
             </div>
           </div>
-
-          {letter.templateFields.length > 0 ? (
-            <div className="rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
-              <h2 className="font-heading text-sm font-semibold text-navy-900">Isian {letter.templateName}</h2>
-              <dl className="mt-3 space-y-2 text-sm">
-                {letter.templateFields.map((f) => (
-                  <div key={f.key} className="flex gap-3">
-                    <dt className="w-40 shrink-0 text-muted-foreground">{f.label}</dt>
-                    <dd className="text-navy-900">{letter.fieldValues[f.key] || "—"}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          ) : null}
         </div>
 
         <div className="space-y-6">
@@ -170,6 +181,24 @@ export default async function SuratDetailPage({
             {letter.documentSlug ? (
               <Button variant="ghost" className="w-full"
                 render={<a href={`/verifikasi/${letter.documentSlug}`} target="_blank" rel="noreferrer"><ExternalLink className="h-4 w-4" /> Halaman Verifikasi</a>} />
+            ) : null}
+            {bolehHapus ? (
+              <ConfirmDelete
+                action={deleteAction}
+                id={letter.id}
+                title="Hapus draft surat ini?"
+                description={
+                  <>
+                    <span className="font-medium text-navy-900">{letter.subject}</span>{" "}
+                    akan dihapus permanen.
+                  </>
+                }
+                trigger={
+                  <Button variant="outline" className="w-full">
+                    <Trash2 className="h-4 w-4" /> Hapus Draft
+                  </Button>
+                }
+              />
             ) : null}
           </div>
 

@@ -1,55 +1,21 @@
-import { randomUUID } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { uploadFile } from "@blawness/admin-kit";
 import { db } from "@/db";
 import { letters, documents } from "@/db/schema";
 import { getLetterDetail, nextSeq, createLetterLog } from "@/lib/admin/letters";
-import { createDocumentLog } from "@/lib/admin/documents";
+import { createDocumentLog, documentSlug } from "@/lib/admin/documents";
 import { canIssue } from "@/lib/surat/status";
 import { renderNumberPattern } from "@/lib/surat/nomor";
 import { renderSuratPdf } from "@/lib/surat/pdf/surat-document";
+import { isUniqueViolation } from "@/lib/db-errors";
 
 export type IssueResult =
   | { ok: true; documentSlug: string; number: string; pdfFailed: boolean }
   | { ok: false; error: string };
 
-function slugFor(number: string): string {
-  const base = number
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
-  return `${base}-${randomUUID().slice(0, 6)}`;
-}
-
 function verifyUrl(slug: string): string {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lipan-ri.com";
   return `${base.replace(/\/$/, "")}/verifikasi/${slug}`;
-}
-
-/**
- * Kode error unique-violation Postgres. `drizzle-orm/node-postgres` (0.45.x)
- * membungkus setiap error query jadi `DrizzleQueryError`, yang hanya punya
- * `message`/`query`/`params`/`cause` — `.code` milik `pg`'s `DatabaseError`
- * ada di `.cause` (kadang berlapis lagi kalau ada wrapper lain di antaranya).
- * Jadi predikat ini menyusuri rantai `cause`, bukan cuma objek teratas.
- */
-function isUniqueViolation(e: unknown): boolean {
-  let current: unknown = e;
-  for (let depth = 0; depth < 5 && current != null; depth++) {
-    if (
-      typeof current === "object" &&
-      "code" in current &&
-      (current as { code?: unknown }).code === "23505"
-    ) {
-      return true;
-    }
-    current =
-      typeof current === "object" && current !== null && "cause" in current
-        ? (current as { cause?: unknown }).cause
-        : undefined;
-  }
-  return false;
 }
 
 /**
@@ -125,7 +91,7 @@ export async function issueLetter(
         date: issuedAt,
         code: letter.templateCode,
       });
-    slug = slugFor(number);
+    slug = documentSlug(number);
 
     try {
       await db.transaction(async (tx) => {
@@ -223,6 +189,10 @@ export async function renderAndAttachPdf(letterId: number): Promise<boolean> {
       number: letter.number,
       subject: letter.subject,
       bodyHtml: letter.bodyHtml,
+      fields: letter.templateFields.map((f) => ({
+        label: f.label,
+        value: letter.fieldValues[f.key] ?? "",
+      })),
       signatoryName: [letter.signatoryName, letter.signatoryTitle].filter(Boolean).join(", "),
       signatoryPosition: letter.signatoryPosition,
       issuedAt: letter.documentIssuedAt ?? new Date(),
