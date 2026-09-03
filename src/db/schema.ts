@@ -151,6 +151,9 @@ export const letterLogActionEnum = pgEnum("letter_log_action", [
   "submitted",
   "rejected",
   "issued",
+  // Pembuat surat membatalkan pengajuannya sendiri. Sengaja dibedakan dari
+  // "rejected": jejaknya harus jujur soal siapa yang mengembalikan ke draft.
+  "withdrawn",
 ]);
 
 /** Satu field tambahan yang diisi saat membuat surat dari template ini. */

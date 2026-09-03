@@ -126,6 +126,25 @@ export async function submitLetter(id: number): Promise<void> {
 }
 
 /**
+ * Menarik kembali pengajuan ke draft atas permintaan pembuatnya. Dijaga
+ * dengan `status = "submitted"` di WHERE, alasan yang sama seperti
+ * `rejectLetter`: kalau penandatangan keburu mengesahkan di antara pembacaan
+ * dan penulisan ini, surat sudah punya nomor dan dokumen publik — tarikan itu
+ * harus gagal, bukan menang balapan.
+ *
+ * `rejectionNote` tidak disentuh: `submitLetter` sudah mengosongkannya saat
+ * diajukan, jadi tidak ada catatan penolakan basi yang bisa tertinggal.
+ */
+export async function withdrawLetter(id: number): Promise<boolean> {
+  const updated = await db
+    .update(letters)
+    .set({ status: "draft", updatedAt: new Date() })
+    .where(and(eq(letters.id, id), eq(letters.status, "submitted")))
+    .returning({ id: letters.id });
+  return updated.length > 0;
+}
+
+/**
  * Menolak surat kembali ke draft. Dijaga dengan `status = "submitted"` supaya
  * surat yang sudah disahkan orang lain di antara pembacaan dan penulisan ini
  * tidak ikut ditarik balik ke draft — nomor, `numberSeq`, dan `documentId`-nya
@@ -151,7 +170,7 @@ export async function getLetterLogs(letterId: number) {
 export async function createLetterLog(
   letterId: number,
   actorId: number,
-  action: "created" | "updated" | "submitted" | "rejected" | "issued",
+  action: "created" | "updated" | "submitted" | "rejected" | "issued" | "withdrawn",
   note?: string
 ): Promise<void> {
   await db.insert(letterLogs).values({ letterId, actorId, action, note: note ?? null });

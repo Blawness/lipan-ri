@@ -19,6 +19,41 @@ export type IssueCheck =
   | { ok: false; reason: string };
 
 /**
+ * Penarikan kembali pengajuan oleh pembuat surat — pasangan dari `canSubmit`.
+ * Selama surat belum disahkan, yang mengajukan boleh membatalkan sendiri
+ * tanpa harus menunggu penandatangan menolaknya lebih dulu.
+ *
+ * Dibatasi ke pembuat surat (admin diberi jalan darurat yang sama seperti
+ * pada pengesahan): tanpa batasan ini, siapa pun pemegang `letters.submit`
+ * bisa menarik surat orang lain dari antrean pengesahan.
+ */
+export function canWithdraw({
+  status,
+  actorUserId,
+  actorRole,
+  createdBy,
+}: {
+  status: LetterStatus;
+  actorUserId: number;
+  actorRole: string;
+  createdBy: number;
+}): IssueCheck {
+  if (status !== "submitted") {
+    return {
+      ok: false,
+      reason:
+        status === "issued"
+          ? "Surat ini sudah terbit."
+          : "Surat ini belum diajukan.",
+    };
+  }
+  if (actorRole !== "admin" && actorUserId !== createdBy) {
+    return { ok: false, reason: "Hanya pembuat surat yang bisa menariknya kembali." };
+  }
+  return { ok: true };
+}
+
+/**
  * Inti pemeriksaan identitas yang dipakai `canIssue` dan
  * `canManageLetterDocument`: aktor harus admin atau akun yang tertaut ke
  * penandatangan surat. Admin diberi jalan darurat, dan pemakaiannya dicatat

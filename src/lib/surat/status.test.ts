@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { canEdit, canSubmit, canIssue, STATUS_LABEL } from "@/lib/surat/status";
+import { canEdit, canSubmit, canWithdraw, canIssue, STATUS_LABEL } from "@/lib/surat/status";
 
 describe("canEdit", () => {
   it("hanya draft yang boleh disunting", () => {
@@ -14,6 +14,38 @@ describe("canSubmit", () => {
     expect(canSubmit("draft")).toBe(true);
     expect(canSubmit("submitted")).toBe(false);
     expect(canSubmit("issued")).toBe(false);
+  });
+});
+
+describe("canWithdraw", () => {
+  const base = {
+    status: "submitted" as const,
+    actorUserId: 7,
+    actorRole: "pengurus",
+    createdBy: 7,
+  };
+
+  it("mengizinkan pembuat surat menarik pengajuannya", () => {
+    expect(canWithdraw(base)).toEqual({ ok: true });
+  });
+
+  it("menolak orang lain menarik surat yang bukan miliknya", () => {
+    const r = canWithdraw({ ...base, actorUserId: 9 });
+    expect(r.ok).toBe(false);
+  });
+
+  it("mengizinkan admin sebagai jalan darurat", () => {
+    expect(canWithdraw({ ...base, actorRole: "admin", actorUserId: 9 })).toEqual({
+      ok: true,
+    });
+  });
+
+  it("menolak surat yang masih draft", () => {
+    expect(canWithdraw({ ...base, status: "draft" }).ok).toBe(false);
+  });
+
+  it("menolak surat yang sudah terbit — nomornya sudah terpakai", () => {
+    expect(canWithdraw({ ...base, status: "issued" }).ok).toBe(false);
   });
 });
 

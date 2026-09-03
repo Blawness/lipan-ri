@@ -1,0 +1,1 @@
+ALTER TYPE "public"."letter_log_action" ADD VALUE 'withdrawn';

@@ -6,7 +6,7 @@ import type { AdminSessionUser } from "@blawness/admin-kit";
 import { Button } from "@/components/ui/button";
 import { getLetterDetail, getLetterLogs, nextSeq } from "@/lib/admin/letters";
 import { renderNumberPattern } from "@/lib/surat/nomor";
-import { canIssue, canEdit } from "@/lib/surat/status";
+import { canIssue, canEdit, canWithdraw } from "@/lib/surat/status";
 import { rbac } from "@/rbac";
 import { StatusBadge } from "../status-badge";
 import { PengesahanPanel } from "./pengesahan-panel";
@@ -15,9 +15,10 @@ import {
   rejectLetterAction,
   renderPdfAction,
   submitLetterAction,
+  withdrawLetterAction,
   deleteLetterAction,
 } from "../actions";
-import { Pencil, Send, FileDown, RefreshCw, ExternalLink, Trash2 } from "lucide-react";
+import { Pencil, Send, Undo2, FileDown, RefreshCw, ExternalLink, Trash2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,7 @@ const LOG_LABEL: Record<string, string> = {
   submitted: "Diajukan",
   rejected: "Ditolak",
   issued: "Disahkan",
+  withdrawn: "Ditarik kembali",
 };
 
 export default async function SuratDetailPage({
@@ -57,6 +59,15 @@ export default async function SuratDetailPage({
   const bolehSunting = canEdit(letter.status) && rbac.can(user.role, "letters.write");
   const bolehAjukan = canEdit(letter.status) && rbac.can(user.role, "letters.submit");
   const bolehHapus = canEdit(letter.status) && rbac.can(user.role, "letters.write");
+  // Pasangan "Ajukan": selama belum disahkan, pembuat surat boleh membatalkan
+  // pengajuannya sendiri tanpa menunggu penandatangan menolaknya.
+  const bolehTarik =
+    canWithdraw({
+      status: letter.status,
+      actorUserId: Number(user.id),
+      actorRole: user.role,
+      createdBy: letter.createdBy,
+    }).ok && rbac.can(user.role, "letters.submit");
 
   const fieldRows = letter.templateFields
     .map((f) => ({ key: f.key, label: f.label, value: letter.fieldValues[f.key] ?? "" }))
@@ -74,6 +85,7 @@ export default async function SuratDetailPage({
   const issueAction = issueLetterAction.bind(null, letter.id);
   const rejectAction = rejectLetterAction.bind(null, letter.id);
   const submitAction = submitLetterAction.bind(null, letter.id);
+  const withdrawAction = withdrawLetterAction.bind(null, letter.id);
   const renderAction = renderPdfAction.bind(null, letter.id);
   const deleteAction = deleteLetterAction.bind(null, letter.id);
 
@@ -87,6 +99,7 @@ export default async function SuratDetailPage({
           issued: "Surat berhasil disahkan dan diterbitkan.",
           "issued-nopdf": "Surat berhasil disahkan, tetapi PDF gagal dibuat. Coba render ulang.",
           rejected: "Surat ditolak dan dikembalikan sebagai draft.",
+          withdrawn: "Pengajuan ditarik kembali. Surat bisa disunting lagi.",
           "pdf-rendered": "PDF berhasil dibuat ulang.",
           "pdf-gagal": "Render ulang PDF gagal. Coba lagi beberapa saat lagi.",
           "pdf-forbidden": "Anda tidak berwenang merender ulang PDF surat ini.",
@@ -172,6 +185,13 @@ export default async function SuratDetailPage({
             {bolehAjukan ? (
               <form action={submitAction}>
                 <Button type="submit" className="w-full"><Send className="h-4 w-4" /> Ajukan untuk Pengesahan</Button>
+              </form>
+            ) : null}
+            {bolehTarik ? (
+              <form action={withdrawAction}>
+                <Button type="submit" variant="outline" className="w-full">
+                  <Undo2 className="h-4 w-4" /> Tarik Kembali Pengajuan
+                </Button>
               </form>
             ) : null}
             {letter.documentFileUrl ? (

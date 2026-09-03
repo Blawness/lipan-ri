@@ -6,12 +6,19 @@ import { z } from "zod";
 import { requirePermission, requireUserId } from "@blawness/admin-kit/auth-helpers";
 import type { AdminSessionUser } from "@blawness/admin-kit";
 import { sanitizeSuratHtml } from "@/lib/sanitize";
-import { canEdit, canSubmit, canIssue, canManageLetterDocument } from "@/lib/surat/status";
+import {
+  canEdit,
+  canSubmit,
+  canWithdraw,
+  canIssue,
+  canManageLetterDocument,
+} from "@/lib/surat/status";
 import {
   createLetter,
   updateLetter,
   deleteLetter,
   submitLetter,
+  withdrawLetter,
   createLetterLog,
   getLetterDetail,
   rejectLetter,
@@ -157,6 +164,34 @@ export async function submitLetterAction(id: number): Promise<void> {
   await createLetterLog(id, actorId, "submitted");
   revalidatePath("/admin/surat");
   revalidatePath(`/admin/surat/${id}`);
+}
+
+/**
+ * Kebalikan `submitLetterAction`: mengembalikan surat dari antrean pengesahan
+ * ke draft supaya bisa disunting lagi, tanpa perlu menunggu penandatangan
+ * menolaknya. Dipagari `canWithdraw` (hanya pembuat surat, atau admin) dan
+ * oleh WHERE `status = "submitted"` di dalam `withdrawLetter` — pengesahan
+ * yang menyelinap lebih dulu tetap menang.
+ */
+export async function withdrawLetterAction(id: number): Promise<void> {
+  const session = await requirePermission("letters.submit");
+  const user = session.user as AdminSessionUser;
+  const current = await getLetterDetail(id);
+  if (!current) return;
+  const check = canWithdraw({
+    status: current.status,
+    actorUserId: Number(user.id),
+    actorRole: user.role,
+    createdBy: current.createdBy,
+  });
+  if (!check.ok) return;
+
+  const actorId = await requireUserId();
+  if (!(await withdrawLetter(id))) return;
+  await createLetterLog(id, actorId, "withdrawn");
+  revalidatePath("/admin/surat");
+  revalidatePath(`/admin/surat/${id}`);
+  redirect(`/admin/surat/${id}?saved=withdrawn`);
 }
 
 export async function deleteLetterAction(id: number): Promise<void> {
