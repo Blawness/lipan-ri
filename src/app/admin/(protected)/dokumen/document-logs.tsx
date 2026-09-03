@@ -24,6 +24,7 @@ const actionIcon: Record<string, typeof Plus> = {
 };
 
 const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  timeZone: "Asia/Jakarta",
   dateStyle: "medium",
   timeStyle: "short",
 });

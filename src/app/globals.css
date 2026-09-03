@@ -289,3 +289,15 @@
     color: black !important;
   }
 }
+
+/*
+ * Editor badan surat: tombol Tautan & Gambar bawaan Editor admin-kit belum
+ * bisa dimatikan lewat prop, sementara `sanitizeSuratHtml` selalu membuang
+ * <a> dan <img> karena mesin PDF tidak merendernya. Menawarkan tombol yang
+ * hasilnya pasti hilang saat disimpan lebih membingungkan daripada tidak ada
+ * tombolnya sama sekali.
+ */
+.surat-editor button[aria-label="Link"],
+.surat-editor button[aria-label="Image"] {
+  display: none;
+}

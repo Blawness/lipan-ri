@@ -145,11 +145,22 @@ export function SuratForm({
           template masuk ke state tapi TIDAK terlihat di layar — penulis surat
           mengira template tidak punya isi bawaan, padahal isinya ikut tersimpan.
         */}
-        <Editor key={templateId ?? "kosong"} value={body} onChange={setBody} />
-        <p className="text-xs text-muted-foreground">
-          Tautan dan gambar tidak ikut tercetak di PDF surat, jadi keduanya
-          dibuang saat disimpan.
-        </p>
+        {/* .surat-editor menyembunyikan tombol Tautan & Gambar — lihat globals.css */}
+        <div className="surat-editor">
+          <Editor key={templateId ?? "kosong"} value={body} onChange={setBody} />
+        </div>
+        {template && template.fields.length > 0 ? (
+          <p className="text-xs text-muted-foreground">
+            Sisipkan isian ke dalam kalimat dengan menulis tokennya:{" "}
+            {template.fields.map((f, i) => (
+              <span key={f.key}>
+                {i > 0 ? ", " : ""}
+                <code className="rounded bg-navy-50 px-1 font-mono">{`{{${f.key}}}`}</code>
+              </span>
+            ))}
+            . Token akan diganti nilainya saat surat dicetak.
+          </p>
+        ) : null}
       </div>
 
       {state.error ? (

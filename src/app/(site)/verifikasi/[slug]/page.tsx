@@ -5,7 +5,10 @@ import { PrintButton } from "./print-button";
 
 export const dynamic = "force-dynamic";
 
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "long" });
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "long",
+  timeZone: "Asia/Jakarta",
+});
 
 interface Props {
   params: Promise<{ slug: string }>;

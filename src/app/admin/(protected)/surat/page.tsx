@@ -32,7 +32,10 @@ function buildQuery(p: { q?: string; status?: LetterStatusFilter; page?: number 
   return qs ? `/admin/surat?${qs}` : "/admin/surat";
 }
 
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" });
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "medium",
+  timeZone: "Asia/Jakarta",
+});
 
 export default async function SuratListPage({
   searchParams,
@@ -117,7 +120,11 @@ export default async function SuratListPage({
             ) : (
               rows.map((r) => (
                 <tr key={r.id} className="border-t border-navy-100 hover:bg-navy-50/40">
-                  <td className="px-4 py-3 font-mono text-xs">{r.number ?? "— draft"}</td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    {/* Nomor baru terbit saat disahkan; "draft" di sini dulu
+                        menabrak kolom Status yang bisa saja "Menunggu Pengesahan". */}
+                    {r.number ?? "— belum bernomor"}
+                  </td>
                   <td className="px-4 py-3 font-medium text-navy-900">
                     <Link href={`/admin/surat/${r.id}`} className="hover:underline">
                       {r.subject}

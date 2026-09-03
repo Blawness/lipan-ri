@@ -8,7 +8,10 @@ import { Newspaper, FileEdit, Images, Users, ArrowUpRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" });
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "medium",
+  timeZone: "Asia/Jakarta",
+});
 
 export default async function AdminDashboard() {
   await requireUser();

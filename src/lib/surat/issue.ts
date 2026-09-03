@@ -6,6 +6,7 @@ import { getLetterDetail, nextSeq, createLetterLog } from "@/lib/admin/letters";
 import { createDocumentLog, documentSlug } from "@/lib/admin/documents";
 import { canIssue } from "@/lib/surat/status";
 import { renderNumberPattern } from "@/lib/surat/nomor";
+import { siapkanIsian } from "@/lib/surat/isian";
 import { renderSuratPdf } from "@/lib/surat/pdf/surat-document";
 import { isUniqueViolation } from "@/lib/db-errors";
 
@@ -184,15 +185,14 @@ export async function renderAndAttachPdf(letterId: number): Promise<boolean> {
   const letter = await getLetterDetail(letterId);
   if (!letter || !letter.documentId || !letter.documentSlug || !letter.number) return false;
 
+  const isian = siapkanIsian(letter);
+
   try {
     const buffer = await renderSuratPdf({
       number: letter.number,
       subject: letter.subject,
-      bodyHtml: letter.bodyHtml,
-      fields: letter.templateFields.map((f) => ({
-        label: f.label,
-        value: letter.fieldValues[f.key] ?? "",
-      })),
+      bodyHtml: isian.bodyHtml,
+      fields: isian.fields,
       signatoryName: [letter.signatoryName, letter.signatoryTitle].filter(Boolean).join(", "),
       signatoryPosition: letter.signatoryPosition,
       issuedAt: letter.documentIssuedAt ?? new Date(),

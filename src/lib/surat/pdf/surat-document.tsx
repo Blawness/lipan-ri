@@ -26,7 +26,10 @@ export type SuratPdfInput = {
   verifyUrl: string;
 };
 
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "long" });
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "long",
+  timeZone: "Asia/Jakarta",
+});
 
 const s = StyleSheet.create({
   page: { paddingTop: 40, paddingBottom: 56, paddingHorizontal: 56, fontSize: 11, fontFamily: "Helvetica", color: "#0f2b46" },

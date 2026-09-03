@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getLetterDetail, getLetterLogs, nextSeq } from "@/lib/admin/letters";
 import { renderNumberPattern } from "@/lib/surat/nomor";
 import { canIssue, canEdit, canWithdraw } from "@/lib/surat/status";
+import { siapkanIsian } from "@/lib/surat/isian";
 import { rbac } from "@/rbac";
 import { StatusBadge } from "../status-badge";
 import { PengesahanPanel } from "./pengesahan-panel";
@@ -22,7 +23,13 @@ import { Pencil, Send, Undo2, FileDown, RefreshCw, ExternalLink, Trash2 } from "
 
 export const dynamic = "force-dynamic";
 
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "long", timeStyle: "short" });
+// Server Vercel berjalan di UTC; tanpa timeZone, jejak surat tampil mundur
+// 7 jam dari jam dinding pengurus yang membacanya.
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "long",
+  timeStyle: "short",
+  timeZone: "Asia/Jakarta",
+});
 
 const LOG_LABEL: Record<string, string> = {
   created: "Dibuat",
@@ -69,9 +76,10 @@ export default async function SuratDetailPage({
       createdBy: letter.createdBy,
     }).ok && rbac.can(user.role, "letters.submit");
 
-  const fieldRows = letter.templateFields
-    .map((f) => ({ key: f.key, label: f.label, value: letter.fieldValues[f.key] ?? "" }))
-    .filter((f) => f.value.trim() !== "");
+  // Sumber yang sama dengan perender PDF — pratinjau ini adalah janji tentang
+  // apa yang akan tercetak, jadi tidak boleh dihitung dengan cara sendiri.
+  const isian = siapkanIsian(letter);
+  const fieldRows = isian.fields.filter((f) => f.value.trim() !== "");
 
   const year = new Date().getFullYear();
   const calonNomor =
@@ -156,7 +164,7 @@ export default async function SuratDetailPage({
 
             <div
               className="prose prose-sm mt-6 max-w-none text-navy-900"
-              dangerouslySetInnerHTML={{ __html: letter.bodyHtml }}
+              dangerouslySetInnerHTML={{ __html: isian.bodyHtml }}
             />
             <div className="mt-10 text-right text-sm">
               {letter.signatoryPosition ? <p>{letter.signatoryPosition}</p> : null}

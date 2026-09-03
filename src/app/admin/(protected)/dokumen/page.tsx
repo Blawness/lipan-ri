@@ -22,7 +22,10 @@ import {
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 15;
-const dateFmt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" });
+const dateFmt = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "medium",
+  timeZone: "Asia/Jakarta",
+});
 
 function buildQuery(params: { q?: string; page?: number }) {
   const sp = new URLSearchParams();
