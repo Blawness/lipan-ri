@@ -3,7 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requirePermission } from "@blawness/admin-kit/auth-helpers";
+// `rbac` diimpor sebagai nilai yang benar-benar dipakai, bukan sekadar
+// `import "@/rbac"`: server action hidup di graf modul tersendiri, dan
+// registrasi RBAC dari layout/instrumentation tidak selalu ikut ke sana —
+// gejalanya "RBAC not configured" saat aksi jalan di instance yang dingin.
+import { rbac } from "@/rbac";
 import { sanitizeSuratHtml } from "@/lib/sanitize";
 import {
   createTemplate,
@@ -58,7 +62,7 @@ export async function createTemplateAction(
   _prev: TemplateFormState,
   formData: FormData
 ): Promise<TemplateFormState> {
-  await requirePermission("letterTemplates.manage");
+  await rbac.requirePermission("letterTemplates.manage");
   let input: TemplateInput;
   try {
     input = parse(formData);
@@ -75,7 +79,7 @@ export async function updateTemplateAction(
   _prev: TemplateFormState,
   formData: FormData
 ): Promise<TemplateFormState> {
-  await requirePermission("letterTemplates.manage");
+  await rbac.requirePermission("letterTemplates.manage");
   let input: TemplateInput;
   try {
     input = parse(formData);

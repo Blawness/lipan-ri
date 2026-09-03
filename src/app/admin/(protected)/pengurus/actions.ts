@@ -3,7 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requirePermission } from "@blawness/admin-kit/auth-helpers";
+// `rbac` diimpor sebagai nilai yang benar-benar dipakai, bukan sekadar
+// `import "@/rbac"`: server action hidup di graf modul tersendiri, dan
+// registrasi RBAC dari layout/instrumentation tidak selalu ikut ke sana —
+// gejalanya "RBAC not configured" saat aksi jalan di instance yang dingin.
+import { rbac } from "@/rbac";
 import { slugify } from "@/lib/slug";
 import {
   createPengurus,
@@ -95,7 +99,7 @@ export async function createPengurusAction(
   _prev: PengurusFormState,
   formData: FormData,
 ): Promise<PengurusFormState> {
-  await requirePermission("pengurus.manage");
+  await rbac.requirePermission("pengurus.manage");
   let ok = false;
   try {
     const input = parse(formData);
@@ -120,7 +124,7 @@ export async function updatePengurusAction(
   _prev: PengurusFormState,
   formData: FormData,
 ): Promise<PengurusFormState> {
-  await requirePermission("pengurus.manage");
+  await rbac.requirePermission("pengurus.manage");
   let ok = false;
   try {
     const input = parse(formData);
@@ -141,7 +145,7 @@ export async function updatePengurusAction(
 }
 
 export async function deletePengurusAction(formData: FormData) {
-  await requirePermission("pengurus.manage");
+  await rbac.requirePermission("pengurus.manage");
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
   await deletePengurus(id);

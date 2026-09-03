@@ -3,14 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requirePermission } from "@blawness/admin-kit/auth-helpers";
+// `rbac` diimpor sebagai nilai yang benar-benar dipakai, bukan sekadar
+// `import "@/rbac"`: server action hidup di graf modul tersendiri, dan
+// registrasi RBAC dari layout/instrumentation tidak selalu ikut ke sana —
+// gejalanya "RBAC not configured" saat aksi jalan di instance yang dingin.
+import { rbac } from "@/rbac";
 import { db } from "@/db";
 import { signatories } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { isForeignKeyViolation } from "@/lib/db-errors";
 
 export async function createSignatoryAction(formData: FormData) {
-  await requirePermission("signatories.manage");
+  await rbac.requirePermission("signatories.manage");
 
   const raw = Object.fromEntries(formData);
   const data = z
@@ -33,7 +37,7 @@ export async function createSignatoryAction(formData: FormData) {
 }
 
 export async function updateSignatoryAction(formData: FormData) {
-  await requirePermission("signatories.manage");
+  await rbac.requirePermission("signatories.manage");
 
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
@@ -57,7 +61,7 @@ export async function updateSignatoryAction(formData: FormData) {
 }
 
 export async function deleteSignatoryAction(formData: FormData) {
-  await requirePermission("signatories.manage");
+  await rbac.requirePermission("signatories.manage");
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
 

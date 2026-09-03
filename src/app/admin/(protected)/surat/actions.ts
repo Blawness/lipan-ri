@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requirePermission, requireUserId } from "@blawness/admin-kit/auth-helpers";
+import { requireUserId } from "@blawness/admin-kit/auth-helpers";
+// `rbac` diimpor sebagai nilai yang benar-benar dipakai, bukan sekadar
+// `import "@/rbac"`: server action hidup di graf modul tersendiri, dan
+// registrasi RBAC dari layout/instrumentation tidak selalu ikut ke sana —
+// gejalanya "RBAC not configured" saat aksi jalan di instance yang dingin.
+import { rbac } from "@/rbac";
 import type { AdminSessionUser } from "@blawness/admin-kit";
 import { sanitizeSuratHtml } from "@/lib/sanitize";
 import {
@@ -91,7 +96,7 @@ export async function createLetterAction(
   _prev: LetterFormState,
   formData: FormData
 ): Promise<LetterFormState> {
-  await requirePermission("letters.write");
+  await rbac.requirePermission("letters.write");
   let input: LetterInput;
   try {
     input = parse(formData);
@@ -110,7 +115,7 @@ export async function createLetterAction(
   await createLetterLog(id, actorId, "created");
 
   if (intent === "submit") {
-    await requirePermission("letters.submit");
+    await rbac.requirePermission("letters.submit");
     await submitLetter(id);
     await createLetterLog(id, actorId, "submitted");
   }
@@ -123,7 +128,7 @@ export async function updateLetterAction(
   _prev: LetterFormState,
   formData: FormData
 ): Promise<LetterFormState> {
-  await requirePermission("letters.write");
+  await rbac.requirePermission("letters.write");
   const current = await getLetterDetail(id);
   if (!current) return { error: "Surat tidak ditemukan." };
   if (!canEdit(current.status)) return { error: "Surat ini tidak bisa disunting lagi." };
@@ -146,7 +151,7 @@ export async function updateLetterAction(
   await createLetterLog(id, actorId, "updated");
 
   if (intent === "submit") {
-    await requirePermission("letters.submit");
+    await rbac.requirePermission("letters.submit");
     if (!canSubmit(current.status)) return { error: "Surat ini sudah diajukan." };
     await submitLetter(id);
     await createLetterLog(id, actorId, "submitted");
@@ -156,7 +161,7 @@ export async function updateLetterAction(
 }
 
 export async function submitLetterAction(id: number): Promise<void> {
-  await requirePermission("letters.submit");
+  await rbac.requirePermission("letters.submit");
   const current = await getLetterDetail(id);
   if (!current || !canSubmit(current.status)) return;
   const actorId = await requireUserId();
@@ -174,7 +179,7 @@ export async function submitLetterAction(id: number): Promise<void> {
  * yang menyelinap lebih dulu tetap menang.
  */
 export async function withdrawLetterAction(id: number): Promise<void> {
-  const session = await requirePermission("letters.submit");
+  const session = await rbac.requirePermission("letters.submit");
   const user = session.user as AdminSessionUser;
   const current = await getLetterDetail(id);
   if (!current) return;
@@ -195,7 +200,7 @@ export async function withdrawLetterAction(id: number): Promise<void> {
 }
 
 export async function deleteLetterAction(id: number): Promise<void> {
-  await requirePermission("letters.write");
+  await rbac.requirePermission("letters.write");
   const current = await getLetterDetail(id);
   // Hanya draft yang boleh dihapus — surat yang sudah diajukan atau terbit
   // harus tetap bisa dijelaskan jejaknya.
@@ -212,7 +217,7 @@ export async function issueLetterAction(
   _prev: IssueFormState,
   formData: FormData
 ): Promise<IssueFormState> {
-  const session = await requirePermission("letters.issue");
+  const session = await rbac.requirePermission("letters.issue");
   const user = session.user as AdminSessionUser;
 
   // `number` adalah isi field yang mungkin sudah diedit approver; `calon`
@@ -238,7 +243,7 @@ export async function rejectLetterAction(
   _prev: IssueFormState,
   formData: FormData
 ): Promise<IssueFormState> {
-  const session = await requirePermission("letters.issue");
+  const session = await rbac.requirePermission("letters.issue");
   const user = session.user as AdminSessionUser;
   const note = String(formData.get("note") ?? "").trim();
   if (note.length === 0) return { error: "Catatan penolakan wajib diisi." };
@@ -269,7 +274,7 @@ export async function rejectLetterAction(
 }
 
 export async function renderPdfAction(id: number): Promise<void> {
-  const session = await requirePermission("letters.issue");
+  const session = await rbac.requirePermission("letters.issue");
   const user = session.user as AdminSessionUser;
 
   const current = await getLetterDetail(id);

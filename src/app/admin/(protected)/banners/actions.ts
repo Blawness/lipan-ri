@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requirePermission } from "@blawness/admin-kit/auth-helpers";
+// `rbac` diimpor sebagai nilai yang benar-benar dipakai, bukan sekadar
+// `import "@/rbac"`: server action hidup di graf modul tersendiri, dan
+// registrasi RBAC dari layout/instrumentation tidak selalu ikut ke sana —
+// gejalanya "RBAC not configured" saat aksi jalan di instance yang dingin.
+import { rbac } from "@/rbac";
 import {
   createBanner,
   updateBanner,
@@ -34,7 +38,7 @@ function revalidate() {
 }
 
 export async function createBannerAction(formData: FormData) {
-  await requirePermission("banners.manage");
+  await rbac.requirePermission("banners.manage");
   const input = readInput(formData);
   if (!input) redirect("/admin/banners?error=Gambar+banner+wajib+diunggah");
   await createBanner(input);
@@ -43,7 +47,7 @@ export async function createBannerAction(formData: FormData) {
 }
 
 export async function updateBannerAction(formData: FormData) {
-  await requirePermission("banners.manage");
+  await rbac.requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   const input = readInput(formData);
   if (!id || !input) redirect("/admin/banners?error=Data+banner+tidak+lengkap");
@@ -53,7 +57,7 @@ export async function updateBannerAction(formData: FormData) {
 }
 
 export async function deleteBannerAction(formData: FormData) {
-  await requirePermission("banners.manage");
+  await rbac.requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   if (!id) return;
   await deleteBanner(id);
@@ -61,7 +65,7 @@ export async function deleteBannerAction(formData: FormData) {
 }
 
 export async function toggleBannerAction(formData: FormData) {
-  await requirePermission("banners.manage");
+  await rbac.requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   if (!id) return;
   await toggleBanner(id);
@@ -69,7 +73,7 @@ export async function toggleBannerAction(formData: FormData) {
 }
 
 export async function reorderBannerAction(formData: FormData) {
-  await requirePermission("banners.manage");
+  await rbac.requirePermission("banners.manage");
   const id = Number(formData.get("id"));
   const dir = String(formData.get("dir"));
   if (!id || (dir !== "up" && dir !== "down")) return;

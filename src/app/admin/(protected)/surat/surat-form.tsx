@@ -138,7 +138,18 @@ export function SuratForm({
 
       <div className="space-y-2 rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
         <label className={labelClass}>Badan Surat</label>
-        <Editor value={body} onChange={setBody} />
+        {/*
+          `key` sengaja diikat ke templateId supaya editor dipasang ulang saat
+          jenis surat berganti. Editor admin-kit hanya membaca `value` sekali
+          saat mount (useEditor({ content })), jadi tanpa remount badan bawaan
+          template masuk ke state tapi TIDAK terlihat di layar — penulis surat
+          mengira template tidak punya isi bawaan, padahal isinya ikut tersimpan.
+        */}
+        <Editor key={templateId ?? "kosong"} value={body} onChange={setBody} />
+        <p className="text-xs text-muted-foreground">
+          Tautan dan gambar tidak ikut tercetak di PDF surat, jadi keduanya
+          dibuang saat disimpan.
+        </p>
       </div>
 
       {state.error ? (
