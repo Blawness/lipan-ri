@@ -128,7 +128,14 @@ export function TemplateForm({
 
       <div className="space-y-2 rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
         <label className={labelClass}>Badan Surat Default</label>
-        <Editor value={body} onChange={setBody} />
+        {/*
+          Isi editor ini disanitasi `sanitizeSuratHtml` yang sama dengan badan
+          surat, jadi tombol Tautan & Gambar harus ikut disembunyikan di sini —
+          lihat .surat-editor di globals.css.
+        */}
+        <div className="surat-editor">
+          <Editor value={body} onChange={setBody} />
+        </div>
       </div>
 
       {state.error ? (
