@@ -6,10 +6,11 @@
  * jabatan. (Catatan: `signatories.title` BUKAN jabatan — itu gelar,
  * mis. "SE, SH, MH". Jangan tertukar.)
  *
- * Jabatannya disalin dari tabel `pengurus` — daftar kepengurusan resmi —
- * bukan dikarang di sini. Pencocokan memakai id baris `signatories`, bukan
- * nama, karena ejaan nama di dua tabel itu berbeda (`signatories` menyimpan
- * nama tanpa gelar).
+ * Jabatannya berpatokan pada tabel `pengurus` (daftar kepengurusan resmi),
+ * kecuali kalau penyebutan di surat memang berbeda — lihat catatan di
+ * `JABATAN`. Pencocokan memakai id baris `signatories`, bukan nama, karena
+ * ejaan nama di dua tabel itu berbeda (`signatories` menyimpan nama tanpa
+ * gelar).
  *
  * Dry-run dulu (default), lalu `--apply` untuk menulis:
  *   pnpm tsx --env-file=.env.local scripts/sync-jabatan-penandatangan.ts
@@ -20,7 +21,9 @@ import { db } from "@/db";
 import { signatories } from "@/db/schema";
 
 const JABATAN: Record<number, string> = {
-  1: "Ketua LIPAN-RI", // Harun Prayitno, SE., SH., M.H
+  // "Ketua Umum" adalah penyebutan yang dipakai di surat — tabel `pengurus`
+  // menulisnya "Ketua LIPAN-RI", dan yang dipakai di sini menang.
+  1: "Ketua Umum", // Harun Prayitno, SE., SH., M.H
   5: "Sekretaris Jenderal", // Cahya Puspita Rini, SE
 };
 
