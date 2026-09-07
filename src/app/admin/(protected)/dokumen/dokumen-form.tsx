@@ -41,6 +41,13 @@ export function DokumenForm({
   >(action, {});
   const [fileUrl, setFileUrl] = useState(initial.fileUrl);
 
+  // Tandai album "dokumen" supaya berkas surat tidak nyampur di galeri berita
+  // dan gampang dibedakan saat menyapu media.
+  async function uploadDokumen(fd: FormData) {
+    fd.set("album", "dokumen");
+    return uploadImageAction(fd);
+  }
+
   return (
     <form action={formAction} className="max-w-xl space-y-6">
       <input type="hidden" name="fileUrl" value={fileUrl} />
@@ -120,7 +127,7 @@ export function DokumenForm({
               "image/webp",
             ]}
             maxBytes={16 * 1024 * 1024}
-            uploadAction={uploadImageAction}
+            uploadAction={uploadDokumen}
           />
         </div>
 
