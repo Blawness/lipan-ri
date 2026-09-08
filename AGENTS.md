@@ -15,7 +15,7 @@ Indonesian non-profit org site. Next.js 16 App Router + PostgreSQL + Drizzle ORM
 | `pnpm dev` | Dev server |
 | `pnpm build` | Production build |
 | `pnpm lint` | ESLint (config in `eslint.config.mjs`) |
-| `pnpm db:seed` | Seed DB via `tsx src/db/seed.ts` (requires `DATABASE_URL` and existing schema) |
+| `pnpm db:seed` | Seed DB via `tsx src/db/seed.ts`. **Destructive** — wipes `media`, `pages`, `signatories`, and dev shares the DB with prod, so it aborts unless you confirm with `WIPE_DB=<nama database> pnpm db:seed` |
 
 Run `lint -> build` before declaring work complete.
 

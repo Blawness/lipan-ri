@@ -3,8 +3,11 @@ import { db } from "./index";
 import { categories, posts, pages, documents, signatories } from "./schema";
 import { users, media } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
+import { assertDestructiveAllowed } from "./guard";
 
 async function seed() {
+  await assertDestructiveAllowed("db:seed", ["media", "pages", "signatories"]);
+
   console.log("🌱 Seeding database...");
 
   // Default user (for future admin)
