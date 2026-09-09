@@ -178,8 +178,6 @@ async function seed() {
           "Mensertifikatkan aset tanah milik Negara di 17.400 Pulau di wilayah NKRI",
           "Mensertifikatkan tanah terlantar milik Negara Ex. Perkebunan/kehutanan, Ex. BLBI, dan pertambangan",
           "Memberantas praktik mafia pertanahan di lingkungan Kementerian ATR/BPN RI",
-          "Melakukan revitalisasi sumber daya manusia mulai dari Eselon V hingga Eselon I di lingkungan Kementerian ATR/BPN RI",
-          "Membangun fasilitas dan Pusat Data dan Informasi (Pusdatin) yang canggih dan modern",
         ],
       }),
       metaDescription: "Profil Ketua LIPAN RI Harun Prayitno, SE, SH, MH",
