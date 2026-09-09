@@ -15,7 +15,7 @@ Indonesian non-profit org site. Next.js 16 App Router + PostgreSQL + Drizzle ORM
 | `pnpm dev` | Dev server |
 | `pnpm build` | Production build |
 | `pnpm lint` | ESLint (config in `eslint.config.mjs`) |
-| `pnpm db:seed` | Seed DB via `tsx src/db/seed.ts`. **Destructive** — wipes `media`, `pages`, `signatories`, and dev shares the DB with prod, so it aborts unless you confirm with `WIPE_DB=<nama database> pnpm db:seed` |
+| `pnpm db:seed` | Seed DB via `tsx src/db/seed.ts`. Idempotent — insert-only, never deletes or overwrites, so it is safe to re-run (dev shares the DB with prod). Editing seed data therefore does NOT change rows that already exist. Keep it that way: no `db.delete` in that file |
 
 Run `lint -> build` before declaring work complete.
 

@@ -1,13 +1,24 @@
 import "dotenv/config";
 import { db } from "./index";
 import { categories, posts, pages, documents, signatories } from "./schema";
-import { users, media } from "@blawness/admin-kit/schema";
+import { users } from "@blawness/admin-kit/schema";
 import { eq } from "drizzle-orm";
-import { assertDestructiveAllowed } from "./guard";
 
+/**
+ * Skrip ini WAJIB idempotent: hanya menambah baris yang belum ada, tidak
+ * pernah menghapus dan tidak pernah menimpa.
+ *
+ * Alasannya keras: database dev dan produksi di proyek ini satu dan sama.
+ * Versi lama skrip ini mengosongkan `media`, `pages`, dan `signatories` lebih
+ * dulu — tabel `media` produksi sudah pernah jadi korbannya dan tersisa satu
+ * baris. Setiap `db.insert` di bawah karena itu memakai `onConflictDoNothing`,
+ * dan tidak boleh ada satu pun `db.delete` di file ini.
+ *
+ * Konsekuensi yang disengaja: mengubah isi seed TIDAK mengubah baris yang
+ * sudah ada di database. Untuk mengubah konten yang sudah tayang, sunting
+ * barisnya langsung — bukan dengan menjalankan ulang skrip ini.
+ */
 async function seed() {
-  await assertDestructiveAllowed("db:seed", ["media", "pages", "signatories"]);
-
   console.log("🌱 Seeding database...");
 
   // Default user (for future admin)
@@ -84,23 +95,6 @@ async function seed() {
 
   for (const post of postData) {
     await db.insert(posts).values(post).onConflictDoNothing();
-  }
-
-  // Media / Gallery
-  const mediaData = [
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/4.jpg", altText: "Harun Prayitno - Dokumen Ketua", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/5.jpg", altText: "Harun Prayitno - Dokumen Ketua", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/1.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/6.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/7.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/2.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/11.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-    { url: "https://lipan-ri.org/wp-content/gallery/dokumen-ketua/12.jpg", altText: "Kegiatan LIPAN RI", album: "dokumen-ketua" },
-  ];
-
-  await db.delete(media);
-  for (const m of mediaData) {
-    await db.insert(media).values(m);
   }
 
   // Pages
@@ -260,22 +254,17 @@ async function seed() {
     },
   ];
 
-  await db.delete(pages);
   for (const page of pageData) {
-    await db.insert(pages).values(page);
+    await db.insert(pages).values(page).onConflictDoNothing({ target: pages.slug });
   }
 
-  // Penandatangan
-  const signatoryData = [
-    { name: "Harun Prayitno", title: "SE, SH, MH" },
-    { name: "Dr. H. Ahmad Fauzi", title: "M.Si." },
-    { name: "Hj. Siti Maryam", title: "SH" },
-    { name: "Budi Santoso", title: "S.H., M.Kn." },
-  ];
+  // Penandatangan. Sengaja hanya nama sungguhan — skrip ini juga menyentuh
+  // database produksi, jadi tidak boleh menyuntikkan penandatangan karangan.
+  // `position` dan `user_id` diisi lewat /admin/penandatangan, bukan di sini.
+  const signatoryData = [{ name: "Harun Prayitno", title: "SE, SH, MH" }];
 
-  await db.delete(signatories);
   for (const s of signatoryData) {
-    await db.insert(signatories).values(s);
+    await db.insert(signatories).values(s).onConflictDoNothing({ target: signatories.name });
   }
 
   // Dokumen (legalitas QR)

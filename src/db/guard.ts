@@ -20,6 +20,11 @@ function target(): Target {
  * cara otomatis membedakan dev dari prod di sini, satu-satunya pengaman yang
  * jujur adalah memaksa operator melihat isi tabelnya dulu lalu mengetik ulang
  * nama database sebagai konfirmasi.
+ *
+ * Per 2026-09-09 tidak ada yang memanggil ini: `db:seed` sudah dibuat
+ * idempotent (insert-only) sehingga tidak perlu dipagari lagi. Sengaja
+ * dipertahankan sebagai pagar siap pakai untuk skrip berikutnya yang memang
+ * harus menghapus sesuatu — jangan tulis skrip destruktif tanpa memakainya.
  */
 export async function assertDestructiveAllowed(
   skrip: string,
