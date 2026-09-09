@@ -23,7 +23,7 @@ Run `lint -> build` before declaring work complete.
 
 - **Path alias:** `@/` → `./src/*`
 - **DB:** Drizzle ORM, PostgreSQL. Schema in `src/db/schema.ts`, migrations in `drizzle/`.
-- **No tests configured.** No CI/GitHub Actions.
+- **Tes:** `pnpm test` (vitest, unit — 75 tes) dan `pnpm e2e` (Playwright, butuh build produksi). No CI/GitHub Actions.
 - **All pages use `export const dynamic = "force-dynamic"`** — no ISR.
 - **Tailwind v4:** uses `@import "tailwindcss"` (NOT `@tailwind` directives) + `@tailwindcss/postcss` plugin.
 - **shadcn style:** "base-nova" (not "new-york" or default).
