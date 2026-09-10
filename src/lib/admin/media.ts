@@ -1,39 +1,56 @@
 import { CopyObjectCommand } from "@aws-sdk/client-s3";
-import { r2, R2_BUCKET, R2_PUBLIC_URL } from "@blawness/admin-kit";
+import { r2, R2_BUCKET } from "@blawness/admin-kit";
 import { db } from "@/db";
-import { posts, banners, documents, pengurus } from "@/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { jalurUnggahan } from "@/lib/admin/media-url";
+import { posts, pages, banners, documents, pengurus } from "@/db/schema";
+import { sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
+import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+
+export { jalurUnggahan };
+
+/** Kolom yang isinya satu URL utuh, dibandingkan setelah host-nya dibuang. */
+function jalurnyaSama(kolom: PgColumn, jalur: string): SQL {
+  return sql`regexp_replace(${kolom}, '^https?://[^/]+', '') = ${jalur}`;
+}
 
 /**
- * Berapa banyak konten yang masih memakai URL berkas ini.
+ * Kolom yang isinya HTML/JSON dan bisa memuat URL unggahan di dalamnya.
+ * Dicocokkan sebagai substring jalur — `position`, bukan `like`, supaya isi
+ * jalur tidak perlu di-escape dan tidak ada wildcard yang bocor.
+ */
+function memuatJalur(kolom: PgColumn, jalur: string): SQL {
+  return sql`position(${jalur} in ${kolom}) > 0`;
+}
+
+/**
+ * Berapa banyak konten yang masih memakai berkas ini.
  * Dipakai untuk mencegah penghapusan media yang masih dirujuk di situs —
- * dan penghapusan media ikut menghapus objeknya di R2, jadi setiap kolom
- * yang menyimpan URL unggahan WAJIB terdaftar di sini. Yang belum tercakup:
- * gambar yang ditempel di dalam badan berita/halaman (URL-nya ada di HTML,
- * bukan di kolom tersendiri).
+ * dan penghapusan media ikut menghapus objeknya di R2, jadi setiap tempat
+ * yang bisa menyimpan URL unggahan WAJIB terdaftar di sini.
+ *
+ * Yang ikut dihitung: kolom URL tersendiri (gambar utama berita, banner,
+ * berkas dokumen, foto pengurus) dan gambar yang ditempel di dalam badan
+ * berita/halaman. Badan konten dicocokkan sebagai substring, jadi bisa
+ * kelebihan hitung kalau ada key lain yang memuat jalur ini utuh — itu arah
+ * salah yang aman: penghapusan ditolak, berkas tidak hilang.
  */
 export async function countMediaReferences(url: string): Promise<number> {
-  const counts = await Promise.all(
-    [
-      db
-        .select({ n: sql<number>`count(*)` })
-        .from(posts)
-        .where(eq(posts.featuredImage, url)),
-      db
-        .select({ n: sql<number>`count(*)` })
-        .from(banners)
-        .where(eq(banners.imageUrl, url)),
-      db
-        .select({ n: sql<number>`count(*)` })
-        .from(documents)
-        .where(eq(documents.fileUrl, url)),
-      db
-        .select({ n: sql<number>`count(*)` })
-        .from(pengurus)
-        .where(eq(pengurus.foto, url)),
-    ].map(async (q) => Number((await q)[0].n))
-  );
-  return counts.reduce((a, b) => a + b, 0);
+  const jalur = jalurUnggahan(url);
+  const jumlah = await Promise.all([
+    hitung(posts, jalurnyaSama(posts.featuredImage, jalur)),
+    hitung(banners, jalurnyaSama(banners.imageUrl, jalur)),
+    hitung(documents, jalurnyaSama(documents.fileUrl, jalur)),
+    hitung(pengurus, jalurnyaSama(pengurus.foto, jalur)),
+    hitung(posts, memuatJalur(posts.content, jalur)),
+    hitung(pages, memuatJalur(pages.content, jalur)),
+  ]);
+  return jumlah.reduce((a, b) => a + b, 0);
+}
+
+async function hitung(tabel: PgTable, where: SQL): Promise<number> {
+  const r = await db.select({ n: sql<number>`count(*)` }).from(tabel).where(where);
+  return Number(r[0].n);
 }
 
 /** Error dari R2 yang artinya objeknya memang tidak ada di sana. */
@@ -62,16 +79,16 @@ function objekTidakAda(err: unknown): boolean {
  * diakses siapa saja yang menebak key-nya. Kalau yang dihapus memang berkas
  * sensitif, hapus juga salinannya dari `trash/` lewat dashboard R2.
  *
+ * Key-nya diambil dari jalur URL, bukan dari awalan R2_PUBLIC_URL — lihat
+ * [jalurUnggahan]. URL dengan host lama pun tetap ikut diarsipkan.
+ *
  * Mengembalikan key salinannya, atau null kalau tidak ada yang perlu disalin:
- * URL-nya bukan milik R2 kita (mis. gambar seed dari domain lama), atau
- * objeknya sudah tidak ada di bucket (baris media yatim — tidak ada yang bisa
- * hilang). Kegagalan lain sengaja dilempar supaya penghapusan ikut batal:
- * lebih baik gagal hapus daripada hapus tanpa jaring.
+ * objeknya tidak ada di bucket kita (URL eksternal/seed, atau baris media
+ * yatim — tidak ada yang bisa hilang). Kegagalan lain sengaja dilempar supaya
+ * penghapusan ikut batal: lebih baik gagal hapus daripada hapus tanpa jaring.
  */
 export async function arsipkanObjekR2(url: string): Promise<string | null> {
-  const publicUrl = R2_PUBLIC_URL();
-  if (!publicUrl || !url.startsWith(`${publicUrl}/`)) return null;
-  const key = url.slice(publicUrl.length + 1);
+  const key = jalurUnggahan(url).replace(/^\/+/, "");
   if (!key) return null;
 
   const Bucket = R2_BUCKET();
