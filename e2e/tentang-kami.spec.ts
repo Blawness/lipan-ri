@@ -33,27 +33,23 @@ test.describe("Tentang Kami", () => {
     });
   }
 
-  test("profil ketua menampilkan riwayat organisasi", async ({ page }) => {
+  test("profil ketua menampilkan tanggal lahir, tanpa blok riwayat", async ({
+    page,
+  }) => {
     await page.goto("/tentang-kami/profil-ketua");
-
-    // Isi riwayat datang dari kolom JSON `pages.content` dan bisa disunting
-    // admin, jadi yang diuji strukturnya — bukan nama organisasinya.
-    const kepala = page.getByRole("heading", { name: "Riwayat Organisasi" });
-    await expect(kepala).toBeVisible();
-    // Entri pertama sesudah judul harus memuat tahun — memastikan daftarnya
-    // benar-benar terisi, bukan cuma judul kosong.
-    await expect(kepala.locator("xpath=following::li[1]")).toContainText(/\d{4}/);
 
     await expect(page.getByText(/^Lahir:/)).toBeVisible();
 
-    // Pendidikan & pekerjaan sengaja tidak ditampilkan meski datanya ada di
-    // `pages.content` — dicek supaya tidak diam-diam balik lagi.
-    await expect(
-      page.getByRole("heading", { name: "Riwayat Pendidikan" })
-    ).toHaveCount(0);
-    await expect(
-      page.getByRole("heading", { name: "Riwayat Pekerjaan" })
-    ).toHaveCount(0);
+    // Pendidikan, pekerjaan, dan organisasi tetap tersimpan di
+    // `pages.content` tapi sengaja tidak ditampilkan — dicek supaya tidak
+    // diam-diam balik lagi lewat penyuntingan berikutnya.
+    for (const judul of [
+      "Riwayat Pendidikan",
+      "Riwayat Pekerjaan",
+      "Riwayat Organisasi",
+    ]) {
+      await expect(page.getByRole("heading", { name: judul })).toHaveCount(0);
+    }
   });
 
   test("dari indeks bisa klik ke salah satu halaman", async ({ page }) => {

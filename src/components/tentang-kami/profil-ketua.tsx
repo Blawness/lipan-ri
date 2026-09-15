@@ -1,6 +1,6 @@
 "use client";
 
-import { Quote, Target, Lightbulb, Camera, Users } from "lucide-react";
+import { Quote, Target, Lightbulb, Camera } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProfilKetuaContent } from "@/lib/page-content";
 import { SafeImage } from "@/components/safe-image";
@@ -14,37 +14,6 @@ export type FotoDokumentasi = {
     url: string;
     altText: string | null;
 };
-
-/**
- * Satu baris riwayat pada linimasa. `utama` adalah jabatan/jurusan dan
- * `sekunder` institusi/perusahaan/organisasi — bentuk seragam supaya tiga
- * daftar dengan nama field berbeda bisa memakai satu komponen.
- */
-type RiwayatItem = { tahun: string; utama: string; sekunder: string };
-
-function Riwayat({ items }: { items: RiwayatItem[] }) {
-    return (
-        <ol className="relative space-y-4 border-l border-navy-100 pl-5">
-            {items.map((item, i) => (
-                <li key={i} className="relative">
-                    <span
-                        className="absolute -left-6 top-1.5 h-2 w-2 rounded-full bg-gold-400"
-                        aria-hidden="true"
-                    />
-                    <p className="text-xs font-semibold tracking-wide text-gold-600">
-                        {item.tahun}
-                    </p>
-                    <p className="mt-0.5 text-sm font-medium text-navy-900">
-                        {item.utama}
-                    </p>
-                    <p className="text-sm leading-snug text-muted-foreground">
-                        {item.sekunder}
-                    </p>
-                </li>
-            ))}
-        </ol>
-    );
-}
 
 function BackgroundFigure({
     side,
@@ -230,26 +199,7 @@ export function ProfilKetua({
                 </div>
             </Section>
 
-            {data.organisasi?.length > 0 && (
-                <Section delay={0.35}>
-                    <div className="mb-8">
-                        <div className="bg-white border border-gold-400/15 rounded-2xl p-6 shadow-sm">
-                            <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
-                                <Users className="h-4 w-4" /> Riwayat Organisasi
-                            </h2>
-                            <Riwayat
-                                items={data.organisasi.map((o) => ({
-                                    tahun: o.tahun,
-                                    utama: o.jabatan,
-                                    sekunder: o.organisasi,
-                                }))}
-                            />
-                        </div>
-                    </div>
-                </Section>
-            )}
-
-            <Section delay={0.45}>
+            <Section delay={0.35}>
                 <div className="mb-8">
                     <div className="bg-gradient-to-br from-navy-50 to-navy-100/50 border border-navy-100 rounded-2xl p-6 md:p-8">
                         <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
@@ -264,7 +214,7 @@ export function ProfilKetua({
             </Section>
 
             {galeri.length > 0 && (
-                <Section delay={0.5}>
+                <Section delay={0.45}>
                     <div className="mb-8">
                         <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
                             <span className="h-4 w-1 rounded-full bg-gold-400" />
