@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Editor, ImageUpload } from "@blawness/admin-kit/components";
 import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { ALBUM_COVER } from "@/lib/albums";
 import type { PostFormState } from "./actions";
 
 export type PostFormValues = {
@@ -36,6 +37,13 @@ export function PostForm({
   const [content, setContent] = useState(initial.content);
   const [featuredImage, setFeaturedImage] = useState(initial.featuredImage);
 
+  // Gambar utama menempel pada satu berita, bukan koleksi galeri — tanpa
+  // penandaan ini ia jatuh ke album default dan ikut tampil di /galeri.
+  async function uploadCover(fd: FormData) {
+    fd.set("album", ALBUM_COVER);
+    return uploadImageAction(fd);
+  }
+
   return (
     <form action={formAction} className="max-w-3xl space-y-6">
       <input type="hidden" name="content" value={content} />
@@ -53,7 +61,7 @@ export function PostForm({
             value={featuredImage}
             onChange={setFeaturedImage}
             label="gambar utama"
-            uploadAction={uploadImageAction}
+            uploadAction={uploadCover}
           />
         </div>
 

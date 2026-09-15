@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ImageUpload } from "@blawness/admin-kit/components";
 import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { ALBUM_BANNER } from "@/lib/albums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBannerAction, updateBannerAction } from "./actions";
@@ -11,6 +12,13 @@ import type { Banner } from "@/lib/banners";
 export function BannerForm({ banner }: { banner?: Banner }) {
   const [imageUrl, setImageUrl] = useState<string>(banner?.imageUrl ?? "");
   const editing = Boolean(banner);
+
+  // Gambar banner menempel pada satu banner, bukan koleksi galeri — tanpa
+  // penandaan ini ia jatuh ke album default dan ikut tampil di /galeri.
+  async function uploadBanner(fd: FormData) {
+    fd.set("album", ALBUM_BANNER);
+    return uploadImageAction(fd);
+  }
 
   return (
     <form
@@ -28,7 +36,7 @@ export function BannerForm({ banner }: { banner?: Banner }) {
           value={imageUrl}
           onChange={setImageUrl}
           label="banner"
-          uploadAction={uploadImageAction}
+          uploadAction={uploadBanner}
         />
       </div>
 

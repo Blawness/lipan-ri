@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageUpload } from "@blawness/admin-kit/components";
 import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { ALBUM_PENGURUS } from "@/lib/albums";
 import { SLOT_LABELS } from "@/components/tentang-kami/org-flow";
 import type { PengurusFormState } from "./actions";
 
@@ -41,6 +42,13 @@ export function PengurusForm({
     FormData
   >(action, {});
   const [foto, setFoto] = useState(initial.foto);
+
+  // Potret pengurus menempel pada satu baris pengurus, bukan koleksi galeri —
+  // tanpa penandaan ini ia jatuh ke album default dan ikut tampil di /galeri.
+  async function uploadFotoPengurus(fd: FormData) {
+    fd.set("album", ALBUM_PENGURUS);
+    return uploadImageAction(fd);
+  }
 
   return (
     <form action={formAction} className="max-w-xl space-y-6">
@@ -137,7 +145,7 @@ export function PengurusForm({
           <ImageUpload
             value={foto}
             onChange={setFoto}
-            uploadAction={uploadImageAction}
+            uploadAction={uploadFotoPengurus}
           />
         </div>
       </div>

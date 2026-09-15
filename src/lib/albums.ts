@@ -22,6 +22,16 @@ export const ALBUM_GALERI_KETUA = "galeri-ketua";
 export const ALBUM_DOKUMEN = "dokumen";
 
 /**
+ * Album gambar yang menempel pada satu konten, bukan koleksi galeri. Tanpa
+ * penandaan ini semuanya jatuh ke ALBUM_GALERI — default `uploadImageAction` —
+ * lalu ikut tampil di /galeri sebagai "foto kegiatan", padahal cuma gambar
+ * utama berita, potret pengurus, atau banner.
+ */
+export const ALBUM_COVER = "cover";
+export const ALBUM_PENGURUS = "pengurus";
+export const ALBUM_BANNER = "banner";
+
+/**
  * Album yang ikut tampil di galeri publik (/galeri dan blok galeri beranda).
  * `galeri-ketua` ikut walau punya halamannya sendiri — fotonya tetap foto
  * kegiatan lembaga, jadi tidak ada alasan menyembunyikannya dari galeri.
