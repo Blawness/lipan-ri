@@ -1,8 +1,19 @@
 "use client";
 
-import { Quote, Target, Lightbulb } from "lucide-react";
+import { Quote, Target, Lightbulb, Camera } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProfilKetuaContent } from "@/lib/page-content";
+import { SafeImage } from "@/components/safe-image";
+
+/**
+ * Foto dokumentasi yang tampil di profil ketua — subset kolom tabel `media`,
+ * diambil per album lewat `getMediaByAlbum` di server component.
+ */
+export type FotoDokumentasi = {
+    id: number;
+    url: string;
+    altText: string | null;
+};
 
 function BackgroundFigure({
     side,
@@ -62,7 +73,13 @@ function Section({
     );
 }
 
-export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
+export function ProfilKetua({
+    data,
+    galeri = [],
+}: {
+    data: ProfilKetuaContent;
+    galeri?: FotoDokumentasi[];
+}) {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <Section delay={0}>
@@ -191,7 +208,42 @@ export function ProfilKetua({ data }: { data: ProfilKetuaContent }) {
                 </div>
             </Section>
 
-            <Section delay={0.45}>
+            {galeri.length > 0 && (
+                <Section delay={0.45}>
+                    <div className="mb-8">
+                        <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
+                            <span className="h-4 w-1 rounded-full bg-gold-400" />
+                            <Camera className="h-4 w-4" /> Dokumentasi Kegiatan
+                        </h2>
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                            {galeri.map((foto) => (
+                                <figure
+                                    key={foto.id}
+                                    className="group overflow-hidden rounded-xl border border-navy-100 bg-navy-50 transition-colors hover:border-gold-400/40"
+                                >
+                                    <div className="aspect-[3/4] overflow-hidden">
+                                        <SafeImage
+                                            src={foto.url}
+                                            alt={
+                                                foto.altText ??
+                                                "Dokumentasi kegiatan Ketua Umum LIPAN-RI"
+                                            }
+                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                    </div>
+                                    {foto.altText && (
+                                        <figcaption className="px-3 py-2 text-xs leading-snug text-muted-foreground">
+                                            {foto.altText}
+                                        </figcaption>
+                                    )}
+                                </figure>
+                            ))}
+                        </div>
+                    </div>
+                </Section>
+            )}
+
+            <Section delay={0.55}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white border border-gold-400/15 rounded-2xl p-6 shadow-sm">
                         <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">

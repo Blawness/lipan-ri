@@ -9,6 +9,7 @@ import { Legalitas } from "@/components/tentang-kami/legalitas";
 import { ArtiLambang } from "@/components/tentang-kami/arti-lambang";
 import type { PageContent } from "@/lib/page-content";
 import { getPengurusBySlot } from "@/lib/pengurus";
+import { getMediaByAlbum } from "@/lib/media";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -53,8 +54,12 @@ export default async function StaticPage({ params }: Props) {
   switch (data.type) {
     case "profil":
       return <ProfilLembaga data={data} />;
-    case "profil-ketua":
-      return <ProfilKetua data={data} />;
+    case "profil-ketua": {
+      // Foto dokumentasi diunggah lewat Admin > Galeri dengan album ini —
+      // album tersendiri supaya tidak tercampur dengan galeri kegiatan umum.
+      const galeri = await getMediaByAlbum("galeri-ketua");
+      return <ProfilKetua data={data} galeri={galeri} />;
+    }
     case "visi-misi":
       return <VisiMisi data={data} />;
     case "struktur": {
