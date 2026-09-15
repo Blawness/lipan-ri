@@ -156,7 +156,9 @@ export default async function MediaPage({
         )}
       </form>
 
-      <AlbumUploader albums={albums} />
+      {/* key={album} supaya mengganti filter benar-benar menyetel ulang tujuan
+          unggah — tanpa itu state klien bertahan melewati navigasi filter. */}
+      <AlbumUploader key={album} albums={albums} album={album} />
 
       {items.length === 0 ? (
         <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-navy-200 bg-white py-16 text-center">

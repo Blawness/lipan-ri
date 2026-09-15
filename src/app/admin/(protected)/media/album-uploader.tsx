@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Images } from "lucide-react";
 import { ImageUpload } from "@blawness/admin-kit/components";
 import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
-import { ALBUM_GALERI } from "@/lib/albums";
+import { ALBUM_GALERI, ALBUM_GALERI_KETUA } from "@/lib/albums";
 
 /**
  * Kotak unggah galeri yang bisa menentukan album tujuan.
@@ -15,15 +15,25 @@ import { ALBUM_GALERI } from "@/lib/albums";
  * `galeri-ketua` mustahil diisi dari panel admin. Komponen ini menyisipkan
  * field itu sebelum meneruskan ke server action yang sama.
  */
-export function AlbumUploader({ albums }: { albums: string[] }) {
+export function AlbumUploader({
+  albums,
+  album: albumAwal,
+}: {
+  albums: string[];
+  /** Album yang sedang disaring; jadi tujuan unggah bila ada. */
+  album?: string;
+}) {
   const router = useRouter();
   const inputId = useId();
   const datalistId = useId();
-  const [album, setAlbum] = useState("");
+  // Diisi nilai sungguhan, bukan sekadar placeholder: field kosong dengan
+  // tulisan abu-abu tidak bisa dibedakan dari "belum ke-set apa pun", dan
+  // pembaca jadi tidak tahu foto akan mendarat di album mana.
+  const [album, setAlbum] = useState(albumAwal?.trim() || ALBUM_GALERI);
 
   async function upload(formData: FormData) {
     const tujuan = album.trim();
-    // Dibiarkan kosong berarti ikut default server action, yaitu ALBUM_GALERI.
+    // Dikosongkan manual berarti ikut default server action, yaitu ALBUM_GALERI.
     if (tujuan) formData.set("album", tujuan);
     return uploadImageAction(formData);
   }
@@ -55,9 +65,10 @@ export function AlbumUploader({ albums }: { albums: string[] }) {
           ))}
         </datalist>
         <p className="text-xs text-muted-foreground">
-          Kosongkan untuk masuk album <code>{ALBUM_GALERI}</code> yang tampil di
-          halaman Galeri. Isi nama album lain untuk memisahkan foto, misalnya{" "}
-          <code>galeri-ketua</code> yang tampil di Profil Ketua.
+          Foto akan masuk album <code>{album.trim() || ALBUM_GALERI}</code>.
+          Album <code>{ALBUM_GALERI}</code> tampil di halaman Galeri;{" "}
+          <code>{ALBUM_GALERI_KETUA}</code> tampil di Profil Ketua. Menyaring
+          daftar di bawah ikut mengubah tujuan ini.
         </p>
       </div>
 
