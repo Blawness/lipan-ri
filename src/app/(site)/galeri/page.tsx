@@ -1,5 +1,5 @@
-import { getMediaByAlbum } from "@/lib/media";
-import { ALBUM_GALERI } from "@/lib/albums";
+import { getMediaByAlbums } from "@/lib/media";
+import { ALBUM_GALERI_PUBLIK } from "@/lib/albums";
 import type { Metadata } from "next";
 import { SafeImage } from "@/components/safe-image";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const photos = await getMediaByAlbum(ALBUM_GALERI);
+  const photos = await getMediaByAlbums(ALBUM_GALERI_PUBLIK);
 
   return (
     <div className="container mx-auto px-4 py-8">

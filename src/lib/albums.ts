@@ -20,3 +20,10 @@ export const ALBUM_GALERI_KETUA = "galeri-ketua";
 
 /** Album berkas surat, diisi dari form dokumen — bukan gambar galeri. */
 export const ALBUM_DOKUMEN = "dokumen";
+
+/**
+ * Album yang ikut tampil di galeri publik (/galeri dan blok galeri beranda).
+ * `galeri-ketua` ikut walau punya halamannya sendiri — fotonya tetap foto
+ * kegiatan lembaga, jadi tidak ada alasan menyembunyikannya dari galeri.
+ */
+export const ALBUM_GALERI_PUBLIK = [ALBUM_GALERI, ALBUM_GALERI_KETUA];
