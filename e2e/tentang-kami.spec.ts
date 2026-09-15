@@ -33,6 +33,31 @@ test.describe("Tentang Kami", () => {
     });
   }
 
+  test("profil ketua menampilkan riwayat pendidikan, pekerjaan & organisasi", async ({
+    page,
+  }) => {
+    await page.goto("/tentang-kami/profil-ketua");
+
+    // Indeks /tentang-kami menjanjikan "pendidikan dan pengalaman". Isinya
+    // datang dari kolom JSON `pages.content` dan bisa disunting admin, jadi
+    // yang diuji strukturnya — bukan nama institusi atau perusahaannya.
+    for (const judul of [
+      "Riwayat Pendidikan",
+      "Riwayat Pekerjaan",
+      "Riwayat Organisasi",
+    ]) {
+      const kepala = page.getByRole("heading", { name: judul });
+      await expect(kepala).toBeVisible();
+      // Entri pertama sesudah judul harus memuat tahun — memastikan daftarnya
+      // benar-benar terisi, bukan cuma judul kosong.
+      await expect(kepala.locator("xpath=following::li[1]")).toContainText(
+        /\d{4}/
+      );
+    }
+
+    await expect(page.getByText(/^Lahir:/)).toBeVisible();
+  });
+
   test("dari indeks bisa klik ke salah satu halaman", async ({ page }) => {
     await page.goto("/tentang-kami");
     await page.getByRole("main").getByRole("link", { name: /Struktur Organisasi/ }).click();
