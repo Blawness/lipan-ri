@@ -1,5 +1,6 @@
 import { getRecentPosts, getPostCount } from "@/lib/posts";
 import { getMediaByAlbum } from "@/lib/media";
+import { ALBUM_GALERI } from "@/lib/albums";
 import { Reveal } from "@/components/home/reveal";
 import { NewsTicker } from "@/components/home/news-ticker";
 import { Hero } from "@/components/home/hero";
@@ -19,7 +20,7 @@ export default async function HomePage() {
   const [recentPosts, postCount, photos] = await Promise.all([
     getRecentPosts(8),
     getPostCount(),
-    getMediaByAlbum("dokumen-ketua"),
+    getMediaByAlbum(ALBUM_GALERI),
   ]);
 
   const years = new Date().getFullYear() - FOUNDED_YEAR;

@@ -10,6 +10,7 @@ import { ArtiLambang } from "@/components/tentang-kami/arti-lambang";
 import type { PageContent } from "@/lib/page-content";
 import { getPengurusBySlot } from "@/lib/pengurus";
 import { getMediaByAlbum } from "@/lib/media";
+import { ALBUM_GALERI_KETUA } from "@/lib/albums";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -57,7 +58,7 @@ export default async function StaticPage({ params }: Props) {
     case "profil-ketua": {
       // Foto dokumentasi diunggah lewat Admin > Galeri dengan album ini —
       // album tersendiri supaya tidak tercampur dengan galeri kegiatan umum.
-      const galeri = await getMediaByAlbum("galeri-ketua");
+      const galeri = await getMediaByAlbum(ALBUM_GALERI_KETUA);
       return <ProfilKetua data={data} galeri={galeri} />;
     }
     case "visi-misi":

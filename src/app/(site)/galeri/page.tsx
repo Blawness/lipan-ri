@@ -1,4 +1,5 @@
 import { getMediaByAlbum } from "@/lib/media";
+import { ALBUM_GALERI } from "@/lib/albums";
 import type { Metadata } from "next";
 import { SafeImage } from "@/components/safe-image";
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const photos = await getMediaByAlbum("dokumen-ketua");
+  const photos = await getMediaByAlbum(ALBUM_GALERI);
 
   return (
     <div className="container mx-auto px-4 py-8">

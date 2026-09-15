@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ImageUpload } from "@blawness/admin-kit/components";
 import { uploadImageAction } from "@blawness/admin-kit/screens/media/actions";
+import { ALBUM_DOKUMEN } from "@/lib/albums";
 import type { DocumentFormState } from "./actions";
 
 export type DocumentFormValues = {
@@ -44,7 +45,7 @@ export function DokumenForm({
   // Tandai album "dokumen" supaya berkas surat tidak nyampur di galeri berita
   // dan gampang dibedakan saat menyapu media.
   async function uploadDokumen(fd: FormData) {
-    fd.set("album", "dokumen");
+    fd.set("album", ALBUM_DOKUMEN);
     return uploadImageAction(fd);
   }
 
