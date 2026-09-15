@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    Quote,
-    Target,
-    Lightbulb,
-    Camera,
-    GraduationCap,
-    Briefcase,
-    Users,
-} from "lucide-react";
+import { Quote, Target, Lightbulb, Camera, Users } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProfilKetuaContent } from "@/lib/page-content";
 import { SafeImage } from "@/components/safe-image";
@@ -238,69 +230,21 @@ export function ProfilKetua({
                 </div>
             </Section>
 
-            {data.pendidikan?.length > 0 && (
+            {data.organisasi?.length > 0 && (
                 <Section delay={0.35}>
                     <div className="mb-8">
-                        <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
-                            <span className="h-4 w-1 rounded-full bg-gold-400" />
-                            <GraduationCap className="h-4 w-4" /> Riwayat
-                            Pendidikan
-                        </h2>
-                        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            {data.pendidikan.map((p, i) => (
-                                <li
-                                    key={i}
-                                    className="rounded-xl border border-navy-100 bg-navy-50 px-4 py-3"
-                                >
-                                    <p className="text-xs font-semibold tracking-wide text-gold-600">
-                                        {p.tahun}
-                                    </p>
-                                    <p className="mt-1 text-sm font-medium text-navy-900">
-                                        {p.jurusan}
-                                    </p>
-                                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
-                                        {p.institusi}
-                                    </p>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </Section>
-            )}
-
-            {(data.pekerjaan?.length > 0 || data.organisasi?.length > 0) && (
-                <Section delay={0.4}>
-                    <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {data.pekerjaan?.length > 0 && (
-                            <div className="bg-white border border-navy-100 rounded-2xl p-6 shadow-sm">
-                                <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
-                                    <Briefcase className="h-4 w-4" /> Riwayat
-                                    Pekerjaan
-                                </h2>
-                                <Riwayat
-                                    items={data.pekerjaan.map((k) => ({
-                                        tahun: k.tahun,
-                                        utama: k.jabatan,
-                                        sekunder: k.perusahaan,
-                                    }))}
-                                />
-                            </div>
-                        )}
-                        {data.organisasi?.length > 0 && (
-                            <div className="bg-white border border-gold-400/15 rounded-2xl p-6 shadow-sm">
-                                <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
-                                    <Users className="h-4 w-4" /> Riwayat
-                                    Organisasi
-                                </h2>
-                                <Riwayat
-                                    items={data.organisasi.map((o) => ({
-                                        tahun: o.tahun,
-                                        utama: o.jabatan,
-                                        sekunder: o.organisasi,
-                                    }))}
-                                />
-                            </div>
-                        )}
+                        <div className="bg-white border border-gold-400/15 rounded-2xl p-6 shadow-sm">
+                            <h2 className="flex items-center gap-2 text-navy-900 text-sm font-semibold uppercase tracking-wider mb-4">
+                                <Users className="h-4 w-4" /> Riwayat Organisasi
+                            </h2>
+                            <Riwayat
+                                items={data.organisasi.map((o) => ({
+                                    tahun: o.tahun,
+                                    utama: o.jabatan,
+                                    sekunder: o.organisasi,
+                                }))}
+                            />
+                        </div>
                     </div>
                 </Section>
             )}
