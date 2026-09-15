@@ -2,6 +2,7 @@ import { getMediaByAlbums } from "@/lib/media";
 import { ALBUM_GALERI_PUBLIK } from "@/lib/albums";
 import type { Metadata } from "next";
 import { SafeImage } from "@/components/safe-image";
+import { keteranganFoto } from "@/lib/caption";
 
 export const dynamic = "force-dynamic";
 
@@ -31,26 +32,33 @@ export default async function GalleryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {photos.map((photo) => (
-            <a
-              key={photo.id}
-              href={photo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="aspect-square rounded-xl overflow-hidden border-2 border-navy-100 hover:border-navy-400 hover:shadow-xl transition-all duration-300 group relative"
-            >
-              <SafeImage
-                src={photo.url}
-                alt={photo.altText ?? "Foto kegiatan LIPAN RI"}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                <p className="text-white text-xs font-medium line-clamp-2">
-                  {photo.altText ?? "Foto kegiatan"}
-                </p>
-              </div>
-            </a>
-          ))}
+          {photos.map((photo) => {
+            const keterangan = keteranganFoto(photo.altText);
+            return (
+              <figure
+                key={photo.id}
+                className="overflow-hidden rounded-xl border-2 border-navy-100 bg-white transition-all duration-300 hover:border-navy-400 hover:shadow-xl"
+              >
+                <a
+                  href={photo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block aspect-square overflow-hidden"
+                >
+                  <SafeImage
+                    src={photo.url}
+                    alt={keterangan ?? "Foto kegiatan LIPAN RI"}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </a>
+                {keterangan && (
+                  <figcaption className="px-3 py-2 text-xs leading-snug text-muted-foreground">
+                    {keterangan}
+                  </figcaption>
+                )}
+              </figure>
+            );
+          })}
         </div>
       )}
     </div>

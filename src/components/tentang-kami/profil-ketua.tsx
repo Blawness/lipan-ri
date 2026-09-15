@@ -4,6 +4,7 @@ import { Quote, Target, Lightbulb, Camera } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProfilKetuaContent } from "@/lib/page-content";
 import { SafeImage } from "@/components/safe-image";
+import { keteranganFoto } from "@/lib/caption";
 
 /**
  * Foto dokumentasi yang tampil di profil ketua — subset kolom tabel `media`,
@@ -221,7 +222,9 @@ export function ProfilKetua({
                             <Camera className="h-4 w-4" /> Dokumentasi Kegiatan
                         </h2>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                            {galeri.map((foto) => (
+                            {galeri.map((foto) => {
+                              const keterangan = keteranganFoto(foto.altText);
+                              return (
                                 <figure
                                     key={foto.id}
                                     className="group overflow-hidden rounded-xl border border-navy-100 bg-navy-50 transition-colors hover:border-gold-400/40"
@@ -230,19 +233,20 @@ export function ProfilKetua({
                                         <SafeImage
                                             src={foto.url}
                                             alt={
-                                                foto.altText ??
+                                                keterangan ??
                                                 "Dokumentasi kegiatan Ketua Umum LIPAN-RI"
                                             }
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
                                     </div>
-                                    {foto.altText && (
+                                    {keterangan && (
                                         <figcaption className="px-3 py-2 text-xs leading-snug text-muted-foreground">
-                                            {foto.altText}
+                                            {keterangan}
                                         </figcaption>
                                     )}
                                 </figure>
-                            ))}
+                              );
+                            })}
                         </div>
                     </div>
                 </Section>
