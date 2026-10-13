@@ -21,9 +21,9 @@ import { db } from "@/db";
 import { signatories } from "@/db/schema";
 
 const JABATAN: Record<number, string> = {
-  // "Ketua Umum" adalah penyebutan yang dipakai di surat — tabel `pengurus`
-  // menulisnya "Ketua LIPAN-RI", dan yang dipakai di sini menang.
-  1: "Ketua Umum", // Harun Prayitno, SE., SH., M.H
+  // Di surat tercetak "Ketua LIPAN RI" — nama lembaga ditambahkan otomatis
+  // oleh `jabatanTtd`, jadi cukup "Ketua". Bukan "Ketua Umum".
+  1: "Ketua", // Harun Prayitno, SE., SH., M.H
   5: "Sekretaris Jenderal", // Cahya Puspita Rini, SE
 };
 

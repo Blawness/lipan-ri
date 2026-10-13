@@ -58,7 +58,7 @@ export default async function PenandatanganPage() {
           <label htmlFor="position" className="text-sm font-medium text-navy-800">
             Jabatan
           </label>
-          <Input id="position" name="position" placeholder="Ketua Umum" />
+          <Input id="position" name="position" placeholder="Ketua" />
         </div>
         <div className="w-48 space-y-1.5">
           <label htmlFor="userId" className="text-sm font-medium text-navy-800">
