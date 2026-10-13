@@ -10,6 +10,8 @@ import { canIssue, canEdit, canWithdraw } from "@/lib/surat/status";
 import { siapkanIsian } from "@/lib/surat/isian";
 import { rbac } from "@/rbac";
 import { StatusBadge } from "../status-badge";
+import { SuratKertas } from "../surat-kertas";
+import { AlurSurat } from "../alur-surat";
 import { PengesahanPanel } from "./pengesahan-panel";
 import {
   issueLetterAction,
@@ -19,7 +21,17 @@ import {
   withdrawLetterAction,
   deleteLetterAction,
 } from "../actions";
-import { Pencil, Send, Undo2, FileDown, RefreshCw, ExternalLink, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Pencil,
+  Send,
+  Undo2,
+  FileDown,
+  RefreshCw,
+  ExternalLink,
+  Trash2,
+  Info,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +91,6 @@ export default async function SuratDetailPage({
   // Sumber yang sama dengan perender PDF — pratinjau ini adalah janji tentang
   // apa yang akan tercetak, jadi tidak boleh dihitung dengan cara sendiri.
   const isian = siapkanIsian(letter);
-  const fieldRows = isian.fields.filter((f) => f.value.trim() !== "");
 
   const year = new Date().getFullYear();
   const calonNomor =
@@ -96,6 +107,23 @@ export default async function SuratDetailPage({
   const withdrawAction = withdrawLetterAction.bind(null, letter.id);
   const renderAction = renderPdfAction.bind(null, letter.id);
   const deleteAction = deleteLetterAction.bind(null, letter.id);
+
+  const revoked = letter.status === "issued" && letter.documentStatus === "revoked";
+  const penandatangan = [letter.signatoryName, letter.signatoryTitle].filter(Boolean).join(", ");
+  // Kalimat "apa selanjutnya" — tanpa ini pembuat surat sering tidak tahu
+  // bahwa draft yang tersimpan belum sampai ke penandatangan.
+  const petunjuk =
+    letter.status === "draft"
+      ? bolehAjukan
+        ? "Surat ini masih draft dan belum terlihat oleh penandatangan. Periksa pratinjau, lalu klik “Ajukan untuk Pengesahan”."
+        : "Surat ini masih draft dan belum diajukan."
+      : letter.status === "submitted"
+        ? bolehSahkan
+          ? "Surat ini menunggu pengesahan Anda. Periksa pratinjau, lalu sahkan atau tolak dengan catatan."
+          : `Menunggu pengesahan ${letter.signatoryName}. Nomor surat dan QR akan terbit setelah disahkan.`
+        : revoked
+          ? "Surat ini sudah dicabut. Halaman verifikasinya menyatakan surat tidak lagi berlaku."
+          : null;
 
   return (
     <div className="space-y-6">
@@ -114,15 +142,32 @@ export default async function SuratDetailPage({
         }}
       />
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="font-heading text-xl font-bold text-navy-900">{letter.subject}</h1>
-          <p className="mt-1 font-mono text-sm text-muted-foreground">
-            {letter.number ?? `Calon nomor: ${calonNomor}`}
-          </p>
+      <div className="space-y-4">
+        <Link
+          href="/admin/surat"
+          className="inline-flex items-center gap-1 text-sm text-navy-600 hover:text-navy-900"
+        >
+          <ArrowLeft className="h-4 w-4" /> Daftar surat
+        </Link>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-medium uppercase tracking-wide text-navy-500">{letter.templateName}</p>
+            <h1 className="mt-0.5 font-heading text-xl font-bold text-navy-900">{letter.subject}</h1>
+            <p className="mt-1 font-mono text-sm text-muted-foreground">
+              {letter.number ?? `Calon nomor: ${calonNomor}`}
+            </p>
+          </div>
+          <StatusBadge status={letter.status} documentStatus={letter.documentStatus} />
         </div>
-        <StatusBadge status={letter.status} documentStatus={letter.documentStatus} />
+        <AlurSurat status={letter.status} revoked={revoked} />
       </div>
+
+      {petunjuk ? (
+        <p className="flex items-start gap-2 rounded-lg border border-navy-100 bg-navy-50/60 px-4 py-3 text-sm text-navy-800">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-navy-500" />
+          {petunjuk}
+        </p>
+      ) : null}
 
       {letter.rejectionNote && letter.status === "draft" ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
@@ -131,7 +176,7 @@ export default async function SuratDetailPage({
       ) : null}
 
       {letter.status === "issued" && !letter.documentFileUrl ? (
-        <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           <span>Surat sudah sah dan bisa diverifikasi, tetapi berkas PDF-nya gagal dibuat.</span>
           {bolehIssue ? (
             <form action={renderAction}>
@@ -143,37 +188,29 @@ export default async function SuratDetailPage({
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-6">
-          <div className="rounded-xl border border-navy-100 bg-white p-8 shadow-sm">
-            <p className="text-center font-heading text-sm font-bold uppercase text-navy-900">
-              {letter.subject}
-            </p>
-            <p className="mt-1 text-center text-sm">Nomor: {letter.number ?? calonNomor}</p>
-
-            {fieldRows.length > 0 ? (
-              <dl className="mt-4 space-y-1 text-sm">
-                {fieldRows.map((f) => (
-                  <div key={f.key} className="flex gap-3">
-                    <dt className="w-40 shrink-0 text-navy-700">{f.label}</dt>
-                    <dd className="text-navy-900">: {f.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
-
-            <div
-              className="prose prose-sm mt-6 max-w-none text-navy-900"
-              dangerouslySetInnerHTML={{ __html: isian.bodyHtml }}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section className="min-w-0 space-y-2">
+          <h2 className="text-xs font-medium uppercase tracking-wide text-navy-500">
+            {letter.status === "issued" ? "Isi surat" : "Pratinjau surat"}
+          </h2>
+          <div className="overflow-x-auto rounded-xl bg-navy-50/70 p-2 sm:p-6">
+            <SuratKertas
+              subject={letter.subject}
+              number={letter.number ?? calonNomor}
+              fields={isian.fields}
+              bodyHtml={isian.bodyHtml}
+              signatoryName={penandatangan}
+              signatoryPosition={letter.signatoryPosition}
+              issuedAt={letter.documentIssuedAt ?? new Date()}
+              qrUrl={letter.documentSlug ? `/api/verifikasi/${letter.documentSlug}/qr` : null}
             />
-            <div className="mt-10 text-right text-sm">
-              {letter.signatoryPosition ? <p>{letter.signatoryPosition}</p> : null}
-              <p className="mt-14 font-semibold underline">
-                {[letter.signatoryName, letter.signatoryTitle].filter(Boolean).join(", ")}
-              </p>
-            </div>
           </div>
-        </div>
+          {letter.status !== "issued" ? (
+            <p className="text-xs text-muted-foreground">
+              Tanggal dan nomor di atas masih perkiraan — keduanya ditetapkan saat surat disahkan.
+            </p>
+          ) : null}
+        </section>
 
         <div className="space-y-6">
           {bolehSahkan ? (
@@ -228,6 +265,31 @@ export default async function SuratDetailPage({
                 }
               />
             ) : null}
+          </div>
+
+          <div className="rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
+            <h2 className="font-heading text-sm font-semibold text-navy-900">Keterangan</h2>
+            <dl className="mt-3 space-y-2 text-sm">
+              <div>
+                <dt className="text-xs text-muted-foreground">Jenis surat</dt>
+                <dd className="text-navy-900">{letter.templateName}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">Penandatangan</dt>
+                <dd className="text-navy-900">
+                  {penandatangan}
+                  {letter.signatoryPosition ? (
+                    <span className="block text-xs text-muted-foreground">{letter.signatoryPosition}</span>
+                  ) : null}
+                </dd>
+              </div>
+              {letter.documentIssuedAt ? (
+                <div>
+                  <dt className="text-xs text-muted-foreground">Disahkan</dt>
+                  <dd className="text-navy-900">{dateFmt.format(letter.documentIssuedAt)}</dd>
+                </div>
+              ) : null}
+            </dl>
           </div>
 
           <div className="rounded-xl border border-navy-100 bg-white p-6 shadow-sm">

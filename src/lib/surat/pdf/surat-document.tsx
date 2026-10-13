@@ -1,5 +1,6 @@
 import path from "node:path";
 import {
+  Font,
   Document,
   Page,
   Text,
@@ -31,32 +32,55 @@ const dateFmt = new Intl.DateTimeFormat("id-ID", {
   timeZone: "Asia/Jakarta",
 });
 
+// Bawaan react-pdf memenggal kata bahasa Inggris — di surat berbahasa
+// Indonesia hasilnya pemenggalan aneh, dan URL verifikasi terpotong
+// ("li-pan-ri.com") sehingga tidak bisa disalin utuh.
+Font.registerHyphenationCallback((word) => [word]);
+
+const NAVY = "#0f2b46";
+const ABU = "#5b6b7c";
+const LOGO = 64;
+
 const s = StyleSheet.create({
-  page: { paddingTop: 40, paddingBottom: 56, paddingHorizontal: 56, fontSize: 11, fontFamily: "Helvetica", color: "#0f2b46" },
-  kop: { flexDirection: "row", alignItems: "center", gap: 12, borderBottomWidth: 2, borderBottomColor: "#0f2b46", paddingBottom: 10 },
-  kopLogo: { width: 56, height: 56 },
-  kopNama: { fontSize: 13, fontFamily: "Helvetica-Bold" },
-  kopSub: { fontSize: 10 },
-  kopAlamat: { fontSize: 9, color: "#5b6b7c" },
-  judul: { marginTop: 22, textAlign: "center", fontFamily: "Helvetica-Bold", fontSize: 12, textTransform: "uppercase" },
-  nomor: { marginTop: 4, textAlign: "center", fontSize: 11 },
-  fieldsWrap: { marginTop: 16 },
-  fieldRow: { flexDirection: "row", marginBottom: 3 },
-  fieldLabel: { width: 150 },
+  page: { paddingTop: 36, paddingBottom: 56, paddingHorizontal: 56, fontSize: 11, fontFamily: "Helvetica", color: NAVY },
+  // Logo di kiri, teks di tengah halaman. Penyeimbang selebar logo di kanan
+  // menjaga teks kop benar-benar di sumbu tengah kertas, bukan di tengah sisa
+  // ruang setelah logo.
+  kop: { flexDirection: "row", alignItems: "center" },
+  kopLogo: { width: LOGO, height: LOGO },
+  kopTeks: { flex: 1, alignItems: "center", paddingHorizontal: 8 },
+  kopNama: { fontSize: 13.5, fontFamily: "Helvetica-Bold", textAlign: "center" },
+  kopSingkatan: { fontSize: 11, fontFamily: "Helvetica-Bold", marginTop: 1 },
+  kopLegal: { fontSize: 8, fontFamily: "Helvetica-Oblique", marginTop: 2 },
+  kopAlamat: { fontSize: 8, color: ABU, textAlign: "center", marginTop: 3, lineHeight: "11pt" },
+  // Garis ganda khas kop surat dinas: tebal di atas, tipis di bawah.
+  garisTebal: { marginTop: 8, height: 2.5, backgroundColor: NAVY },
+  garisTipis: { marginTop: 1.5, height: 0.75, backgroundColor: NAVY },
+  judul: { marginTop: 22, textAlign: "center", fontFamily: "Helvetica-Bold", fontSize: 12, textTransform: "uppercase", textDecoration: "underline" },
+  nomor: { marginTop: 3, textAlign: "center", fontSize: 11 },
+  fieldsWrap: { marginTop: 18 },
+  fieldRow: { flexDirection: "row", marginBottom: 2 },
+  fieldLabel: { width: 130 },
+  fieldTitikDua: { width: 10 },
   fieldValue: { flex: 1 },
-  body: { marginTop: 20, lineHeight: 1.5 },
-  paragraph: { marginBottom: 8, textAlign: "justify" },
+  body: { marginTop: 16 },
+  paragraph: { marginBottom: 8, textAlign: "justify", lineHeight: "16pt" },
   heading: { marginTop: 10, marginBottom: 6, fontFamily: "Helvetica-Bold" },
   quote: { paddingLeft: 12, borderLeftWidth: 2, borderLeftColor: "#c7d3de" },
   listItem: { flexDirection: "row", marginBottom: 4 },
+  list: { marginBottom: 8 },
   listMarker: { width: 20 },
-  ttdWrap: { marginTop: 28, flexDirection: "row", justifyContent: "flex-end" },
-  ttd: { width: 220, alignItems: "center" },
-  ttdKota: { alignSelf: "flex-start", marginBottom: 2 },
-  qr: { width: 96, height: 96, marginVertical: 6 },
+  ttdWrap: { marginTop: 24, flexDirection: "row", justifyContent: "flex-end" },
+  ttd: { width: 230, alignItems: "center", textAlign: "center" },
+  qr: { width: 92, height: 92, marginVertical: 6 },
   ttdNama: { fontFamily: "Helvetica-Bold", textDecoration: "underline" },
-  catatan: { marginTop: 10, fontSize: 8, color: "#5b6b7c", textAlign: "center" },
+  catatan: { marginTop: 18, paddingTop: 6, borderTopWidth: 0.5, borderTopColor: "#c7d3de", fontSize: 7.5, color: ABU, textAlign: "center" },
 });
+
+/** "Ketua" → "Ketua LIPAN RI", tanpa menggandakan bila sudah ada. */
+function jabatanTtd(jabatan: string): string {
+  return jabatan.toUpperCase().replace(/-/g, " ").includes(KOP.singkatan) ? jabatan : `${jabatan} ${KOP.singkatan}`;
+}
 
 function Inlines({ inlines }: { inlines: SuratInline[] }) {
   return (
@@ -90,7 +114,8 @@ function FieldRows({ fields }: { fields: { label: string; value: string }[] }) {
       {rows.map((f, i) => (
         <View key={i} style={s.fieldRow}>
           <Text style={s.fieldLabel}>{f.label}</Text>
-          <Text style={s.fieldValue}>: {f.value}</Text>
+          <Text style={s.fieldTitikDua}>:</Text>
+          <Text style={s.fieldValue}>{f.value}</Text>
         </View>
       ))}
     </View>
@@ -104,7 +129,7 @@ function Body({ html }: { html: string }) {
       {blocks.map((block, i) => {
         if (block.kind === "list") {
           return (
-            <View key={i}>
+            <View key={i} style={s.list}>
               {block.items.map((item, j) => (
                 <View key={j} style={s.listItem}>
                   <Text style={s.listMarker}>
@@ -148,14 +173,22 @@ function SuratDocument({
       <Page size="A4" style={s.page}>
         <View style={s.kop}>
           <Image style={s.kopLogo} src={logo} />
-          <View>
-            <Text style={s.kopNama}>{KOP.nama}</Text>
-            <Text style={s.kopSub}>{KOP.singkatan}</Text>
+          <View style={s.kopTeks}>
+            {KOP.nama.map((baris) => (
+              <Text key={baris} style={s.kopNama}>{baris}</Text>
+            ))}
+            <Text style={s.kopSingkatan}>({KOP.singkatan})</Text>
+            <Text style={s.kopLegal}>{KOP.legalitas}</Text>
             <Text style={s.kopAlamat}>
-              {KOP.alamat} · {KOP.situs}
+              {KOP.alamat}
+              {"\n"}
+              {KOP.kontak}
             </Text>
           </View>
+          <View style={{ width: LOGO }} />
         </View>
+        <View style={s.garisTebal} />
+        <View style={s.garisTipis} />
 
         <Text style={s.judul}>{input.subject}</Text>
         <Text style={s.nomor}>Nomor: {input.number}</Text>
@@ -166,10 +199,12 @@ function SuratDocument({
 
         <View style={s.ttdWrap}>
           <View style={s.ttd}>
-            <Text style={s.ttdKota}>
+            <Text>
               {KOP.kota}, {dateFmt.format(input.issuedAt)}
             </Text>
-            {input.signatoryPosition ? <Text>{input.signatoryPosition}</Text> : null}
+            {input.signatoryPosition ? (
+              <Text style={{ marginTop: 2 }}>{jabatanTtd(input.signatoryPosition)}</Text>
+            ) : null}
             <Image style={s.qr} src={qr} />
             <Text style={s.ttdNama}>{input.signatoryName}</Text>
           </View>
@@ -177,7 +212,7 @@ function SuratDocument({
 
         <Text style={s.catatan}>
           Ditandatangani secara elektronik. Keaslian surat ini dapat diperiksa
-          dengan memindai QR di atas atau membuka {input.verifyUrl}
+          dengan memindai kode QR di atas atau membuka {input.verifyUrl}
         </Text>
       </Page>
     </Document>

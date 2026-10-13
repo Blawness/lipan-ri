@@ -1,4 +1,6 @@
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getLetterDetail } from "@/lib/admin/letters";
 import { listActiveTemplates, getTemplateById } from "@/lib/admin/letter-templates";
@@ -40,7 +42,18 @@ export default async function SuratEditPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="font-heading text-xl font-bold text-navy-900">Ubah Surat</h1>
+      <div className="space-y-2">
+        <Link
+          href={`/admin/surat/${letter.id}`}
+          className="inline-flex items-center gap-1 text-sm text-navy-600 hover:text-navy-900"
+        >
+          <ArrowLeft className="h-4 w-4" /> Kembali ke surat
+        </Link>
+        <h1 className="font-heading text-xl font-bold text-navy-900">Ubah Surat</h1>
+        <p className="hidden text-sm text-muted-foreground xl:block">
+          Isi formulir di kiri; pratinjau surat lengkap dengan kop diperbarui seketika.
+        </p>
+      </div>
       {letter.rejectionNote ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           Ditolak penandatangan: {letter.rejectionNote}

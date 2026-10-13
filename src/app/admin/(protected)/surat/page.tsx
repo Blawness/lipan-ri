@@ -6,7 +6,7 @@ import { listLettersAdmin, type LetterStatusFilter } from "@/lib/admin/letters";
 import { rbac } from "@/rbac";
 import type { AdminSessionUser } from "@blawness/admin-kit";
 import { StatusBadge } from "./status-badge";
-import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, ChevronLeft, ChevronRight, X, FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -57,8 +57,13 @@ export default async function SuratListPage({
   return (
     <div className="space-y-6">
       <ToastOnParam param="saved" messages={{ deleted: "Surat berhasil dihapus." }} />
-      <div className="flex items-center justify-between">
-        <h1 className="font-heading text-xl font-bold text-navy-900">Surat</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-heading text-xl font-bold text-navy-900">Surat</h1>
+          <p className="text-sm text-muted-foreground">
+            Susun surat, ajukan ke penandatangan, lalu terbitkan PDF ber-QR.
+          </p>
+        </div>
         {bisaTulis ? (
           <Button
             render={
@@ -76,66 +81,102 @@ export default async function SuratListPage({
           <Link
             key={t.value}
             href={buildQuery({ q: sp.q, status: t.value })}
-            className={`rounded-full px-3 py-1 text-sm ${
-              status === t.value ? "bg-navy-900 text-white" : "bg-navy-50 text-navy-700"
+            aria-current={status === t.value ? "page" : undefined}
+            className={`rounded-full px-3 py-1 text-sm transition-colors ${
+              status === t.value ? "bg-navy-900 text-white" : "bg-navy-50 text-navy-700 hover:bg-navy-100"
             }`}
           >
             {t.label}
           </Link>
         ))}
-        <form action="/admin/surat" className="ml-auto flex items-center gap-2">
+        <form action="/admin/surat" className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
           <input type="hidden" name="status" value={status} />
-          <div className="relative">
+          <div className="relative w-full sm:w-72">
             <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-navy-400" />
             <input
+              type="search"
               name="q"
               defaultValue={sp.q ?? ""}
               placeholder="Cari perihal atau nomor…"
               aria-label="Cari perihal atau nomor surat"
-              className="h-9 rounded-md border border-navy-200 pl-8 pr-3 text-sm focus:border-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-100"
+              className="h-9 w-full rounded-md border border-navy-200 pl-8 pr-8 text-sm focus:border-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-100"
             />
+            {sp.q ? (
+              <Link
+                href={buildQuery({ status })}
+                aria-label="Hapus pencarian"
+                className="absolute right-1.5 top-1.5 rounded p-1 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
+              >
+                <X className="h-4 w-4" />
+              </Link>
+            ) : null}
           </div>
         </form>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-navy-100 bg-white shadow-sm">
-        <table className="w-full text-sm">
+      {sp.q ? (
+        <p className="text-sm text-muted-foreground">
+          {total} surat cocok dengan “{sp.q}”.
+        </p>
+      ) : null}
+
+      <div className="overflow-x-auto rounded-xl border border-navy-100 bg-white shadow-sm">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="bg-navy-50/60 text-left text-xs uppercase text-navy-500">
             <tr>
-              <th className="px-4 py-3">Nomor</th>
               <th className="px-4 py-3">Perihal</th>
-              <th className="px-4 py-3">Jenis</th>
-              <th className="px-4 py-3">Penandatangan</th>
+              <th className="px-4 py-3">Nomor</th>
+              <th className="hidden px-4 py-3 lg:table-cell">Penandatangan</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Diperbarui</th>
+              <th className="hidden px-4 py-3 md:table-cell">Diperbarui</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                  Tidak ada surat.
+                <td colSpan={5} className="px-4 py-12 text-center">
+                  <FileText className="mx-auto h-8 w-8 text-navy-200" />
+                  <p className="mt-2 font-medium text-navy-900">
+                    {sp.q
+                      ? "Tidak ada surat yang cocok."
+                      : status === "submitted"
+                        ? "Tidak ada surat yang menunggu pengesahan."
+                        : status === "draft"
+                          ? "Tidak ada draft surat."
+                          : status === "issued"
+                            ? "Belum ada surat yang terbit."
+                            : "Belum ada surat."}
+                  </p>
+                  {status !== "all" || sp.q ? (
+                    <Link href="/admin/surat?status=all" className="mt-1 inline-block text-sm text-navy-600 hover:underline">
+                      Lihat semua surat
+                    </Link>
+                  ) : bisaTulis ? (
+                    <Link href="/admin/surat/baru" className="mt-1 inline-block text-sm text-navy-600 hover:underline">
+                      Buat surat pertama
+                    </Link>
+                  ) : null}
                 </td>
               </tr>
             ) : (
               rows.map((r) => (
                 <tr key={r.id} className="border-t border-navy-100 hover:bg-navy-50/40">
+                  <td className="px-4 py-3">
+                    <Link href={`/admin/surat/${r.id}`} className="font-medium text-navy-900 hover:underline">
+                      {r.subject}
+                    </Link>
+                    <p className="text-xs text-muted-foreground">{r.templateName}</p>
+                  </td>
                   <td className="px-4 py-3 font-mono text-xs">
                     {/* Nomor baru terbit saat disahkan; "draft" di sini dulu
                         menabrak kolom Status yang bisa saja "Menunggu Pengesahan". */}
-                    {r.number ?? "— belum bernomor"}
+                    {r.number ?? <span className="text-muted-foreground">belum bernomor</span>}
                   </td>
-                  <td className="px-4 py-3 font-medium text-navy-900">
-                    <Link href={`/admin/surat/${r.id}`} className="hover:underline">
-                      {r.subject}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">{r.templateName}</td>
-                  <td className="px-4 py-3">{r.signatoryName}</td>
+                  <td className="hidden px-4 py-3 lg:table-cell">{r.signatoryName}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={r.status} documentStatus={r.documentStatus} />
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">
                     {r.updatedAt ? dateFmt.format(r.updatedAt) : "—"}
                   </td>
                 </tr>
@@ -163,7 +204,7 @@ export default async function SuratListPage({
             </Button>
           )}
           <span className="text-sm text-muted-foreground">
-            {page} / {totalPages}
+            Halaman {page} dari {totalPages}
           </span>
           {page < totalPages ? (
             <Button
