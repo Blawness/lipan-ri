@@ -77,7 +77,10 @@ export function EditDokumenModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-xl" showCloseButton={false}>
+      <DialogContent
+        className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl"
+        showCloseButton={false}
+      >
         <DialogHeader>
           <DialogTitle>Edit Dokumen</DialogTitle>
         </DialogHeader>
