@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getDocumentById } from "@/lib/admin/documents";
 import { getSignatories } from "@/lib/signatories";
 import { DokumenForm } from "../../dokumen-form";
@@ -14,7 +14,7 @@ export default async function EditDokumenPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireUser();
+  await requirePermission("documents.manage");
   const { id } = await params;
   const [doc, signatories] = await Promise.all([
     getDocumentById(Number(id)),

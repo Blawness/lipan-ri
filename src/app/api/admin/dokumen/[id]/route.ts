@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { rbac } from "@/rbac";
 import { getDocumentById } from "@/lib/admin/documents";
 
 export async function GET(
@@ -9,6 +10,9 @@ export async function GET(
   const session = await auth();
   if (!session?.user) {
     return new NextResponse("Unauthorized", { status: 401 });
+  }
+  if (!rbac.can(session.user.role, "documents.manage")) {
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
   const { id } = await params;

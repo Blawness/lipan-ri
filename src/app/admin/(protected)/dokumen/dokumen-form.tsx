@@ -27,6 +27,7 @@ export function DokumenForm({
   initial,
   signatories,
   onCancel,
+  onSuccess,
 }: {
   action: (
     prev: DocumentFormState,
@@ -35,11 +36,17 @@ export function DokumenForm({
   initial: DocumentFormValues;
   signatories: { id: number; name: string; title: string | null }[];
   onCancel?: () => void;
+  /** Diisi saat form dipakai di modal: dipanggil setelah simpan berhasil. */
+  onSuccess?: () => void;
 }) {
   const [state, formAction, pending] = useActionState<
     DocumentFormState,
     FormData
-  >(action, {});
+  >(async (prev, fd) => {
+    const result = await action(prev, fd);
+    if (result.ok) onSuccess?.();
+    return result;
+  }, {});
   const [fileUrl, setFileUrl] = useState(initial.fileUrl);
 
   // Tandai album "dokumen" supaya berkas surat tidak nyampur di galeri berita
@@ -52,6 +59,7 @@ export function DokumenForm({
   return (
     <form action={formAction} className="max-w-xl space-y-6">
       <input type="hidden" name="fileUrl" value={fileUrl} />
+      {onSuccess && <input type="hidden" name="_modal" value="1" />}
 
       <div className="space-y-5 rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
         <div className="space-y-1.5">

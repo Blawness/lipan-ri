@@ -1,20 +1,21 @@
 import Link from "next/link";
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { listDocumentsAdmin } from "@/lib/admin/documents";
 import { getSignatories } from "@/lib/signatories";
-import { deleteDocumentAction, revokeDocumentAction } from "./actions";
+import { deleteDocumentAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDelete, ToastOnParam } from "@blawness/admin-kit/components";
 import { CreateDokumenButton } from "./create-button";
 import { QrPreviewButton } from "./qr-preview-button";
 import { QrPreviewModal } from "./qr-preview-modal";
 import { EditDokumenButton } from "./edit-button";
+import { EditDokumenModal } from "./edit-modal";
+import { RevokeButton } from "./revoke-button";
 import {
   FileText,
   Search,
   ChevronLeft,
   ChevronRight,
-  Ban,
   Eye,
   Package,
 } from "lucide-react";
@@ -40,7 +41,7 @@ export default async function DokumenListPage({
 }: {
   searchParams: Promise<{ q?: string; page?: string }>;
 }) {
-  await requireUser();
+  await requirePermission("documents.manage");
 
   const sp = await searchParams;
   const q = sp.q?.trim() ?? "";
@@ -174,7 +175,6 @@ export default async function DokumenListPage({
                     <span className="inline-flex items-center gap-1 text-sm text-navy-600">
                       <Eye className="h-3.5 w-3.5 text-navy-400" />
                       {r.viewCount ?? 0}
-                      {r.viewCount ?? 0}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -218,26 +218,9 @@ export default async function DokumenListPage({
                         number={r.number}
                         title={r.title}
                       />
-                      <EditDokumenButton id={r.id} signatories={sigs} />
+                      <EditDokumenButton id={r.id} />
                       {r.status === "active" && (
-                        <form action={revokeDocumentAction} className="flex items-center gap-1">
-                          <input type="hidden" name="id" value={r.id} />
-                          <input
-                            type="text"
-                            name="revokeReason"
-                            placeholder="Alasan..."
-                            className="h-8 w-28 rounded-md border border-navy-200 px-2 text-xs text-navy-700 placeholder:text-navy-400 focus:border-red-300 focus:outline-none focus:ring-1 focus:ring-red-200"
-                          />
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            type="submit"
-                            title="Cabut legalitas"
-                          >
-                            <Ban className="h-3.5 w-3.5" />
-                            Cabut
-                          </Button>
-                        </form>
+                        <RevokeButton id={r.id} number={r.number} />
                       )}
                       <ConfirmDelete
                         action={deleteDocumentAction}
@@ -309,6 +292,7 @@ export default async function DokumenListPage({
         </nav>
       )}
       <QrPreviewModal />
+      <EditDokumenModal signatories={sigs} />
     </div>
   );
 }

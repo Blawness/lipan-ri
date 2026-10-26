@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser, requireUserId } from "@blawness/admin-kit/auth-helpers";
+import { requireUserId } from "@blawness/admin-kit/auth-helpers";
+// Diimpor sebagai nilai yang dipakai (bukan `import "@/rbac"`): registrasi RBAC
+// dari layout tidak selalu ikut ke graf modul server action.
+import { rbac } from "@/rbac";
 import {
   createDocument,
   updateDocument,
@@ -23,7 +26,14 @@ const schema = z.object({
   showDocument: z.coerce.boolean().optional(),
 });
 
-export type DocumentFormState = { error?: string };
+export type DocumentFormState = { error?: string; ok?: boolean };
+
+// Form di dalam modal mengirim `_modal`: modal yang menutup dirinya sendiri,
+// jadi jangan redirect (status "terbuka" modal hidup di store dan tidak ikut
+// ter-reset oleh navigasi). Halaman penuh (/baru, /[id]/edit) tetap redirect.
+function isModal(formData: FormData) {
+  return formData.get("_modal") === "1";
+}
 
 function parse(formData: FormData): DocumentInput {
   const data = schema.parse({
@@ -50,7 +60,7 @@ export async function createDocumentAction(
   _prev: DocumentFormState,
   formData: FormData
 ): Promise<DocumentFormState> {
-  await requireUser();
+  await rbac.requirePermission("documents.manage");
   let input: DocumentInput;
   try {
     input = parse(formData);
@@ -63,6 +73,7 @@ export async function createDocumentAction(
   const actorId = await requireUserId();
   await createDocumentLog(docId, actorId, "created");
   revalidatePath("/admin/dokumen");
+  if (isModal(formData)) return { ok: true };
   redirect("/admin/dokumen?saved=created");
 }
 
@@ -71,7 +82,7 @@ export async function updateDocumentAction(
   _prev: DocumentFormState,
   formData: FormData
 ): Promise<DocumentFormState> {
-  await requireUser();
+  await rbac.requirePermission("documents.manage");
   let input: DocumentInput;
   try {
     input = parse(formData);
@@ -81,11 +92,15 @@ export async function updateDocumentAction(
     };
   }
   await updateDocument(id, input);
+  const actorId = await requireUserId();
+  await createDocumentLog(id, actorId, "updated");
   revalidatePath("/admin/dokumen");
+  if (isModal(formData)) return { ok: true };
   redirect("/admin/dokumen?saved=updated");
 }
 
 export async function revokeDocumentAction(formData: FormData) {
+  await rbac.requirePermission("documents.manage");
   const actorId = await requireUserId();
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
@@ -96,7 +111,7 @@ export async function revokeDocumentAction(formData: FormData) {
 }
 
 export async function deleteDocumentAction(formData: FormData) {
-  await requireUser();
+  await rbac.requirePermission("documents.manage");
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return;
   await deleteDocument(id);

@@ -114,7 +114,9 @@ export async function updateDocument(id: number, input: DocumentInput) {
       signatory: input.signatory,
       issuedAt: input.issuedAt,
       fileUrl: input.fileUrl ?? null,
-      status: input.status ?? "active",
+      // Status sengaja tidak disentuh: form edit tidak punya isian status, jadi
+      // menimpanya di sini akan diam-diam memberlakukan lagi dokumen yang dicabut.
+      // Pencabutan hanya lewat revokeDocument.
       showDocument: input.showDocument ?? false,
       updatedAt: new Date(),
     })

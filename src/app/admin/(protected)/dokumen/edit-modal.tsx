@@ -12,7 +12,9 @@ import { DokumenForm } from "./dokumen-form";
 import { updateDocumentAction } from "./actions";
 import { useDokumenEditStore } from "@/lib/store";
 import { DocumentLogs } from "./document-logs";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type DocData = {
   id: number;
@@ -37,20 +39,39 @@ export function EditDokumenModal({
   const open = id !== null;
   const [doc, setDoc] = useState<DocData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!id) return;
+    // Buka dokumen A lalu cepat-cepat B: respons A yang datang belakangan
+    // jangan sampai menimpa form B.
+    let cancelled = false;
     setLoading(true);
+    setError(false);
     fetch(`/api/admin/dokumen/${id}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setDoc(data))
-      .finally(() => setLoading(false));
+      .then((res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        return res.json();
+      })
+      .then((data) => {
+        if (!cancelled) setDoc(data);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleClose = (isOpen: boolean) => {
     if (!isOpen) {
       close();
       setDoc(null);
+      setError(false);
     }
   };
 
@@ -60,7 +81,17 @@ export function EditDokumenModal({
         <DialogHeader>
           <DialogTitle>Edit Dokumen</DialogTitle>
         </DialogHeader>
-        {loading || !doc ? (
+        {error ? (
+          <div className="flex flex-col items-center gap-3 py-12 text-center">
+            <AlertCircle className="h-6 w-6 text-red-500" />
+            <p className="text-sm text-navy-700">
+              Gagal memuat dokumen. Coba tutup lalu buka lagi.
+            </p>
+            <Button variant="outline" size="sm" onClick={() => handleClose(false)}>
+              Tutup
+            </Button>
+          </div>
+        ) : loading || !doc ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-6 w-6 animate-spin text-navy-400" />
           </div>
@@ -79,6 +110,10 @@ export function EditDokumenModal({
               }}
               signatories={signatories}
               onCancel={() => handleClose(false)}
+              onSuccess={() => {
+                handleClose(false);
+                toast.success("Dokumen berhasil diperbarui.");
+              }}
             />
             <div className="-mx-4 -mb-4 mt-4 border-t border-navy-100 px-4 pb-4 pt-2">
               <DocumentLogs documentId={doc.id} />

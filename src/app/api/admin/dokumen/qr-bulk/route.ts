@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ZipArchive } from "archiver";
 import { auth } from "@/auth";
+import { rbac } from "@/rbac";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
 import { generateQrPng } from "@/lib/qr";
@@ -9,6 +10,9 @@ export async function GET() {
   const session = await auth();
   if (!session?.user) {
     return new NextResponse("Unauthorized", { status: 401 });
+  }
+  if (!rbac.can(session.user.role, "documents.manage")) {
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
   const rows = await db

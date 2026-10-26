@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { DokumenForm } from "./dokumen-form";
 import { createDocumentAction } from "./actions";
+import { toast } from "sonner";
 import { useDokumenCreateStore } from "@/lib/store";
 
 export function CreateDokumenModal({
@@ -36,6 +37,10 @@ export function CreateDokumenModal({
           }}
           signatories={signatories}
           onCancel={() => setOpen(false)}
+          onSuccess={() => {
+            setOpen(false);
+            toast.success("Dokumen berhasil dibuat.");
+          }}
         />
       </DialogContent>
     </Dialog>

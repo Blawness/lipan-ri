@@ -1,4 +1,4 @@
-import { requireUser } from "@blawness/admin-kit/auth-helpers";
+import { requirePermission } from "@blawness/admin-kit/auth-helpers";
 import { getSignatories } from "@/lib/signatories";
 import { DokumenForm } from "../dokumen-form";
 import { createDocumentAction } from "../actions";
@@ -6,7 +6,7 @@ import { createDocumentAction } from "../actions";
 export const dynamic = "force-dynamic";
 
 export default async function NewDokumenPage() {
-  await requireUser();
+  await requirePermission("documents.manage");
   const signatories = await getSignatories();
   return (
     <div>
